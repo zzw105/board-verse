@@ -7,7 +7,6 @@ export function splendorBoard(data: BoardProps) {
   return (
     <div>
       {JSON.stringify(data)}
-      123
     </div>
   );
 }

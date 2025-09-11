@@ -4,7 +4,7 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "nodemon src/index.js"
   },
   "dependencies": {
     "@game/shared": "workspace:*",
