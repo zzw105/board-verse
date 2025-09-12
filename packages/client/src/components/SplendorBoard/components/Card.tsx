@@ -86,7 +86,23 @@ export function Card({ x, y, cardName, text }: CardProps) {
             opacity={0.6}
             cornerRadius={[8, 8, 0, 0]} // 和卡片底部圆角一致（只给下边圆角）
           />
-          <Gem x={width - 50} y={85 / 2} offsetCenter type={cardInfo.color}></Gem>
+          <Gem x={width - 45} y={85 / 2} offsetCenter type={cardInfo.color}></Gem>
+          <Text
+            text="2"
+            fontSize={65}
+            fill="white"
+            fontFamily="Arial" // 系统自带字体
+            fontStyle="bold italic" // 粗体 + 斜体
+            stroke="#000000"
+            strokeWidth={1}
+            align="center"
+            verticalAlign="middle"
+            x={20}
+            y={85 / 2}
+            offsetX={0}
+            offsetY={65 / 2}
+            skewX={-0.2} // 水平倾斜 20°
+          />
         </>
       )}
 
