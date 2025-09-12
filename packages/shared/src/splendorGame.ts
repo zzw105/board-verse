@@ -12,7 +12,7 @@ export type SplendorGameCardType = {
   name: string;
   frameX: number;
   frameY: number;
-  color: string;
+  color: SplendorGameGemName;
   point: number;
   cost: {
     black: number;
@@ -24,7 +24,7 @@ export type SplendorGameCardType = {
   level: number;
 };
 export type SplendorGameCardName = keyof typeof splendorGameCardList;
-export const splendorGameCardList: Record<string, SplendorGameCardType> = {
+export const splendorGameCardList = {
   black1: {
     name: "black1",
     frameX: 0,
@@ -187,7 +187,206 @@ export const splendorGameCardList: Record<string, SplendorGameCardType> = {
     cost: { black: 3, white: 0, red: 7, blue: 0, green: 0 },
     level: 3,
   },
+  blue1: {
+    name: "blue1",
+    frameX: 0,
+    frameY: 0,
+    color: "blue",
+    point: 0,
+    cost: { black: 2, white: 1, red: 0, blue: 0, green: 0 },
+    level: 1,
+  },
+  blue2: {
+    name: "blue2",
+    frameX: 0,
+    frameY: 0,
+    color: "blue",
+    point: 0,
+    cost: { black: 1, white: 1, red: 2, blue: 0, green: 1 },
+    level: 1,
+  },
+  blue3: {
+    name: "blue3",
+    frameX: 0,
+    frameY: 0,
+    color: "blue",
+    point: 0,
+    cost: { black: 1, white: 1, red: 1, blue: 0, green: 1 },
+    level: 1,
+  },
+  blue4: {
+    name: "blue4",
+    frameX: 0,
+    frameY: 0,
+    color: "blue",
+    point: 0,
+    cost: { black: 0, white: 0, red: 1, blue: 1, green: 3 },
+    level: 1,
+  },
+  blue5: {
+    name: "blue5",
+    frameX: 0,
+    frameY: 0,
+    color: "blue",
+    point: 0,
+    cost: { black: 3, white: 0, red: 0, blue: 0, green: 0 },
+    level: 1,
+  },
+  blue6: {
+    name: "blue6",
+    frameX: 0,
+    frameY: 0,
+    color: "blue",
+    point: 0,
+    cost: { black: 0, white: 1, red: 2, blue: 0, green: 2 },
+    level: 1,
+  },
+  blue7: {
+    name: "blue7",
+    frameX: 0,
+    frameY: 0,
+    color: "blue",
+    point: 0,
+    cost: { black: 2, white: 0, red: 0, blue: 0, green: 2 },
+    level: 1,
+  },
+  blue8: {
+    name: "blue8",
+    frameX: 0,
+    frameY: 0,
+    color: "blue",
+    point: 1,
+    cost: { black: 0, white: 0, red: 4, blue: 0, green: 0 },
+    level: 1,
+  },
+
+  blue9: {
+    name: "blue9",
+    frameX: 2,
+    frameY: 0,
+    color: "blue",
+    point: 1,
+    cost: { black: 0, white: 0, red: 3, blue: 2, green: 2 },
+    level: 2,
+  },
+  blue10: {
+    name: "blue10",
+    frameX: 2,
+    frameY: 0,
+    color: "blue",
+    point: 1,
+    cost: { black: 3, white: 0, red: 0, blue: 2, green: 3 },
+    level: 2,
+  },
+  blue11: {
+    name: "blue11",
+    frameX: 2,
+    frameY: 0,
+    color: "blue",
+    point: 2,
+    cost: { black: 0, white: 5, red: 0, blue: 3, green: 0 },
+    level: 2,
+  },
+
+  blue12: {
+    name: "blue12",
+    frameX: 1,
+    frameY: 0,
+    color: "blue",
+    point: 2,
+    cost: { black: 0, white: 0, red: 0, blue: 5, green: 0 },
+    level: 2,
+  },
+  blue13: {
+    name: "blue13",
+    frameX: 1,
+    frameY: 0,
+    color: "blue",
+    point: 2,
+    cost: { black: 4, white: 2, red: 1, blue: 0, green: 0 },
+    level: 2,
+  },
+  blue14: {
+    name: "blue14",
+    frameX: 1,
+    frameY: 0,
+    color: "blue",
+    point: 3,
+    cost: { black: 0, white: 0, red: 0, blue: 6, green: 0 },
+    level: 2,
+  },
+
+  blue15: {
+    name: "blue15",
+    frameX: 3,
+    frameY: 0,
+    color: "blue",
+    point: 3,
+    cost: { black: 5, white: 3, red: 3, blue: 0, green: 3 },
+    level: 3,
+  },
+  blue16: {
+    name: "blue16",
+    frameX: 3,
+    frameY: 0,
+    color: "blue",
+    point: 4,
+    cost: { black: 0, white: 7, red: 0, blue: 0, green: 0 },
+    level: 3,
+  },
+  blue17: {
+    name: "blue17",
+    frameX: 4,
+    frameY: 0,
+    color: "blue",
+    point: 4,
+    cost: { black: 3, white: 6, red: 0, blue: 3, green: 0 },
+    level: 3,
+  },
+  blue18: {
+    name: "blue18",
+    frameX: 4,
+    frameY: 0,
+    color: "blue",
+    point: 5,
+    cost: { black: 0, white: 7, red: 0, blue: 3, green: 0 },
+    level: 3,
+  },
+} satisfies Record<string, SplendorGameCardType>;
+export type SplendorGameGemType = {
+  name: string;
+  frameX: number;
+  frameY: number;
 };
+
+export type SplendorGameGemName = keyof typeof splendorGameGemList;
+export const splendorGameGemList = {
+  white: {
+    name: "white",
+    frameX: 0,
+    frameY: 0,
+  },
+  blue: {
+    name: "blue",
+    frameX: 1,
+    frameY: 0,
+  },
+  black: {
+    name: "black",
+    frameX: 2,
+    frameY: 0,
+  },
+  red: {
+    name: "red",
+    frameX: 3,
+    frameY: 0,
+  },
+  green: {
+    name: "green",
+    frameX: 4,
+    frameY: 0,
+  },
+} satisfies Record<string, SplendorGameGemType>;
 
 export const splendorGame: Game<GameType> = {
   name: "splendorMonorepo",

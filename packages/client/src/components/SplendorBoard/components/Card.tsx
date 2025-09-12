@@ -4,6 +4,7 @@ import { Tween } from "konva/lib/Tween";
 import cardsImg from "../../../assets/imgs/cards.png";
 import { splendorGameCardList, type SplendorGameCardName } from "@game/shared";
 import type Konva from "konva";
+import { Gem } from "./Gem";
 
 interface CardProps {
   x: number;
@@ -14,7 +15,7 @@ interface CardProps {
 
 export function Card({ x, y, cardName, text }: CardProps) {
   const cardInfo = splendorGameCardList[cardName];
-  const scale = 0.4;
+  const scale = 1;
   const width: number = 1235 / 5;
   const height: number = 2058 / 6;
 
@@ -38,72 +39,55 @@ export function Card({ x, y, cardName, text }: CardProps) {
   const handleFlip = () => {
     if (!groupRef.current) return;
     const g = groupRef.current;
-
-    // 翻转动画保持左上角固定
-    // const tween1 = new Tween({
-    //   node: g,
-    //   duration: 0.2,
-    //   scaleX: 0, // 缩小到0
-    //   x: (x + width * scale) / 2, // 以中心为动画中心
-    // });
-
-    // tween1.onFinish = () => {
-    //   setFlipped(!flipped);
-    //   const tween2 = new Tween({
-    //     node: g,
-    //     duration: 0.2,
-    //     scaleX: scale,
-    //     x: x, // 动画结束恢复左上角
-    //   });
-    //   tween2.play();
-    // };
-
-    // tween1.play();
-
-    const newTween = new Tween({
-      node: g,
-      x: (x + width * scale) / 2, // 以中心为动画中心
-    });
-    newTween.onFinish = () => {
-      const tween1 = new Tween({
-        node: g,
-        duration: 0.2,
-        scaleX: 0, // 缩小到0
-      });
-      tween1.play();
-      tween1.onFinish = () => {
-        setFlipped(!flipped);
-        const tween2 = new Tween({
-          node: g,
-          duration: 0.2,
-          scaleX: scale,
-          x: x, // 动画结束恢复左上角
-        });
-        tween2.play();
-      };
+    const tween1 = new Tween({ node: g, duration: 0.2, scaleX: 0 });
+    tween1.onFinish = () => {
+      setFlipped(!flipped);
+      const tween2 = new Tween({ node: g, duration: 0.2, scaleX: scale });
+      tween2.play();
     };
-    newTween.play();
+    tween1.play();
   };
 
   return (
-    <Group x={x} y={y} ref={groupRef} onClick={handleFlip} scaleX={scale} scaleY={scale}>
+    <Group
+      x={x + (width * scale) / 2}
+      y={y + (height * scale) / 2}
+      offsetX={width / 2}
+      offsetY={height / 2}
+      ref={groupRef}
+      onClick={handleFlip}
+      scaleX={scale}
+      scaleY={scale}
+    >
       {/* 卡牌底色 */}
-      <Rect width={width} height={height} fill="#fff" shadowBlur={5} cornerRadius={8} />
+      <Rect width={width} height={height} fill="#fff" shadowBlur={8} cornerRadius={8} />
 
       {/* 正面 */}
       {frontImage && !flipped && (
-        <KonvaImage
-          image={frontImage}
-          width={width}
-          height={height}
-          crop={{
-            x: cardInfo.frameX * width,
-            y: cardInfo.frameY * height,
-            width,
-            height,
-          }}
-          cornerRadius={8}
-        />
+        <>
+          <KonvaImage
+            image={frontImage}
+            width={width}
+            height={height}
+            crop={{
+              x: cardInfo.frameX * width,
+              y: cardInfo.frameY * height,
+              width,
+              height,
+            }}
+            cornerRadius={8}
+          />
+          <Rect
+            x={0}
+            y={0} // 贴近底部，也可以改成 0 表示顶部
+            width={width}
+            height={85} // 带子的高度，可以调
+            fill="white"
+            opacity={0.6}
+            cornerRadius={[8, 8, 0, 0]} // 和卡片底部圆角一致（只给下边圆角）
+          />
+          <Gem x={width - 50} y={85 / 2} offsetCenter type={cardInfo.color}></Gem>
+        </>
       )}
 
       {/* 背面 */}
