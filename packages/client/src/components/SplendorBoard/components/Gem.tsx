@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Image as KonvaImage, Group } from "react-konva";
 import spriteImg from "../../../assets/imgs/gems.png"; // 你的精灵图路径
-import { splendorGameGemList, type SplendorGameGemName } from "@game/shared";
+import { splendorGameGemList, type SplendorGameGemNameType } from "@game/shared";
 
 interface SpriteImageProps {
   x: number;
   y: number;
   scale?: number;
   offsetCenter?: boolean;
-  type: SplendorGameGemName;
+  type: SplendorGameGemNameType;
 }
 
 export function Gem({ x, y, offsetCenter, scale = 0.35, type }: SpriteImageProps) {

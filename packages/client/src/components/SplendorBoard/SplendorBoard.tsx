@@ -55,10 +55,10 @@ export function SplendorBoard(data: BoardProps) {
         <Stage width={stageSize.width} height={stageSize.height} scaleX={scale} scaleY={scale}>
           <Layer>
             <Card x={position["1-1"].x} y={position["1-1"].y} cardName="black1" />
-            {/* <Card x={position["1-2"].x} y={position["1-2"].y} cardName="black15" />
+            <Card x={position["1-2"].x} y={position["1-2"].y} cardName="black15" />
             <Card x={position["1-3"].x} y={position["1-3"].y} cardName="black16" />
             <Card x={position["1-4"].x} y={position["1-4"].y} cardName="black11" />
-            <Card x={position["1-5"].x} y={position["1-5"].y} cardName="black8" /> */}
+            <Card x={position["1-5"].x} y={position["1-5"].y} cardName="black8" />
           </Layer>
         </Stage>
       </div>

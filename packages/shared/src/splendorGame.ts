@@ -12,7 +12,7 @@ export type SplendorGameCardType = {
   name: string;
   frameX: number;
   frameY: number;
-  color: SplendorGameGemName;
+  color: SplendorGameGemNameType;
   point: number;
   cost: {
     black: number;
@@ -359,7 +359,7 @@ export type SplendorGameGemType = {
   frameY: number;
 };
 
-export type SplendorGameGemName = keyof typeof splendorGameGemList;
+export type SplendorGameGemNameType = keyof typeof splendorGameGemList;
 export const splendorGameGemList = {
   white: {
     name: "white",

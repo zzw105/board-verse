@@ -2,9 +2,15 @@ import { useEffect, useState, useRef } from "react";
 import { Rect, Image as KonvaImage, Group, Text } from "react-konva";
 import { Tween } from "konva/lib/Tween";
 import cardsImg from "../../../assets/imgs/cards.png";
-import { splendorGameCardList, type SplendorGameCardName } from "@game/shared";
+import {
+  splendorGameCardList,
+  type SplendorGameCardName,
+  type SplendorGameCardType,
+  type SplendorGameGemNameType,
+} from "@game/shared";
 import type Konva from "konva";
 import { Gem } from "./Gem";
+import { CardPoint } from "./CardPoint";
 
 interface CardProps {
   x: number;
@@ -14,8 +20,8 @@ interface CardProps {
 }
 
 export function Card({ x, y, cardName, text }: CardProps) {
-  const cardInfo = splendorGameCardList[cardName];
-  const scale = 1;
+  const cardInfo = splendorGameCardList[cardName] as SplendorGameCardType;
+  const scale = 0.7;
   const width: number = 1235 / 5;
   const height: number = 2058 / 6;
 
@@ -47,6 +53,33 @@ export function Card({ x, y, cardName, text }: CardProps) {
     };
     tween1.play();
   };
+  const cardPointPos = [
+    {
+      x: 30,
+      y: 310,
+    },
+    {
+      x: 30,
+      y: 265,
+    },
+    {
+      x: 30,
+      y: 220,
+    },
+    {
+      x: 30,
+      y: 175,
+    },
+  ];
+  const cardPointJsxList: JSX.Element[] = [];
+  (["black", "red", "green", "blue", "white"] as SplendorGameGemNameType[]).forEach((gem) => {
+    const element = cardInfo.cost[gem];
+    if (element > 0) {
+      const index = cardPointJsxList.length;
+      const pos = cardPointPos[index];
+      cardPointJsxList.push(<CardPoint x={pos.x} y={pos.y} point={element} type={gem}></CardPoint>);
+    }
+  });
 
   return (
     <Group
@@ -87,22 +120,26 @@ export function Card({ x, y, cardName, text }: CardProps) {
             cornerRadius={[8, 8, 0, 0]} // 和卡片底部圆角一致（只给下边圆角）
           />
           <Gem x={width - 45} y={85 / 2} offsetCenter type={cardInfo.color}></Gem>
-          <Text
-            text="2"
-            fontSize={65}
-            fill="white"
-            fontFamily="Arial" // 系统自带字体
-            fontStyle="bold italic" // 粗体 + 斜体
-            stroke="#000000"
-            strokeWidth={1}
-            align="center"
-            verticalAlign="middle"
-            x={20}
-            y={85 / 2}
-            offsetX={0}
-            offsetY={65 / 2}
-            skewX={-0.2} // 水平倾斜 20°
-          />
+          {cardInfo.point > 0 && (
+            <Text
+              text={cardInfo.point.toString()}
+              fontSize={65}
+              fill="white"
+              fontFamily="Arial" // 系统自带字体
+              fontStyle="bold italic" // 粗体 + 斜体
+              stroke="#000000"
+              strokeWidth={1}
+              align="center"
+              verticalAlign="middle"
+              x={15}
+              y={85 / 2}
+              offsetX={0}
+              offsetY={65 / 2}
+              skewX={-0.2}
+            />
+          )}
+
+          {cardPointJsxList}
         </>
       )}
 
