@@ -1,4 +1,5 @@
 import type { SplendorGameGemNameType } from "@game/shared";
+import React from "react";
 import { Group, Text, Circle } from "react-konva";
 
 interface CardPointProps {
@@ -42,7 +43,7 @@ export function CardPoint({ x, y, point, type }: CardPointProps) {
         fontFamily="Arial"
         fontStyle="bold"
         stroke="black"
-        strokeWidth={1}
+        strokeWidth={2}
         width={fontSize * 2} // 给一个宽度（半径 * 2）
         height={fontSize * 2} // 高度同理
         align="center" // 水平居中

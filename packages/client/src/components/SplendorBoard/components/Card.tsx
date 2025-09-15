@@ -1,9 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Rect, Image as KonvaImage, Group, Text } from "react-konva";
 import { Tween } from "konva/lib/Tween";
-import cardsImg from "../../../assets/imgs/cards.png";
 import {
-  splendorGameCardList,
+  splendorGameCardObj,
   type SplendorGameCardName,
   type SplendorGameCardType,
   type SplendorGameGemNameType,
@@ -11,48 +10,59 @@ import {
 import type Konva from "konva";
 import { Gem } from "./Gem";
 import { CardPoint } from "./CardPoint";
+import React from "react";
+import { useContextMenuStore } from "../../../store/useContextMenuStore";
+import { cardsImage } from "../../../utils/loadAllImg";
 
 interface CardProps {
   x: number;
   y: number;
+  isFaceUp: boolean;
+  // setFlipped:(flipped:boolean)=>void;
   cardName: SplendorGameCardName;
   text?: string;
 }
 
-export function Card({ x, y, cardName, text }: CardProps) {
-  const cardInfo = splendorGameCardList[cardName] as SplendorGameCardType;
+export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }: CardProps) {
+  const cardInfo = splendorGameCardObj[cardName] as SplendorGameCardType;
   const scale = 0.7;
   const width: number = 1235 / 5;
   const height: number = 2058 / 6;
 
-  const [frontImage, setFrontImage] = useState<HTMLImageElement | null>(null);
   const [cardBackInfo, setCardBackInfo] = useState({ x: 0, y: 0 });
-  const [flipped, setFlipped] = useState(false);
+  const [flipped, setFlipped] = useState(isFaceUp);
 
   const groupRef = useRef<Konva.Group>(null);
 
   // 加载正面精灵图
   useEffect(() => {
-    const img = new window.Image();
-    img.src = cardsImg;
-    img.onload = () => setFrontImage(img);
-
     if (cardInfo.level === 1) setCardBackInfo({ x: 0, y: 5 });
     else if (cardInfo.level === 2) setCardBackInfo({ x: 1, y: 5 });
     else if (cardInfo.level === 3) setCardBackInfo({ x: 2, y: 5 });
-  }, []);
+  }, [cardInfo.level]);
 
-  const handleFlip = () => {
+  const handleFlip = useCallback(() => {
     if (!groupRef.current) return;
     const g = groupRef.current;
     const tween1 = new Tween({ node: g, duration: 0.2, scaleX: 0 });
     tween1.onFinish = () => {
       setFlipped(!flipped);
       const tween2 = new Tween({ node: g, duration: 0.2, scaleX: scale });
+      tween2.onFinish = () => {
+        g.cache();
+      };
       tween2.play();
     };
+    g.clearCache();
     tween1.play();
-  };
+  }, [flipped, scale]); // 添加 scale 作为依赖
+
+  useEffect(() => {
+    if (isFaceUp !== flipped) {
+      handleFlip();
+    }
+  }, [isFaceUp, flipped, handleFlip]);
+
   const cardPointPos = [
     {
       x: 30,
@@ -77,9 +87,19 @@ export function Card({ x, y, cardName, text }: CardProps) {
     if (element > 0) {
       const index = cardPointJsxList.length;
       const pos = cardPointPos[index];
-      cardPointJsxList.push(<CardPoint x={pos.x} y={pos.y} point={element} type={gem}></CardPoint>);
+      cardPointJsxList.push(
+        <CardPoint key={cardInfo.name + "frontPoint" + gem} x={pos.x} y={pos.y} point={element} type={gem}></CardPoint>
+      );
     }
   });
+
+  const handleContextMenu = useContextMenuStore((s) => s.handleContextMenu);
+
+  useEffect(() => {
+    if (cardsImage && groupRef.current) {
+      groupRef.current.cache();
+    }
+  }, []);
 
   return (
     <Group
@@ -88,18 +108,20 @@ export function Card({ x, y, cardName, text }: CardProps) {
       offsetX={width / 2}
       offsetY={height / 2}
       ref={groupRef}
-      onClick={handleFlip}
+      // onClick={handleFlip}
       scaleX={scale}
       scaleY={scale}
+      onContextMenu={(e) => handleContextMenu(e, "card", cardInfo.name)}
     >
       {/* 卡牌底色 */}
       <Rect width={width} height={height} fill="#fff" shadowBlur={8} cornerRadius={8} />
 
       {/* 正面 */}
-      {frontImage && !flipped && (
+      {cardsImage && !flipped && (
         <>
           <KonvaImage
-            image={frontImage}
+            key={cardInfo.name + "front"}
+            image={cardsImage}
             width={width}
             height={height}
             crop={{
@@ -111,6 +133,7 @@ export function Card({ x, y, cardName, text }: CardProps) {
             cornerRadius={8}
           />
           <Rect
+            key={cardInfo.name + "frontRect"}
             x={0}
             y={0} // 贴近底部，也可以改成 0 表示顶部
             width={width}
@@ -119,9 +142,10 @@ export function Card({ x, y, cardName, text }: CardProps) {
             opacity={0.6}
             cornerRadius={[8, 8, 0, 0]} // 和卡片底部圆角一致（只给下边圆角）
           />
-          <Gem x={width - 45} y={85 / 2} offsetCenter type={cardInfo.color}></Gem>
+          <Gem key={cardInfo.name + "frontGem"} x={width - 45} y={85 / 2} offsetCenter type={cardInfo.color}></Gem>
           {cardInfo.point > 0 && (
             <Text
+              key={cardInfo.name + "frontText"}
               text={cardInfo.point.toString()}
               fontSize={65}
               fill="white"
@@ -144,9 +168,10 @@ export function Card({ x, y, cardName, text }: CardProps) {
       )}
 
       {/* 背面 */}
-      {frontImage && flipped && (
+      {cardsImage && flipped && (
         <KonvaImage
-          image={frontImage}
+          key={cardInfo.name + "backImage"}
+          image={cardsImage}
           width={width}
           height={height}
           crop={{
@@ -165,4 +190,4 @@ export function Card({ x, y, cardName, text }: CardProps) {
       )}
     </Group>
   );
-}
+});

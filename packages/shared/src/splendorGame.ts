@@ -1,5 +1,5 @@
 import type { Game } from "boardgame.io";
-import { INVALID_MOVE } from "boardgame.io/core";
+import _ from "lodash";
 
 type Player = {
   name: string;
@@ -7,6 +7,8 @@ type Player = {
 };
 type GameType = {
   players: Record<string, Player>;
+  tokens: Record<SplendorGameGemNameType, number>;
+  cards: SplendorGameCardType[];
 };
 export type SplendorGameCardType = {
   name: string;
@@ -23,8 +25,8 @@ export type SplendorGameCardType = {
   };
   level: number;
 };
-export type SplendorGameCardName = keyof typeof splendorGameCardList;
-export const splendorGameCardList = {
+export type SplendorGameCardName = keyof typeof splendorGameCardObj;
+export const splendorGameCardObj = {
   black1: {
     name: "black1",
     frameX: 0,
@@ -58,7 +60,7 @@ export const splendorGameCardList = {
     frameY: 1,
     color: "black",
     point: 0,
-    cost: { black: 0, white: 1, red: 0, blue: 3, green: 0 },
+    cost: { black: 1, white: 0, red: 3, blue: 0, green: 1 },
     level: 1,
   },
   black5: {
@@ -82,9 +84,9 @@ export const splendorGameCardList = {
   black7: {
     name: "black7",
     frameX: 0,
-    frameY: 0,
+    frameY: 1,
     color: "black",
-    point: 1,
+    point: 0,
     cost: { black: 0, white: 2, red: 1, blue: 2, green: 0 },
     level: 1,
   },
@@ -259,7 +261,6 @@ export const splendorGameCardList = {
     cost: { black: 0, white: 0, red: 4, blue: 0, green: 0 },
     level: 1,
   },
-
   blue9: {
     name: "blue9",
     frameX: 2,
@@ -287,7 +288,6 @@ export const splendorGameCardList = {
     cost: { black: 0, white: 5, red: 0, blue: 3, green: 0 },
     level: 2,
   },
-
   blue12: {
     name: "blue12",
     frameX: 1,
@@ -315,10 +315,9 @@ export const splendorGameCardList = {
     cost: { black: 0, white: 0, red: 0, blue: 6, green: 0 },
     level: 2,
   },
-
   blue15: {
     name: "blue15",
-    frameX: 3,
+    frameX: 4,
     frameY: 0,
     color: "blue",
     point: 3,
@@ -327,7 +326,7 @@ export const splendorGameCardList = {
   },
   blue16: {
     name: "blue16",
-    frameX: 3,
+    frameX: 4,
     frameY: 0,
     color: "blue",
     point: 4,
@@ -336,7 +335,7 @@ export const splendorGameCardList = {
   },
   blue17: {
     name: "blue17",
-    frameX: 4,
+    frameX: 3,
     frameY: 0,
     color: "blue",
     point: 4,
@@ -345,11 +344,497 @@ export const splendorGameCardList = {
   },
   blue18: {
     name: "blue18",
-    frameX: 4,
+    frameX: 3,
     frameY: 0,
     color: "blue",
     point: 5,
     cost: { black: 0, white: 7, red: 0, blue: 3, green: 0 },
+    level: 3,
+  },
+  red1: {
+    name: "red1",
+    frameX: 0,
+    frameY: 2,
+    color: "red",
+    point: 0,
+    cost: { black: 0, white: 3, red: 0, blue: 0, green: 0 },
+    level: 1,
+  },
+  red2: {
+    name: "red2",
+    frameX: 0,
+    frameY: 2,
+    color: "red",
+    point: 0,
+    cost: { black: 3, white: 1, red: 1, blue: 0, green: 0 },
+    level: 1,
+  },
+  red3: {
+    name: "red3",
+    frameX: 0,
+    frameY: 2,
+    color: "red",
+    point: 0,
+    cost: { black: 0, white: 0, red: 0, blue: 2, green: 1 },
+    level: 1,
+  },
+  red4: {
+    name: "red4",
+    frameX: 0,
+    frameY: 2,
+    color: "red",
+    point: 0,
+    cost: { black: 2, white: 2, red: 0, blue: 0, green: 1 },
+    level: 1,
+  },
+  red5: {
+    name: "red5",
+    frameX: 0,
+    frameY: 2,
+    color: "red",
+    point: 0,
+    cost: { black: 1, white: 2, red: 0, blue: 1, green: 1 },
+    level: 1,
+  },
+  red6: {
+    name: "red6",
+    frameX: 0,
+    frameY: 2,
+    color: "red",
+    point: 0,
+    cost: { black: 1, white: 1, red: 0, blue: 1, green: 1 },
+    level: 1,
+  },
+  red7: {
+    name: "red7",
+    frameX: 0,
+    frameY: 2,
+    color: "red",
+    point: 0,
+    cost: { black: 0, white: 2, red: 2, blue: 0, green: 0 },
+    level: 1,
+  },
+  red8: {
+    name: "red8",
+    frameX: 0,
+    frameY: 2,
+    color: "red",
+    point: 1,
+    cost: { black: 0, white: 4, red: 0, blue: 0, green: 0 },
+    level: 1,
+  },
+  red9: {
+    name: "red9",
+    frameX: 2,
+    frameY: 2,
+    color: "red",
+    point: 1,
+    cost: { black: 3, white: 0, red: 2, blue: 3, green: 0 },
+    level: 2,
+  },
+  red10: {
+    name: "red10",
+    frameX: 2,
+    frameY: 2,
+    color: "red",
+    point: 1,
+    cost: { black: 3, white: 2, red: 2, blue: 0, green: 0 },
+    level: 2,
+  },
+  red11: {
+    name: "red11",
+    frameX: 2,
+    frameY: 2,
+    color: "red",
+    point: 2,
+    cost: { black: 0, white: 1, red: 0, blue: 4, green: 2 },
+    level: 2,
+  },
+  red12: {
+    name: "red12",
+    frameX: 1,
+    frameY: 2,
+    color: "red",
+    point: 2,
+    cost: { black: 5, white: 3, red: 0, blue: 0, green: 0 },
+    level: 2,
+  },
+  red13: {
+    name: "red13",
+    frameX: 1,
+    frameY: 2,
+    color: "red",
+    point: 2,
+    cost: { black: 5, white: 0, red: 0, blue: 0, green: 0 },
+    level: 2,
+  },
+  red14: {
+    name: "red14",
+    frameX: 1,
+    frameY: 2,
+    color: "red",
+    point: 3,
+    cost: { black: 0, white: 0, red: 6, blue: 0, green: 0 },
+    level: 2,
+  },
+  red15: {
+    name: "red15",
+    frameX: 4,
+    frameY: 2,
+    color: "red",
+    point: 3,
+    cost: { black: 3, white: 3, red: 0, blue: 5, green: 3 },
+    level: 3,
+  },
+  red16: {
+    name: "red16",
+    frameX: 4,
+    frameY: 2,
+    color: "red",
+    point: 4,
+    cost: { black: 0, white: 0, red: 0, blue: 0, green: 7 },
+    level: 3,
+  },
+  red17: {
+    name: "red17",
+    frameX: 3,
+    frameY: 2,
+    color: "red",
+    point: 4,
+    cost: { black: 0, white: 0, red: 3, blue: 3, green: 6 },
+    level: 3,
+  },
+  red18: {
+    name: "red18",
+    frameX: 3,
+    frameY: 2,
+    color: "red",
+    point: 5,
+    cost: { black: 0, white: 0, red: 3, blue: 0, green: 7 },
+    level: 3,
+  },
+  green1: {
+    name: "green1",
+    frameX: 0,
+    frameY: 3,
+    color: "green",
+    point: 0,
+    cost: { black: 0, white: 2, red: 0, blue: 1, green: 0 },
+    level: 1,
+  },
+  green2: {
+    name: "green2",
+    frameX: 0,
+    frameY: 3,
+    color: "green",
+    point: 0,
+    cost: { black: 0, white: 0, red: 2, blue: 2, green: 0 },
+    level: 1,
+  },
+  green3: {
+    name: "green3",
+    frameX: 0,
+    frameY: 3,
+    color: "green",
+    point: 0,
+    cost: { black: 0, white: 1, red: 0, blue: 3, green: 1 },
+    level: 1,
+  },
+  green4: {
+    name: "green4",
+    frameX: 0,
+    frameY: 3,
+    color: "green",
+    point: 0,
+    cost: { black: 1, white: 1, red: 1, blue: 1, green: 0 },
+    level: 1,
+  },
+  green5: {
+    name: "green5",
+    frameX: 0,
+    frameY: 3,
+    color: "green",
+    point: 0,
+    cost: { black: 2, white: 1, red: 1, blue: 1, green: 0 },
+    level: 1,
+  },
+  green6: {
+    name: "green6",
+    frameX: 0,
+    frameY: 3,
+    color: "green",
+    point: 0,
+    cost: { black: 2, white: 0, red: 2, blue: 1, green: 0 },
+    level: 1,
+  },
+  green7: {
+    name: "green7",
+    frameX: 0,
+    frameY: 3,
+    color: "green",
+    point: 0,
+    cost: { black: 0, white: 0, red: 3, blue: 0, green: 0 },
+    level: 1,
+  },
+  green8: {
+    name: "green8",
+    frameX: 0,
+    frameY: 3,
+    color: "green",
+    point: 1,
+    cost: { black: 4, white: 0, red: 0, blue: 0, green: 0 },
+    level: 1,
+  },
+  green9: {
+    name: "green9",
+    frameX: 2,
+    frameY: 3,
+    color: "green",
+    point: 1,
+    cost: { black: 0, white: 3, red: 3, blue: 0, green: 2 },
+    level: 2,
+  },
+  green10: {
+    name: "green10",
+    frameX: 2,
+    frameY: 3,
+    color: "green",
+    point: 1,
+    cost: { black: 2, white: 2, red: 0, blue: 3, green: 0 },
+    level: 2,
+  },
+  green11: {
+    name: "green11",
+    frameX: 2,
+    frameY: 3,
+    color: "green",
+    point: 2,
+    cost: { black: 1, white: 4, red: 0, blue: 2, green: 0 },
+    level: 2,
+  },
+  green12: {
+    name: "green12",
+    frameX: 1,
+    frameY: 3,
+    color: "green",
+    point: 2,
+    cost: { black: 0, white: 0, red: 0, blue: 0, green: 5 },
+    level: 2,
+  },
+  green13: {
+    name: "green13",
+    frameX: 1,
+    frameY: 3,
+    color: "green",
+    point: 2,
+    cost: { black: 0, white: 0, red: 0, blue: 5, green: 3 },
+    level: 2,
+  },
+  green14: {
+    name: "green14",
+    frameX: 1,
+    frameY: 3,
+    color: "green",
+    point: 3,
+    cost: { black: 0, white: 0, red: 0, blue: 0, green: 6 },
+    level: 2,
+  },
+  green15: {
+    name: "green15",
+    frameX: 3,
+    frameY: 3,
+    color: "green",
+    point: 3,
+    cost: { black: 3, white: 5, red: 3, blue: 3, green: 0 },
+    level: 3,
+  },
+  green16: {
+    name: "green16",
+    frameX: 4,
+    frameY: 3,
+    color: "green",
+    point: 4,
+    cost: { black: 0, white: 3, red: 0, blue: 6, green: 3 },
+    level: 3,
+  },
+  green17: {
+    name: "green17",
+    frameX: 4,
+    frameY: 3,
+    color: "green",
+    point: 4,
+    cost: { black: 0, white: 0, red: 0, blue: 7, green: 0 },
+    level: 3,
+  },
+  green18: {
+    name: "green18",
+    frameX: 3,
+    frameY: 3,
+    color: "green",
+    point: 5,
+    cost: { black: 0, white: 0, red: 0, blue: 7, green: 3 },
+    level: 3,
+  },
+  white1: {
+    name: "white1",
+    frameX: 0,
+    frameY: 4,
+    color: "white",
+    point: 0,
+    cost: { black: 1, white: 0, red: 0, blue: 2, green: 2 },
+    level: 1,
+  },
+  white2: {
+    name: "white2",
+    frameX: 0,
+    frameY: 4,
+    color: "white",
+    point: 0,
+    cost: { black: 1, white: 0, red: 2, blue: 0, green: 0 },
+    level: 1,
+  },
+  white3: {
+    name: "white3",
+    frameX: 0,
+    frameY: 4,
+    color: "white",
+    point: 0,
+    cost: { black: 1, white: 0, red: 1, blue: 1, green: 1 },
+    level: 1,
+  },
+  white4: {
+    name: "white4",
+    frameX: 0,
+    frameY: 4,
+    color: "white",
+    point: 0,
+    cost: { black: 0, white: 0, red: 0, blue: 3, green: 0 },
+    level: 1,
+  },
+  white5: {
+    name: "white5",
+    frameX: 0,
+    frameY: 4,
+    color: "white",
+    point: 0,
+    cost: { black: 0, white: 0, red: 0, blue: 2, green: 2 },
+    level: 1,
+  },
+  white6: {
+    name: "white6",
+    frameX: 0,
+    frameY: 4,
+    color: "white",
+    point: 0,
+    cost: { black: 1, white: 0, red: 1, blue: 1, green: 2 },
+    level: 1,
+  },
+  white7: {
+    name: "white7",
+    frameX: 0,
+    frameY: 4,
+    color: "white",
+    point: 0,
+    cost: { black: 1, white: 3, red: 0, blue: 1, green: 0 },
+    level: 1,
+  },
+  white8: {
+    name: "white8",
+    frameX: 0,
+    frameY: 4,
+    color: "white",
+    point: 1,
+    cost: { black: 0, white: 0, red: 0, blue: 0, green: 4 },
+    level: 1,
+  },
+  white9: {
+    name: "white9",
+    frameX: 1,
+    frameY: 4,
+    color: "white",
+    point: 1,
+    cost: { black: 2, white: 0, red: 2, blue: 0, green: 3 },
+    level: 2,
+  },
+  white10: {
+    name: "white10",
+    frameX: 1,
+    frameY: 4,
+    color: "white",
+    point: 1,
+    cost: { black: 0, white: 2, red: 3, blue: 3, green: 0 },
+    level: 2,
+  },
+  white11: {
+    name: "white11",
+    frameX: 1,
+    frameY: 4,
+    color: "white",
+    point: 2,
+    cost: { black: 2, white: 0, red: 4, blue: 0, green: 1 },
+    level: 2,
+  },
+  white12: {
+    name: "white12",
+    frameX: 2,
+    frameY: 4,
+    color: "white",
+    point: 2,
+    cost: { black: 0, white: 0, red: 5, blue: 0, green: 0 },
+    level: 2,
+  },
+  white13: {
+    name: "white13",
+    frameX: 2,
+    frameY: 4,
+    color: "white",
+    point: 2,
+    cost: { black: 3, white: 0, red: 5, blue: 0, green: 0 },
+    level: 2,
+  },
+  white14: {
+    name: "white14",
+    frameX: 2,
+    frameY: 4,
+    color: "white",
+    point: 3,
+    cost: { black: 0, white: 6, red: 0, blue: 0, green: 0 },
+    level: 2,
+  },
+  white15: {
+    name: "white15",
+    frameX: 4,
+    frameY: 4,
+    color: "white",
+    point: 3,
+    cost: { black: 3, white: 0, red: 5, blue: 3, green: 3 },
+    level: 3,
+  },
+  white16: {
+    name: "white16",
+    frameX: 3,
+    frameY: 4,
+    color: "white",
+    point: 4,
+    cost: { black: 7, white: 0, red: 0, blue: 0, green: 0 },
+    level: 3,
+  },
+  white17: {
+    name: "white17",
+    frameX: 3,
+    frameY: 4,
+    color: "white",
+    point: 4,
+    cost: { black: 6, white: 3, red: 3, blue: 0, green: 0 },
+    level: 3,
+  },
+  white18: {
+    name: "white18",
+    frameX: 4,
+    frameY: 4,
+    color: "white",
+    point: 5,
+    cost: { black: 7, white: 3, red: 0, blue: 0, green: 0 },
     level: 3,
   },
 } satisfies Record<string, SplendorGameCardType>;
@@ -359,7 +844,7 @@ export type SplendorGameGemType = {
   frameY: number;
 };
 
-export type SplendorGameGemNameType = keyof typeof splendorGameGemList;
+export type SplendorGameGemNameType = keyof typeof splendorGameGemList | "gold";
 export const splendorGameGemList = {
   white: {
     name: "white",
@@ -392,26 +877,28 @@ export const splendorGame: Game<GameType> = {
   name: "splendorMonorepo",
   setup: (data) => {
     const { ctx } = data;
+
+    const keys = Object.keys(splendorGameCardObj) as SplendorGameCardName[];
+    const splendorGameCardList = keys.map((key) => splendorGameCardObj[key]) as SplendorGameCardType[];
     console.log(ctx);
     // 根据人数调整宝石数量
-    // let gemCount = 7; // 默认 4人局
-    // if (ctx.numPlayers === 2) {
-    //   gemCount = 4;
-    // } else if (ctx.numPlayers === 3) {
-    //   gemCount = 5;
-    // }
+    let gemCount = 7; // 默认 4人局
+    if (ctx.numPlayers === 2) {
+      gemCount = 4;
+    } else if (ctx.numPlayers === 3) {
+      gemCount = 5;
+    }
     const gameData: GameType = {
       players: {},
-      // tokens: {
-      //   diamond: gemCount,
-      //   sapphire: gemCount,
-      //   emerald: gemCount,
-      //   ruby: gemCount,
-      //   onyx: gemCount,
-      //   gold: 5, // 金色万能不变
-      // },
-      // cards: [],
-      // nobles: [],
+      tokens: {
+        red: gemCount,
+        blue: gemCount,
+        black: gemCount,
+        white: gemCount,
+        green: gemCount,
+        gold: 5, // 金色万能不变
+      },
+      cards: _.shuffle(splendorGameCardList),
     };
     for (let i = 0; i < ctx.numPlayers; i++) {
       gameData.players[i] = {

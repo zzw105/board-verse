@@ -15,6 +15,7 @@ export default function Home() {
   const userStore = useUserStore();
   const navigate = useNavigate();
   const name = userStore.name;
+  const setCredentials = useUserStore((state) => state.setCredentials);
   const [setUserInfoModalIsOpen, setSetUserInfoModalIsOpen] = useState(false);
   const [createRoomModalIsOpen, setCreateRoomModalIsOpen] = useState(false);
   const setSetUserInfoModalOnSubmit: SetUserInfoModalType["onSubmit"] = (values) => {
@@ -175,6 +176,9 @@ export default function Home() {
         <div className={styles.header}>
           <div className={styles.user}>欢迎，{name}</div>
           <div className={styles["btn-list"]}>
+            <Button size="large" onClick={() => setCredentials(undefined)}>
+              重置用户
+            </Button>
             <Button size="large" onClick={() => setSetUserInfoModalIsOpen(true)}>
               修改个人信息
             </Button>

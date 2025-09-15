@@ -15,7 +15,9 @@
     "lint": "pnpm --recursive lint"
   },
   "dependencies": {
-    "boardgame.io": "^0.50.2"
+    "@types/lodash": "^4.17.20",
+    "boardgame.io": "^0.50.2",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/node": "^24.3.1",
