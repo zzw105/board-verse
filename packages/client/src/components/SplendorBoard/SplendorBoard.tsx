@@ -3,16 +3,19 @@ import { Stage, Layer } from "react-konva";
 import styles from "./SplendorBoard.module.less";
 import { useEffect, useRef, useState } from "react";
 import { Card } from "./components/Card";
-import type { SplendorGameCardName } from "@game/shared";
+import type { SplendorGameCardName, SplendorGameType } from "@game/shared";
 import { eventBus, type Events } from "../../utils/eventBus";
 import { MenuItemKeyEnum } from "../../enum/game";
+import { useContextMenuStore } from "../../store/useContextMenuStore";
 
-export function SplendorBoard(data: BoardProps) {
+export function SplendorBoard(data: BoardProps<SplendorGameType>) {
   console.log(111111111, data);
 
+  // konva外部容器
   const konvaRef = useRef<HTMLDivElement>(null);
+  // 画布尺寸
   const [stageSize, setStageSize] = useState({ width: 300, height: 300 });
-
+  // 动态修改画布尺寸
   useEffect(() => {
     const updateSize = () => {
       if (konvaRef.current) {
@@ -26,71 +29,68 @@ export function SplendorBoard(data: BoardProps) {
     window.addEventListener("resize", updateSize);
     return () => window.removeEventListener("resize", updateSize);
   }, []);
+  // 原始舞台设计尺寸
+  const originalStageSize = { width: 1920, height: 811 };
+  // 缩放比例
+  const scale = Math.min(stageSize.width / originalStageSize.width, stageSize.height / originalStageSize.height);
 
-  const contentSize = { width: 1920, height: 811 }; // 原始舞台设计尺寸
-  const scale = Math.min(stageSize.width / contentSize.width, stageSize.height / contentSize.height);
+  const positionX: Record<number, number> = {
+    1: 50,
+    2: 400,
+    3: 600,
+    4: 800,
+    5: 1000,
+  };
+  const positionY: Record<number, number> = {
+    0: 50,
+    1: 350,
+    2: 650,
+  };
 
-  // const position = {
-  //   "1-1": {
-  //     x: 50,
-  //     y: 50,
-  //   },
-  //   "1-2": {
-  //     x: 250,
-  //     y: 50,
-  //   },
-  //   "1-3": {
-  //     x: 450,
-  //     y: 50,
-  //   },
-  //   "1-4": {
-  //     x: 650,
-  //     y: 50,
-  //   },
-  //   "1-5": {
-  //     x: 850,
-  //     y: 50,
-  //   },
-  // };
+  // const testCardList: JSX.Element[] = [];
+  // const list: SplendorGameCardName[] = [
+  //   "white1",
+  //   "white2",
+  //   "white3",
+  //   "white4",
+  //   "white5",
+  //   "white6",
+  //   "white7",
+  //   "white8",
+  //   "white9",
+  //   "white10",
+  //   "white11",
+  //   "white12",
+  //   "white13",
+  //   "white14",
+  //   "white15",
+  //   "white16",
+  //   "white17",
+  //   "white18",
+  // ];
+  // let y = 50;
+  // let x = 50;
+  // const [isFaceUp, setIsFaceUp] = useState(false);
+  // list.forEach((item) => {
+  //   testCardList.push(<Card key={item} x={x} y={y} cardName={item} isFaceUp={isFaceUp} />);
+  //   if (x > 1500) {
+  //     x = 50;
+  //     y += 300;
+  //   } else {
+  //     x += 200;
+  //   }
+  // });
+  const nowGroupName = useContextMenuStore((state) => state.nowGroupName);
+  const nowGroupNameRef = useRef(nowGroupName);
+  useEffect(() => {
+    nowGroupNameRef.current = nowGroupName;
+  }, [nowGroupName]);
 
-  const testCardList: JSX.Element[] = [];
-  const list: SplendorGameCardName[] = [
-    "white1",
-    "white2",
-    "white3",
-    "white4",
-    "white5",
-    "white6",
-    "white7",
-    "white8",
-    "white9",
-    "white10",
-    "white11",
-    "white12",
-    "white13",
-    "white14",
-    "white15",
-    "white16",
-    "white17",
-    "white18",
-  ];
-  let y = 50;
-  let x = 50;
-  const [isFaceUp, setIsFaceUp] = useState(false);
-  list.forEach((item) => {
-    testCardList.push(<Card key={item} x={x} y={y} cardName={item} isFaceUp={isFaceUp} />);
-    if (x > 1500) {
-      x = 50;
-      y += 300;
-    } else {
-      x += 200;
-    }
-  });
   const handler = (e: Events["menuItemOnClick"]) => {
     const { type } = e;
     switch (type) {
       case MenuItemKeyEnum.BUY:
-        setIsFaceUp((prev) => !prev);
+        data.moves.buyCard(nowGroupNameRef.current);
         break;
       case MenuItemKeyEnum.LOCKING:
         // setIsFaceUp(false);
@@ -106,14 +106,44 @@ export function SplendorBoard(data: BoardProps) {
     <div className={styles["splendor-board"]}>
       <div className={styles.title}></div>
       <div ref={konvaRef} className={styles["konva"]}>
-        <Stage width={stageSize.width} height={stageSize.height} scaleX={scale} scaleY={scale} draggable={true}>
+        <Stage width={stageSize.width} height={stageSize.height} scaleX={scale} scaleY={scale}>
           <Layer>
-            {/* <Card x={position["1-1"].x} y={position["1-1"].y} cardName="black1" />
-            <Card x={position["1-2"].x} y={position["1-2"].y} cardName="black15" />
-            <Card x={position["1-3"].x} y={position["1-3"].y} cardName="black16" />
-            <Card x={position["1-4"].x} y={position["1-4"].y} cardName="black11" />
-            <Card x={position["1-5"].x} y={position["1-5"].y} cardName="black8" /> */}
-            {testCardList}
+            {data.G.cards.level3Card.map((item, index) => (
+              <Card
+                key={item.name}
+                x={positionX[1] + index * 2}
+                y={positionY[0]}
+                cardName={item.name}
+                isFaceUp={true}
+              />
+            ))}
+            {data.G.cards.level2Card.map((item, index) => (
+              <Card
+                key={item.name}
+                x={positionX[1] + index * 2}
+                y={positionY[1]}
+                cardName={item.name}
+                isFaceUp={true}
+              />
+            ))}
+            {data.G.cards.level1Card.map((item, index) => (
+              <Card
+                key={item.name}
+                x={positionX[1] + index * 2}
+                y={positionY[2]}
+                cardName={item.name}
+                isFaceUp={true}
+              />
+            ))}
+            {data.G.cards.showLevel3Card.map((item, index) => (
+              <Card key={item.name} x={positionX[2 + index]} y={positionY[0]} cardName={item.name} isFaceUp={false} />
+            ))}
+            {data.G.cards.showLevel2Card.map((item, index) => (
+              <Card key={item.name} x={positionX[2 + index]} y={positionY[1]} cardName={item.name} isFaceUp={false} />
+            ))}
+            {data.G.cards.showLevel1Card.map((item, index) => (
+              <Card key={item.name} x={positionX[2 + index]} y={positionY[2]} cardName={item.name} isFaceUp={false} />
+            ))}
           </Layer>
         </Stage>
       </div>

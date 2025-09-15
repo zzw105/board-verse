@@ -5,11 +5,11 @@ type Player = {
   name: string;
   score: number;
 };
-type GameType = {
+type SplendorGameType = {
   players: Record<string, Player>;
 };
 
-export const splendorGameTest: Game<GameType> = {
+export const splendorGameTest: Game<SplendorGameType> = {
   name: "splendorMonorepoTest",
   setup: (data) => {
     const { ctx } = data;
@@ -21,7 +21,7 @@ export const splendorGameTest: Game<GameType> = {
     // } else if (ctx.numPlayers === 3) {
     //   gemCount = 5;
     // }
-    const gameData: GameType = {
+    const gameData: SplendorGameType = {
       players: {},
       // tokens: {
       //   diamond: gemCount,

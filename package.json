@@ -8,11 +8,8 @@
   ],
   "scripts": {
     "dev:client": "pnpm --filter splendor-game-client dev",
-    "start:server": "pnpm --filter splendor-game-server start",
-    "build:shared": "pnpm --filter @game/shared build",
-    "build:client": "pnpm --filter splendor-game-client build",
-    "build:server": "pnpm --filter splendor-game-server build",
-    "lint": "pnpm --recursive lint"
+    "dev:server": "pnpm --filter splendor-game-server start",
+    "dev:shared": "pnpm --filter @game/shared build"
   },
   "dependencies": {
     "@types/lodash": "^4.17.20",

@@ -25,6 +25,7 @@ interface CardProps {
 
 export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }: CardProps) {
   const cardInfo = splendorGameCardObj[cardName] as SplendorGameCardType;
+
   const scale = 0.7;
   const width: number = 1235 / 5;
   const height: number = 2058 / 6;
@@ -35,11 +36,6 @@ export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }:
   const groupRef = useRef<Konva.Group>(null);
 
   // 加载正面精灵图
-  useEffect(() => {
-    if (cardInfo.level === 1) setCardBackInfo({ x: 0, y: 5 });
-    else if (cardInfo.level === 2) setCardBackInfo({ x: 1, y: 5 });
-    else if (cardInfo.level === 3) setCardBackInfo({ x: 2, y: 5 });
-  }, [cardInfo.level]);
 
   const handleFlip = useCallback(() => {
     if (!groupRef.current) return;
@@ -92,7 +88,7 @@ export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }:
       );
     }
   });
-
+  const back = [0, 1, 2];
   const handleContextMenu = useContextMenuStore((s) => s.handleContextMenu);
 
   useEffect(() => {
@@ -175,8 +171,8 @@ export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }:
           width={width}
           height={height}
           crop={{
-            x: cardBackInfo.x * width,
-            y: cardBackInfo.y * height,
+            x: back[cardInfo.level - 1] * width,
+            y: 5 * height,
             width,
             height,
           }}

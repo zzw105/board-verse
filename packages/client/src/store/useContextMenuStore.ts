@@ -25,6 +25,8 @@ export const useContextMenuStore = create<UseContextMenuStoreType>((set, get) =>
   closeMenu: () => set({ menuPos: null }),
   handleContextMenu: (e, type, name) => {
     e.evt.preventDefault();
+    console.log(1111111, name);
+
     get().setNowGroupName(name);
     switch (type) {
       case "card":
