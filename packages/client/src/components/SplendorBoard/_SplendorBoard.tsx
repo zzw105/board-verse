@@ -1,13 +1,13 @@
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
-import { Application, extend } from "@pixi/react";
+import { Stage, Layer } from "react-konva";
 import styles from "./SplendorBoard.module.less";
 import { useEffect, useRef, useState } from "react";
+import { Card } from "./components/Card";
 import type { SplendorGameType } from "@game/shared";
 import { eventBus, type Events } from "../../utils/eventBus";
 import { MenuItemKeyEnum } from "../../enum/game";
 import { useContextMenuStore } from "../../store/useContextMenuStore";
 import { Button } from "antd";
-import { Container, Graphics, Sprite } from "pixi.js";
 
 export function SplendorBoard(data: BoardProps<SplendorGameType>) {
   console.log(111111111, data);
@@ -107,12 +107,6 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
   }, []);
   const [xx, setXx] = useState(1);
   const [isFaceUp, setIsFaceUp] = useState(false);
-
-  extend({
-    Container,
-    Graphics,
-    Sprite,
-  });
   return (
     <div className={styles["splendor-board"]}>
       <div className={styles.title}>
@@ -135,29 +129,47 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
         </Button>
       </div>
       <div ref={konvaRef} className={styles["konva"]}>
-        <Application resizeTo={konvaRef}>
-          <pixiContainer x={100} y={100}>
-            <pixiGraphics
-              draw={(graphics) => {
-                graphics.clear();
-                graphics.setFillStyle({ color: "red" });
-                graphics.rect(0, 0, 100, 100);
-                graphics.fill();
-              }}
-            />
-          </pixiContainer>
-        </Application>
-        {/* <Stage width={stageSize.width} height={stageSize.height} scaleX={scale} scaleY={scale}>
+        <Stage width={stageSize.width} height={stageSize.height} scaleX={scale} scaleY={scale}>
           <Layer>
-            <Sprite
-              texture={PIXI.Texture.from(cardImage)}
-              x={position.x}
-              y={position.y}
-              anchor={0.5}
-              rotation={rotation}
-            />
+            <Card key={"black1"} x={positionX[xx]} y={positionY[0]} cardName={"black1"} isFaceUp={isFaceUp} />
+            {/* {data.G.cards.level3Card.map((item, index) => (
+              <Card
+                key={item.name}
+                x={positionX[1] + index * 2}
+                y={positionY[0]}
+                cardName={item.name}
+                isFaceUp={true}
+              />
+            ))}
+            {data.G.cards.level2Card.map((item, index) => (
+              <Card
+                key={item.name}
+                x={positionX[1] + index * 2}
+                y={positionY[1]}
+                cardName={item.name}
+                isFaceUp={true}
+              />
+            ))}
+            {data.G.cards.level1Card.map((item, index) => (
+              <Card
+                key={item.name}
+                x={positionX[1] + index * 2}
+                y={positionY[2]}
+                cardName={item.name}
+                isFaceUp={true}
+              />
+            ))}
+            {data.G.cards.showLevel3Card.map((item, index) => (
+              <Card key={item.name} x={positionX[2 + index]} y={positionY[0]} cardName={item.name} isFaceUp={false} />
+            ))}
+            {data.G.cards.showLevel2Card.map((item, index) => (
+              <Card key={item.name} x={positionX[2 + index]} y={positionY[1]} cardName={item.name} isFaceUp={false} />
+            ))}
+            {data.G.cards.showLevel1Card.map((item, index) => (
+              <Card key={item.name} x={positionX[2 + index]} y={positionY[2]} cardName={item.name} isFaceUp={false} />
+            ))} */}
           </Layer>
-        </Stage> */}
+        </Stage>
       </div>
     </div>
   );
