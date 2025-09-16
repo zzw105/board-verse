@@ -16,6 +16,7 @@
     "@game/shared": "workspace:*",
     "antd": "^5.27.3",
     "boardgame.io": "^0.50.2",
+    "colyseus.js": "^0.16.19",
     "esm": "^3.2.25",
     "konva": "^10.0.2",
     "mitt": "^3.0.1",

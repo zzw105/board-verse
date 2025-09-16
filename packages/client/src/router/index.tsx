@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import Splendor from "../pages/Splendor/Splendor";
+import Colyseus from "../pages/Colyseus/Colyseus";
 
 const router = createBrowserRouter([
   {
@@ -10,6 +11,10 @@ const router = createBrowserRouter([
   {
     path: "/splendor",
     element: <Splendor />,
+  },
+  {
+    path: "/colyseus",
+    element: <Colyseus />,
   },
 ]);
 

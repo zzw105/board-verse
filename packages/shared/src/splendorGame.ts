@@ -897,7 +897,7 @@ export const splendorGame: Game<SplendorGameType> = {
     // 卡牌
     const keys = Object.keys(splendorGameCardObj) as SplendorGameCardName[];
     // 打乱卡牌
-    const disorderKeys = _.shuffle(keys);
+    const disorderKeys = data.random.Shuffle(keys);
     // 全部卡牌
     const splendorGameCardList = disorderKeys.map((key) => splendorGameCardObj[key]) as SplendorGameCardType[];
     // 牌堆
@@ -956,6 +956,7 @@ export const splendorGame: Game<SplendorGameType> = {
       }
     },
   },
+
   // endIf: ({ G, ctx }) => {
   //   if (IsVictory(G.cells)) {
   //     return { winner: ctx.currentPlayer };
