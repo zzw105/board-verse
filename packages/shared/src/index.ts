@@ -1,2 +1,3 @@
-export * from "./splendorGame";
+export * from "./splendor/splendorGame";
+export * from "./splendor/utils";
 export * from "./splendorGameTest";

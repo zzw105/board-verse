@@ -1,12 +1,13 @@
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import { Stage, Layer } from "react-konva";
 import styles from "./SplendorBoard.module.less";
-import { useEffect, useRef, useState } from "react";
-import { Card } from "./components/Card";
-import type { SplendorGameCardName, SplendorGameType } from "@game/shared";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { SplendorGameType } from "@game/shared";
 import { eventBus, type Events } from "../../utils/eventBus";
 import { MenuItemKeyEnum } from "../../enum/game";
 import { useContextMenuStore } from "../../store/useContextMenuStore";
+import { Button } from "antd";
+import { generateCardJSX } from "../../utils";
 
 export function SplendorBoard(data: BoardProps<SplendorGameType>) {
   console.log(111111111, data);
@@ -70,7 +71,6 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
   // ];
   // let y = 50;
   // let x = 50;
-  // const [isFaceUp, setIsFaceUp] = useState(false);
   // list.forEach((item) => {
   //   testCardList.push(<Card key={item} x={x} y={y} cardName={item} isFaceUp={isFaceUp} />);
   //   if (x > 1500) {
@@ -86,64 +86,51 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
     nowGroupNameRef.current = nowGroupName;
   }, [nowGroupName]);
 
-  const handler = (e: Events["menuItemOnClick"]) => {
-    const { type } = e;
-    switch (type) {
-      case MenuItemKeyEnum.BUY:
-        data.moves.buyCard(nowGroupNameRef.current);
-        break;
-      case MenuItemKeyEnum.LOCKING:
-        // setIsFaceUp(false);
-        break;
-    }
-  };
+  const handler = useCallback(
+    (e: Events["menuItemOnClick"]) => {
+      const { type } = e;
+      switch (type) {
+        case MenuItemKeyEnum.BUY:
+          data.moves.buyCard(nowGroupNameRef.current);
+          break;
+        case MenuItemKeyEnum.LOCKING:
+          console.log(222);
+          break;
+      }
+    },
+    [data.moves]
+  );
 
   useEffect(() => {
     eventBus.on("menuItemOnClick", handler);
     return () => eventBus.off("menuItemOnClick", handler);
-  }, []);
+  }, [handler]);
+
+  const level1Card = data.G.cards.filter((item) => item.level === 1);
+  const level2Card = data.G.cards.filter((item) => item.level === 2);
+  const level3Card = data.G.cards.filter((item) => item.level === 3);
+  const level1CardJSX = generateCardJSX(level1Card, positionX, positionY, 1, 0);
+  const level2CardJSX = generateCardJSX(level2Card, positionX, positionY, 1, 1);
+  const level3CardJSX = generateCardJSX(level3Card, positionX, positionY, 1, 2);
+
   return (
     <div className={styles["splendor-board"]}>
-      <div className={styles.title}></div>
+      <div className={styles.title}>
+        <Button
+          size="large"
+          onClick={() => {
+            data.moves.gameReset();
+          }}
+        >
+          重置
+        </Button>
+      </div>
       <div ref={konvaRef} className={styles["konva"]}>
         <Stage width={stageSize.width} height={stageSize.height} scaleX={scale} scaleY={scale}>
           <Layer>
-            {data.G.cards.level3Card.map((item, index) => (
-              <Card
-                key={item.name}
-                x={positionX[1] + index * 2}
-                y={positionY[0]}
-                cardName={item.name}
-                isFaceUp={true}
-              />
-            ))}
-            {data.G.cards.level2Card.map((item, index) => (
-              <Card
-                key={item.name}
-                x={positionX[1] + index * 2}
-                y={positionY[1]}
-                cardName={item.name}
-                isFaceUp={true}
-              />
-            ))}
-            {data.G.cards.level1Card.map((item, index) => (
-              <Card
-                key={item.name}
-                x={positionX[1] + index * 2}
-                y={positionY[2]}
-                cardName={item.name}
-                isFaceUp={true}
-              />
-            ))}
-            {data.G.cards.showLevel3Card.map((item, index) => (
-              <Card key={item.name} x={positionX[2 + index]} y={positionY[0]} cardName={item.name} isFaceUp={false} />
-            ))}
-            {data.G.cards.showLevel2Card.map((item, index) => (
-              <Card key={item.name} x={positionX[2 + index]} y={positionY[1]} cardName={item.name} isFaceUp={false} />
-            ))}
-            {data.G.cards.showLevel1Card.map((item, index) => (
-              <Card key={item.name} x={positionX[2 + index]} y={positionY[2]} cardName={item.name} isFaceUp={false} />
-            ))}
+            {level1CardJSX}
+            {level2CardJSX}
+            {level3CardJSX}
           </Layer>
         </Stage>
       </div>

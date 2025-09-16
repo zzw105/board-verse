@@ -1,5 +1,5 @@
-import type { Game } from "boardgame.io";
-import _ from "lodash";
+import { Ctx } from "boardgame.io";
+import { RandomAPI } from "boardgame.io/dist/types/src/plugins/random/random";
 
 type Player = {
   name: string;
@@ -9,14 +9,7 @@ type Player = {
 export type SplendorGameType = {
   players: Record<string, Player>;
   tokens: Record<SplendorGameGemNameType, number>;
-  cards: {
-    level1Card: SplendorGameCardType[];
-    level2Card: SplendorGameCardType[];
-    level3Card: SplendorGameCardType[];
-    showLevel1Card: SplendorGameCardType[];
-    showLevel2Card: SplendorGameCardType[];
-    showLevel3Card: SplendorGameCardType[];
-  };
+  cards: SplendorGameCardType[];
 };
 export type SplendorGameCardType = {
   name: SplendorGameCardName;
@@ -881,87 +874,50 @@ export const splendorGameGemList = {
   },
 } satisfies Record<string, SplendorGameGemType>;
 
-export const splendorGame: Game<SplendorGameType> = {
-  name: "splendorMonorepo",
-  setup: (data) => {
-    const { ctx } = data;
-    console.log(ctx);
-    // 宝石
-    // 根据人数调整宝石数量
-    let gemCount = 7; // 默认 4人局
-    if (ctx.numPlayers === 2) {
-      gemCount = 4;
-    } else if (ctx.numPlayers === 3) {
-      gemCount = 5;
-    }
-    // 卡牌
-    const keys = Object.keys(splendorGameCardObj) as SplendorGameCardName[];
-    // 打乱卡牌
-    const disorderKeys = _.shuffle(keys);
-    // 全部卡牌
-    const splendorGameCardList = disorderKeys.map((key) => splendorGameCardObj[key]) as SplendorGameCardType[];
-    // 牌堆
-    const level1Card = splendorGameCardList.filter((item) => item.level === 1);
-    const level2Card = splendorGameCardList.filter((item) => item.level === 2);
-    const level3Card = splendorGameCardList.filter((item) => item.level === 3);
-    // 展示牌
-    const showLevel1Card = level1Card.splice(0, 4);
-    const showLevel2Card = level2Card.splice(0, 4);
-    const showLevel3Card = level3Card.splice(0, 4);
+export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType => {
+  // 宝石
+  // 根据人数调整宝石数量
+  let gemCount = 7; // 默认 4人局
+  if (ctx.numPlayers === 2) {
+    gemCount = 4;
+  } else if (ctx.numPlayers === 3) {
+    gemCount = 5;
+  }
+  // 卡牌
+  const keys = Object.keys(splendorGameCardObj) as SplendorGameCardName[];
+  // 打乱卡牌
+  const disorderKeys = random.Shuffle(keys);
 
-    const gameData: SplendorGameType = {
-      players: {},
-      tokens: {
-        red: gemCount,
-        blue: gemCount,
-        black: gemCount,
-        white: gemCount,
-        green: gemCount,
-        gold: 5, // 金色万能不变
-      },
-      cards: {
-        level1Card,
-        level2Card,
-        level3Card,
-        showLevel1Card,
-        showLevel2Card,
-        showLevel3Card,
-      },
-    };
-    for (let i = 0; i < ctx.numPlayers; i++) {
-      gameData.players[i] = {
-        name: ctx.playOrder[i],
-        score: 0,
-        cards: [],
-      };
-    }
-    return gameData;
-    // turn: {
-    //   minMoves: 1,
-    //   maxMoves: 1,
-    // },
-  },
-  moves: {
-    buyCard: ({ G, ctx }, cardName) => {
-      const card = [...G.cards.showLevel1Card, ...G.cards.showLevel2Card, ...G.cards.showLevel3Card].find(
-        (item) => item.name === cardName
-      );
-      if (!card) throw new Error(`卡牌不存在！ ${cardName}`);
-      const level = card.level;
-      if (level === 1) {
-        const newCard = G.cards.level1Card.splice(0, 1)[0];
-        const index = G.cards.showLevel1Card.findIndex((item) => item.name === cardName);
-        G.cards.showLevel1Card[index] = newCard;
-        G.players[ctx.currentPlayer].cards.push(card);
-      }
+  // 全部卡牌
+  const splendorGameCardList = disorderKeys.map((key) => splendorGameCardObj[key]) as SplendorGameCardType[];
+  // // 牌堆
+  // const level1Card = splendorGameCardList.filter((item) => item.level === 1);
+  // const level2Card = splendorGameCardList.filter((item) => item.level === 2);
+  // const level3Card = splendorGameCardList.filter((item) => item.level === 3);
+  // // 展示牌
+  // const showLevel1Card = level1Card.splice(0, 4);
+  // const showLevel2Card = level2Card.splice(0, 4);
+  // const showLevel3Card = level3Card.splice(0, 4);
+
+  const gameData: SplendorGameType = {
+    players: {},
+    tokens: {
+      red: gemCount,
+      blue: gemCount,
+      black: gemCount,
+      white: gemCount,
+      green: gemCount,
+      gold: 5, // 金色万能不变
     },
-  },
-  // endIf: ({ G, ctx }) => {
-  //   if (IsVictory(G.cells)) {
-  //     return { winner: ctx.currentPlayer };
-  //   }
-  //   if (IsDraw(G.cells)) {
-  //     return { draw: true };
-  //   }
-  // },
+    cards: splendorGameCardList,
+  };
+  for (let i = 0; i < ctx.numPlayers; i++) {
+    gameData.players[i] = {
+      name: ctx.playOrder[i],
+      score: 0,
+      cards: [],
+    };
+  }
+
+  return gameData;
 };

@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import "./assets/less/index.less";
 import "./assets/less/reset.less";
 import { loadAllImg } from "./utils/loadAllImg.ts";
+import "@ant-design/v5-patch-for-react-19";
 
 loadAllImg().then(() => {
   createRoot(document.getElementById("root")!).render(
