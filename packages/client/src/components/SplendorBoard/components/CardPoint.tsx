@@ -1,5 +1,6 @@
 import type { SplendorGameGemNameType } from "@game/shared";
-import React from "react";
+import type Konva from "konva";
+import React, { useEffect, useRef } from "react";
 import { Group, Text, Circle } from "react-konva";
 
 interface CardPointProps {
@@ -9,7 +10,8 @@ interface CardPointProps {
   type: SplendorGameGemNameType;
 }
 
-export function CardPoint({ x, y, point, type }: CardPointProps) {
+export const CardPoint = React.memo(({ x, y, point, type }: CardPointProps) => {
+  // 总体字体大小
   const fontSize = 90;
   const gemGradients: Record<SplendorGameGemNameType, (string | number)[]> = {
     white: [0, "#ffffff", 0.3, "#f0f0f0", 0.7, "#d9d9d9", 1, "#bfbfbf"],
@@ -18,8 +20,17 @@ export function CardPoint({ x, y, point, type }: CardPointProps) {
     red: [0, "#ffffff", 0.2, "#ffcccc", 0.7, "#ff3333", 1, "#cc0000"],
     green: [0, "#ffffff", 0.2, "#b3ffb3", 0.7, "#33cc33", 1, "#009900"],
   };
+
+  // 锁定
+  const groupRef = useRef<Konva.Group>(null);
+  useEffect(() => {
+    const g = groupRef.current;
+    if (!g) return;
+    g.cache();
+  }, []);
+
   return (
-    <Group x={x} y={y} scaleX={0.4} scaleY={0.4}>
+    <Group ref={groupRef} x={x} y={y} scaleX={0.4} scaleY={0.4}>
       {/* 外圈 */}
       <Circle
         radius={50}
@@ -54,4 +65,4 @@ export function CardPoint({ x, y, point, type }: CardPointProps) {
       />
     </Group>
   );
-}
+});

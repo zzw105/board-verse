@@ -1,6 +1,8 @@
 import { Image as KonvaImage, Group } from "react-konva";
-import { splendorGameGemList, type SplendorGameGemNameType } from "@game/shared";
+import { splendorGameGemList, type SplendorGameGemNameType, type SplendorGameGemType } from "@game/shared";
 import { gemsImage } from "../../../utils/loadAllImg";
+import React, { useEffect, useRef } from "react";
+import type Konva from "konva";
 
 interface SpriteImageProps {
   x: number;
@@ -10,18 +12,23 @@ interface SpriteImageProps {
   type: SplendorGameGemNameType;
 }
 
-export function Gem({ x, y, offsetCenter, scale = 0.35, type }: SpriteImageProps) {
-  // const [image, setImage] = useState<HTMLImageElement | null>(null);
-  const gemInfo = splendorGameGemList[type];
+export const Gem = React.memo(({ x, y, offsetCenter, scale = 0.35, type }: SpriteImageProps) => {
+  // 宝石信息
+  const gemInfo = splendorGameGemList[type] as SplendorGameGemType;
   const width = 950 / 5;
   const height = 168;
 
-  // useEffect(() => {
-  //   getGemsImage().then((img) => setImage(img));
-  // }, []);
+  // 锁定
+  const groupRef = useRef<Konva.Group>(null);
+  useEffect(() => {
+    const g = groupRef.current;
+    if (!g) return;
+    g.cache();
+  }, []);
 
   return (
     <Group
+      ref={groupRef}
       x={x}
       y={y}
       scaleX={scale}
@@ -43,4 +50,4 @@ export function Gem({ x, y, offsetCenter, scale = 0.35, type }: SpriteImageProps
       />
     </Group>
   );
-}
+});

@@ -38,5 +38,5 @@ export const generateCardJSX = (
       />
     ));
 
-  return [...firstPart, ...secondPart];
+  return [...secondPart, ...firstPart];
 };

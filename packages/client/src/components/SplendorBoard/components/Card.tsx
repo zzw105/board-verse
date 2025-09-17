@@ -7,6 +7,7 @@ import { CardPoint } from "./CardPoint";
 import React from "react";
 import { useContextMenuStore } from "../../../store/useContextMenuStore";
 import { cardsImage } from "../../../utils/loadAllImg";
+import { Tween } from "konva/lib/Tween";
 // import cardsImg from "../../../assets/imgs/cards.png";
 
 interface CardProps {
@@ -14,31 +15,36 @@ interface CardProps {
   y: number;
   isFaceUp: boolean; // 受控翻牌
   cardName: SplendorGameCardName;
-  text?: string;
 }
 
-const scale = 0.7;
+const scale = 0.4;
 const width = 1235 / 5;
 const height = 2058 / 6;
 
-export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }: CardProps) {
+export const Card = React.memo(({ x, y, cardName, isFaceUp }: CardProps) => {
+  // 当前的卡片信息
   const cardInfo = splendorGameCardObj[cardName] as SplendorGameCardType;
 
-  const groupRef = useRef<Konva.Group>(null);
-  const tweenRef = useRef<Konva.Tween | null>(null);
-  const flipTweenRef = useRef<Konva.Tween | null>(null);
-  const [nowIsFaceUp, setNowIsFaceUp] = useState(isFaceUp);
+  // 右键菜单Store
+  const { handleContextMenu } = useContextMenuStore();
 
-  const handleContextMenu = useContextMenuStore((s) => s.handleContextMenu);
+  // 卡片组
+  const groupRef = useRef<Konva.Group>(null);
+  // 卡片移动动画
+  const tweenRef = useRef<Tween | null>(null);
+  // 卡片翻牌动画
+  const flipTweenRef = useRef<Tween | null>(null);
+  // 当前翻转状态
+  const [nowIsFaceUp, setNowIsFaceUp] = useState(isFaceUp);
 
   // 平滑移动动画
   useEffect(() => {
     if (!groupRef.current) return;
     if (tweenRef.current) tweenRef.current.finish();
     const g = groupRef.current;
-    tweenRef.current = new Konva.Tween({
+    tweenRef.current = new Tween({
       node: groupRef.current,
-      duration: 0.3,
+      duration: 0.4,
       x: x + (width * scale) / 2,
       y: y + (height * scale) / 2,
       easing: Konva.Easings.EaseInOut,
@@ -51,18 +57,18 @@ export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }:
     tweenRef.current.play();
   }, [x, y]);
 
-  // 受控翻牌动画
+  // 翻牌动画
   useEffect(() => {
     if (!groupRef.current) return;
     const g = groupRef.current;
 
     if (nowIsFaceUp !== isFaceUp) {
       if (flipTweenRef.current) flipTweenRef.current.finish();
-      flipTweenRef.current = new Konva.Tween({ node: g, duration: 0.2, scaleX: 0 });
+      flipTweenRef.current = new Tween({ node: g, duration: 0.1, scaleX: 0 });
       flipTweenRef.current.onFinish = () => {
         setNowIsFaceUp(isFaceUp);
         // g.scaleX(isFaceUp ? scale : -scale); // 根据外部状态直接翻牌
-        flipTweenRef.current = new Konva.Tween({ node: g, duration: 0.2, scaleX: scale });
+        flipTweenRef.current = new Tween({ node: g, duration: 0.1, scaleX: scale });
         flipTweenRef.current.onFinish = () => {
           g.cache();
         };
@@ -73,30 +79,14 @@ export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }:
     }
   }, [isFaceUp, nowIsFaceUp]);
 
-  //     const tween1 = new Tween({ node: g, duration: 0.2, scaleX: 0 });
-  //   tween1.onFinish = () => {
-  //     setFlipped(!flipped);
-  //     const tween2 = new Tween({ node: g, duration: 0.2, scaleX: scale });
-  //     tween2.onFinish = () => {
-  //       g.cache();
-  //     };
-  //     tween2.play();
-  //   };
-  //   g.clearCache();
-  //   tween1.play();
-  // }, [flipped, scale]); // 添加 scale 作为依赖
-
-  // useEffect(() => {
-  //   if (isFaceUp !== flipped) {
-  //     handleFlip();
-
+  // 卡片花费点位置
   const cardPointPos = [
     { x: 30, y: 310 },
     { x: 30, y: 265 },
     { x: 30, y: 220 },
     { x: 30, y: 175 },
   ];
-
+  // 卡片花费点
   const cardPointJsxList: JSX.Element[] = [];
   (["black", "red", "green", "blue", "white"] as const).forEach((gem) => {
     const element = cardInfo.cost[gem];
@@ -109,7 +99,8 @@ export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }:
     }
   });
 
-  const back = [0, 1, 2];
+  // 卡片背面图片位置
+  const backImgPos = [0, 1, 2];
 
   return (
     <Group
@@ -164,13 +155,9 @@ export const Card = React.memo(function Card({ x, y, cardName, text, isFaceUp }:
           image={cardsImage}
           width={width}
           height={height}
-          crop={{ x: back[cardInfo.level - 1] * width, y: 5 * height, width, height }}
+          crop={{ x: backImgPos[cardInfo.level - 1] * width, y: 5 * height, width, height }}
           cornerRadius={8}
         />
-      )}
-
-      {text && nowIsFaceUp && (
-        <Text text={text} fontSize={16} fill="#000" x={10} y={height - 30} width={width - 20} align="center" />
       )}
     </Group>
   );

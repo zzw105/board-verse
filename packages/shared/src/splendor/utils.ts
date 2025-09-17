@@ -8,7 +8,7 @@ type Player = {
 };
 export type SplendorGameType = {
   players: Record<string, Player>;
-  tokens: Record<SplendorGameGemNameType, number>;
+  tokens: Record<SplendorGameTokenNameType, number>;
   cards: SplendorGameCardType[];
 };
 export type SplendorGameCardType = {
@@ -839,13 +839,15 @@ export const splendorGameCardObj = {
     level: 3,
   },
 } as const;
+
 export type SplendorGameGemType = {
   name: string;
   frameX: number;
   frameY: number;
 };
+export type SplendorGameGemNameType = keyof typeof splendorGameGemList;
+export type SplendorGameTokenNameType = SplendorGameGemNameType | "gold";
 
-export type SplendorGameGemNameType = keyof typeof splendorGameGemList | "gold";
 export const splendorGameGemList = {
   white: {
     name: "white",
@@ -872,7 +874,7 @@ export const splendorGameGemList = {
     frameX: 4,
     frameY: 0,
   },
-} satisfies Record<string, SplendorGameGemType>;
+} as const;
 
 export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType => {
   // 宝石
