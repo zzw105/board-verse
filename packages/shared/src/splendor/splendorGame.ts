@@ -1,5 +1,4 @@
 import type { Game } from "boardgame.io";
-import _, { get } from "lodash";
 import {
   getNewGameData,
   SplendorGameCardName,

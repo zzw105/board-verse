@@ -1,5 +1,5 @@
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
-import { Stage, Layer } from "react-konva";
+import { Stage, Layer, Rect } from "react-konva";
 import styles from "./SplendorBoard.module.less";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SplendorGameTokenNameType, SplendorGameType, TokensObjType } from "@game/shared";
@@ -8,6 +8,7 @@ import { MenuItemKeyEnum } from "../../enum/game";
 import { useContextMenuStore } from "../../store/useContextMenuStore";
 import { Button, message } from "antd";
 import { generateCardJSX, generateTokenJSX, isTokenSelect2, isTokenSelectHasThreeOnes } from "../../utils";
+import { CurrentPlayerDashboard } from "./components/CurrentPlayerDashboard";
 
 export function SplendorBoard(data: BoardProps<SplendorGameType>) {
   // konva外部容器
@@ -29,22 +30,22 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
     return () => window.removeEventListener("resize", updateSize);
   }, []);
   // 原始舞台设计尺寸
-  const originalStageSize = { width: 1770, height: 911 };
+  const originalStageSize = { width: 1770 * 2, height: 911 * 2 };
   // 缩放比例
   const scale = Math.min(stageSize.width / originalStageSize.width, stageSize.height / originalStageSize.height);
 
   // 处理显示卡片的信息
   const cardPositionX: Record<number, number> = {
-    1: 30,
-    2: 300,
-    3: 430,
-    4: 560,
-    5: 690,
+    1: 30 * 2,
+    2: 300 * 2,
+    3: 430 * 2,
+    4: 560 * 2,
+    5: 690 * 2,
   };
   const cardPositionY: Record<number, number> = {
-    0: 30,
-    1: 210,
-    2: 390,
+    0: 30 * 2,
+    1: 210 * 2,
+    2: 390 * 2,
   };
   const level1Card = data.G.cards.filter((item) => item.level === 1);
   const level2Card = data.G.cards.filter((item) => item.level === 2);
@@ -56,28 +57,28 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
   // 宝石筹码信息
   const tokenPosition: Record<SplendorGameTokenNameType, { x: number; y: number }> = {
     red: {
-      x: 830,
-      y: 110,
+      x: 830 * 2,
+      y: 110 * 2,
     },
     blue: {
-      x: 830,
-      y: 290,
+      x: 830 * 2,
+      y: 290 * 2,
     },
     white: {
-      x: 830,
-      y: 470,
+      x: 830 * 2,
+      y: 470 * 2,
     },
     black: {
-      x: 950,
-      y: 110,
+      x: 950 * 2,
+      y: 110 * 2,
     },
     green: {
-      x: 950,
-      y: 290,
+      x: 950 * 2,
+      y: 290 * 2,
     },
     gold: {
-      x: 950,
-      y: 470,
+      x: 950 * 2,
+      y: 470 * 2,
     },
   };
   const [nowSelectTokens, setNowSelectTokens] = useState<TokensObjType>({
@@ -173,13 +174,28 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
           height={stageSize.height}
           scaleX={scale}
           scaleY={scale}
+          pixelRatio={4}
           onContextMenu={(e) => e.evt.preventDefault()}
         >
           <Layer>
+            <Rect
+              stroke="#555"
+              strokeWidth={3}
+              fill="rgba(208, 232, 240, 0.5)" // 半透明淡蓝色 (浅蓝+透明度0.5)
+              x={10 * 2}
+              y={10 * 2}
+              width={1070 * 2}
+              height={560 * 2} // 近似高度
+              shadowColor="black"
+              shadowBlur={10}
+              shadowOpacity={0.2}
+              cornerRadius={10}
+            />
             {level3CardJSX}
             {level2CardJSX}
             {level1CardJSX}
             {tokenJSX}
+            <CurrentPlayerDashboard playerInfo={data.G.players[data.ctx.currentPlayer]}></CurrentPlayerDashboard>
           </Layer>
         </Stage>
       </div>

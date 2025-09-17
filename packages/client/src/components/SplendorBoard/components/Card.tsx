@@ -18,7 +18,7 @@ interface CardProps {
   cardName: SplendorGameCardName;
 }
 
-const scale = 0.4;
+const scale = 0.8;
 const width = 1235 / 5;
 const height = 2058 / 6;
 

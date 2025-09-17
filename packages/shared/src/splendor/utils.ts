@@ -909,7 +909,7 @@ export const splendorGameTokenList: Record<SplendorGameTokenNameType, SplendorGa
 };
 
 // 玩家信息
-export type Player = {
+export type PlayerType = {
   name: string;
   score: number;
   cards: SplendorGameCardType[];
@@ -918,7 +918,7 @@ export type Player = {
 
 // 游戏信息
 export type SplendorGameType = {
-  players: Record<string, Player>;
+  players: Record<string, PlayerType>;
   tokens: TokensObjType;
   cards: SplendorGameCardType[];
 };
@@ -926,11 +926,11 @@ export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType =>
   // 宝石
   // 根据人数调整宝石数量
   let gemCount = 7; // 默认 4人局
-  // if (ctx.numPlayers === 2) {
-  //   gemCount = 4;
-  // } else if (ctx.numPlayers === 3) {
-  //   gemCount = 5;
-  // }
+  if (ctx.numPlayers === 2) {
+    gemCount = 4;
+  } else if (ctx.numPlayers === 3) {
+    gemCount = 5;
+  }
   // 卡牌
   const keys = Object.keys(splendorGameCardObj) as SplendorGameCardName[];
   // 打乱卡牌

@@ -1,7 +1,8 @@
-import type { SplendorGameCardType, SplendorGameTokenNameType, TokensObjType } from "@game/shared";
+import type { PlayerType, SplendorGameCardType, SplendorGameTokenNameType, TokensObjType } from "@game/shared";
 import { Card } from "../components/SplendorBoard/components/Card";
 import type { JSX } from "react";
 import { Token } from "../components/SplendorBoard/components/Token";
+import { Group, Rect, Text } from "react-konva";
 
 export const generateCardJSX = (
   cards: SplendorGameCardType[],
@@ -34,7 +35,7 @@ export const generateCardJSX = (
     .map((item, index) => (
       <Card
         key={item.name}
-        x={positionX[xIndex] + index * 4}
+        x={positionX[xIndex] + index * 8}
         y={positionY[yIndex]}
         cardName={item.name}
         isFaceUp={false}
@@ -56,7 +57,7 @@ export const generateTokenJSX = (
         <Token
           key={tokenName + i}
           x={tokenPosition[tokenName].x}
-          y={tokenPosition[tokenName].y - 5 * i - (isHighlight ? 15 : 0)}
+          y={tokenPosition[tokenName].y - 10 * i - (isHighlight ? 30 : 0)}
           type={tokenName}
           canOperations={tokenName === "gold" ? false : true}
         />
@@ -72,6 +73,58 @@ export const isTokenSelect2 = (nowSelectTokens: TokensObjType) => {
 export const isTokenSelectHasThreeOnes = (nowSelectTokens: TokensObjType) => {
   const count = Object.values(nowSelectTokens).filter((v) => v === 1).length;
   return count >= 3;
+};
+
+export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
+  const color = {
+    green: "#dbffdb",
+    red: "#ffdada",
+    blue: "#dadbff",
+    white: "#FFFFFF",
+    black: "#f0f0f0",
+    gold: "#fff7da",
+  } as const;
+  const tokenJSX: JSX.Element[] = [];
+  const width = 80 * 2;
+  const height = 90 * 2;
+  const x = 5 * 2;
+  const y = 5 * 2;
+
+  (["green", "red", "blue", "white", "black", "gold"] as const).forEach((tokenName, i) => {
+    tokenJSX.push(
+      <Group key={"OwnedTokens" + tokenName}>
+        <Rect
+          key={"OwnedTokens" + tokenName + "Rect"}
+          x={x + i * width}
+          y={y}
+          width={width}
+          height={height}
+          stroke="#555"
+          strokeWidth={3}
+          fill={color[tokenName]}
+          shadowColor="black"
+          shadowBlur={10}
+          shadowOpacity={0.2}
+          cornerRadius={10}
+        />
+
+        <Text
+          key={"OwnedTokens" + tokenName + "Text"}
+          x={x + i * width}
+          y={y}
+          width={width}
+          height={height}
+          align="center"
+          verticalAlign="middle"
+          text={playerInfo.tokens[tokenName].toString()}
+          fontSize={60}
+          fontFamily="Calibri"
+          fill="#555"
+        />
+      </Group>
+    );
+  });
+  return tokenJSX;
 };
 
 /* 

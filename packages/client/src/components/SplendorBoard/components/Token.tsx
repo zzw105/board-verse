@@ -15,7 +15,7 @@ interface SpriteImageProps {
   type: SplendorGameTokenNameType;
 }
 
-export const Token = React.memo(({ x, y, offsetCenter, scale = 0.35, type, canOperations }: SpriteImageProps) => {
+export const Token = React.memo(({ x, y, offsetCenter, scale = 0.7, type, canOperations }: SpriteImageProps) => {
   // 宝石筹码信息
   const tokenInfo = splendorGameTokenList[type] as SplendorGameTokenType;
   const width = 1218 / 6;
