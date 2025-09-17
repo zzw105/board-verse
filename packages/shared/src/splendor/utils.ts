@@ -1,16 +1,7 @@
 import { Ctx } from "boardgame.io";
 import { RandomAPI } from "boardgame.io/dist/types/src/plugins/random/random";
 
-type Player = {
-  name: string;
-  score: number;
-  cards: SplendorGameCardType[];
-};
-export type SplendorGameType = {
-  players: Record<string, Player>;
-  tokens: Record<SplendorGameTokenNameType, number>;
-  cards: SplendorGameCardType[];
-};
+// 卡片信息
 export type SplendorGameCardType = {
   name: SplendorGameCardName;
   frameX: number;
@@ -840,14 +831,13 @@ export const splendorGameCardObj = {
   },
 } as const;
 
+// 宝石信息
 export type SplendorGameGemType = {
-  name: string;
+  name: SplendorGameGemNameType;
   frameX: number;
   frameY: number;
 };
 export type SplendorGameGemNameType = keyof typeof splendorGameGemList;
-export type SplendorGameTokenNameType = SplendorGameGemNameType | "gold";
-
 export const splendorGameGemList = {
   white: {
     name: "white",
@@ -876,15 +866,71 @@ export const splendorGameGemList = {
   },
 } as const;
 
+// 令牌信息
+export const tokenNameList = ["green", "white", "blue", "black", "red", "gold"] as const;
+export type SplendorGameTokenNameType = (typeof tokenNameList)[number];
+export type TokensObjType = Record<SplendorGameTokenNameType, number>;
+export type SplendorGameTokenType = {
+  name: SplendorGameTokenNameType;
+  frameX: number;
+  frameY: number;
+};
+export const splendorGameTokenList: Record<SplendorGameTokenNameType, SplendorGameTokenType> = {
+  green: {
+    name: "green",
+    frameX: 0,
+    frameY: 0,
+  },
+  white: {
+    name: "white",
+    frameX: 1,
+    frameY: 0,
+  },
+  blue: {
+    name: "blue",
+    frameX: 2,
+    frameY: 0,
+  },
+  black: {
+    name: "black",
+    frameX: 3,
+    frameY: 0,
+  },
+  red: {
+    name: "red",
+    frameX: 4,
+    frameY: 0,
+  },
+  gold: {
+    name: "gold",
+    frameX: 5,
+    frameY: 0,
+  },
+};
+
+// 玩家信息
+export type Player = {
+  name: string;
+  score: number;
+  cards: SplendorGameCardType[];
+  tokens: TokensObjType;
+};
+
+// 游戏信息
+export type SplendorGameType = {
+  players: Record<string, Player>;
+  tokens: TokensObjType;
+  cards: SplendorGameCardType[];
+};
 export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType => {
   // 宝石
   // 根据人数调整宝石数量
   let gemCount = 7; // 默认 4人局
-  if (ctx.numPlayers === 2) {
-    gemCount = 4;
-  } else if (ctx.numPlayers === 3) {
-    gemCount = 5;
-  }
+  // if (ctx.numPlayers === 2) {
+  //   gemCount = 4;
+  // } else if (ctx.numPlayers === 3) {
+  //   gemCount = 5;
+  // }
   // 卡牌
   const keys = Object.keys(splendorGameCardObj) as SplendorGameCardName[];
   // 打乱卡牌
@@ -918,6 +964,14 @@ export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType =>
       name: ctx.playOrder[i],
       score: 0,
       cards: [],
+      tokens: {
+        red: 0,
+        blue: 0,
+        black: 0,
+        white: 0,
+        green: 0,
+        gold: 0,
+      },
     };
   }
 

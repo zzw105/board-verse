@@ -2,16 +2,14 @@ import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import { Stage, Layer } from "react-konva";
 import styles from "./SplendorBoard.module.less";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { SplendorGameType } from "@game/shared";
+import type { SplendorGameTokenNameType, SplendorGameType, TokensObjType } from "@game/shared";
 import { eventBus, type Events } from "../../utils/eventBus";
 import { MenuItemKeyEnum } from "../../enum/game";
 import { useContextMenuStore } from "../../store/useContextMenuStore";
-import { Button } from "antd";
-import { generateCardJSX } from "../../utils";
+import { Button, message } from "antd";
+import { generateCardJSX, generateTokenJSX, isTokenSelect2, isTokenSelectHasThreeOnes } from "../../utils";
 
 export function SplendorBoard(data: BoardProps<SplendorGameType>) {
-  console.log(111111111, data);
-
   // konva外部容器
   const konvaRef = useRef<HTMLDivElement>(null);
   // 画布尺寸
@@ -31,10 +29,11 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
     return () => window.removeEventListener("resize", updateSize);
   }, []);
   // 原始舞台设计尺寸
-  const originalStageSize = { width: 1920, height: 861 };
+  const originalStageSize = { width: 1770, height: 911 };
   // 缩放比例
   const scale = Math.min(stageSize.width / originalStageSize.width, stageSize.height / originalStageSize.height);
 
+  // 处理显示卡片的信息
   const cardPositionX: Record<number, number> = {
     1: 30,
     2: 300,
@@ -47,9 +46,52 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
     1: 210,
     2: 390,
   };
+  const level1Card = data.G.cards.filter((item) => item.level === 1);
+  const level2Card = data.G.cards.filter((item) => item.level === 2);
+  const level3Card = data.G.cards.filter((item) => item.level === 3);
+  const level1CardJSX = generateCardJSX(level1Card, cardPositionX, cardPositionY, 1, 2);
+  const level2CardJSX = generateCardJSX(level2Card, cardPositionX, cardPositionY, 1, 1);
+  const level3CardJSX = generateCardJSX(level3Card, cardPositionX, cardPositionY, 1, 0);
+
+  // 宝石筹码信息
+  const tokenPosition: Record<SplendorGameTokenNameType, { x: number; y: number }> = {
+    red: {
+      x: 830,
+      y: 110,
+    },
+    blue: {
+      x: 830,
+      y: 290,
+    },
+    white: {
+      x: 830,
+      y: 470,
+    },
+    black: {
+      x: 950,
+      y: 110,
+    },
+    green: {
+      x: 950,
+      y: 290,
+    },
+    gold: {
+      x: 950,
+      y: 470,
+    },
+  };
+  const [nowSelectTokens, setNowSelectTokens] = useState<TokensObjType>({
+    red: 0,
+    blue: 0,
+    white: 0,
+    black: 0,
+    green: 0,
+    gold: 0,
+  });
+  const tokenJSX = generateTokenJSX(data.G.tokens, nowSelectTokens, tokenPosition);
 
   // 右键事件
-  const { nowGroupName } = useContextMenuStore();
+  const { nowGroupName, nowSelectTokenName } = useContextMenuStore();
   const handler = useCallback(
     (e: Events["menuItemOnClick"]) => {
       const { type } = e;
@@ -60,9 +102,50 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
         case MenuItemKeyEnum.LOCKING:
           console.log(222);
           break;
+        case MenuItemKeyEnum.SELECT_TOKEN:
+          if (!nowSelectTokenName) return;
+          if (nowSelectTokens[nowSelectTokenName] === 1 && data.G.tokens[nowSelectTokenName] < 4) {
+            message.warning("当前宝石小于4个，不可同时选择2个");
+            return;
+          }
+          if (isTokenSelect2(nowSelectTokens)) {
+            message.warning("已有宝石同时选择2个");
+            return;
+          }
+          if (isTokenSelectHasThreeOnes(nowSelectTokens)) {
+            message.warning("已有3个宝石同时选择1个");
+            return;
+          }
+          setNowSelectTokens((d) => ({
+            ...d,
+            [nowSelectTokenName]: d[nowSelectTokenName] + 1,
+          }));
+          break;
+        case MenuItemKeyEnum.CANCEL_TOKEN:
+          if (!nowSelectTokenName) return;
+          setNowSelectTokens((d) => ({
+            ...d,
+            [nowSelectTokenName]: 0,
+          }));
+          break;
+        case MenuItemKeyEnum.CONFIRM_TOKEN:
+          if (!Object.values(nowSelectTokens).some((v) => v > 0)) {
+            message.warning("请选择至少一个宝石");
+            return;
+          }
+          data.moves.selectToken(nowSelectTokens);
+          setNowSelectTokens({
+            red: 0,
+            blue: 0,
+            white: 0,
+            black: 0,
+            green: 0,
+            gold: 0,
+          });
+          break;
       }
     },
-    [data.moves, nowGroupName]
+    [data.moves, data.G.tokens, nowGroupName, nowSelectTokenName, nowSelectTokens]
   );
 
   // 绑定事件
@@ -70,14 +153,6 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
     eventBus.on("menuItemOnClick", handler);
     return () => eventBus.off("menuItemOnClick", handler);
   }, [handler]);
-
-  // 处理显示卡片的信息
-  const level1Card = data.G.cards.filter((item) => item.level === 1);
-  const level2Card = data.G.cards.filter((item) => item.level === 2);
-  const level3Card = data.G.cards.filter((item) => item.level === 3);
-  const level1CardJSX = generateCardJSX(level1Card, cardPositionX, cardPositionY, 1, 2);
-  const level2CardJSX = generateCardJSX(level2Card, cardPositionX, cardPositionY, 1, 1);
-  const level3CardJSX = generateCardJSX(level3Card, cardPositionX, cardPositionY, 1, 0);
 
   return (
     <div className={styles["splendor-board"]}>
@@ -90,13 +165,21 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
         >
           重置
         </Button>
+        {JSON.stringify(nowSelectTokens)}
       </div>
       <div ref={konvaRef} className={styles["konva"]}>
-        <Stage width={stageSize.width} height={stageSize.height} scaleX={scale} scaleY={scale}>
+        <Stage
+          width={stageSize.width}
+          height={stageSize.height}
+          scaleX={scale}
+          scaleY={scale}
+          onContextMenu={(e) => e.evt.preventDefault()}
+        >
           <Layer>
             {level3CardJSX}
             {level2CardJSX}
             {level1CardJSX}
+            {tokenJSX}
           </Layer>
         </Stage>
       </div>

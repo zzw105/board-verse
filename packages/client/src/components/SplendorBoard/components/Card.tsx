@@ -14,6 +14,7 @@ interface CardProps {
   x: number;
   y: number;
   isFaceUp: boolean; // 受控翻牌
+  canOperations?: boolean;
   cardName: SplendorGameCardName;
 }
 
@@ -21,7 +22,7 @@ const scale = 0.4;
 const width = 1235 / 5;
 const height = 2058 / 6;
 
-export const Card = React.memo(({ x, y, cardName, isFaceUp }: CardProps) => {
+export const Card = React.memo(({ x, y, cardName, isFaceUp, canOperations }: CardProps) => {
   // 当前的卡片信息
   const cardInfo = splendorGameCardObj[cardName] as SplendorGameCardType;
 
@@ -109,7 +110,7 @@ export const Card = React.memo(({ x, y, cardName, isFaceUp }: CardProps) => {
       offsetY={height / 2}
       scaleX={scale}
       scaleY={scale}
-      onContextMenu={(e) => handleContextMenu(e, "card", cardInfo.name)}
+      onContextMenu={(e) => canOperations && handleContextMenu({ e, type: "card", name: cardInfo.name })}
     >
       <Rect width={width} height={height} fill="#fff" shadowBlur={8} cornerRadius={8} />
 

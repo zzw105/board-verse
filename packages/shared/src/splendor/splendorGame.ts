@@ -1,11 +1,13 @@
 import type { Game } from "boardgame.io";
-import _ from "lodash";
+import _, { get } from "lodash";
 import {
   getNewGameData,
   SplendorGameCardName,
   splendorGameCardObj,
   SplendorGameCardType,
   SplendorGameType,
+  tokenNameList,
+  TokensObjType,
 } from "./utils";
 
 export const splendorGame: Game<SplendorGameType> = {
@@ -17,13 +19,16 @@ export const splendorGame: Game<SplendorGameType> = {
   moves: {
     buyCard: ({ G, ctx }, cardName) => {
       const cardIndex = G.cards.findIndex((item) => item.name === cardName);
-      console.log({ cardIndex });
-
       if (cardIndex === -1) throw new Error(`卡牌不存在！ ${cardName}`);
       const oldCard = G.cards.splice(cardIndex, 1)[0];
       G.players[ctx.currentPlayer].cards.push(oldCard);
     },
-    a: ({ G, ctx }) => {},
+    selectToken: ({ G, ctx }, selectTokens: TokensObjType) => {
+      tokenNameList.forEach((tokenName) => {
+        G.players[ctx.currentPlayer].tokens[tokenName] += selectTokens[tokenName];
+        G.tokens[tokenName] -= selectTokens[tokenName];
+      });
+    },
     gameReset: ({ G, ctx, random }) => {
       const newGameData = getNewGameData(ctx, random);
       return newGameData;

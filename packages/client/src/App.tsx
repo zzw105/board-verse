@@ -6,6 +6,7 @@ import { useContextMenuStore } from "./store/useContextMenuStore";
 const App = () => {
   const { menuPos, menuItemList, closeMenu } = useContextMenuStore();
 
+  // }));
   return (
     <>
       <div className="app">

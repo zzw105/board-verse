@@ -12,6 +12,9 @@ export enum GameTypeEnum {
 export enum MenuItemKeyEnum {
   BUY = "buy",
   LOCKING = "locking",
+  SELECT_TOKEN = "selectToken",
+  CANCEL_TOKEN = "cancelToken",
+  CONFIRM_TOKEN = "confirmToken",
 }
 export type MenuItemInfoType = {
   key: MenuItemKeyEnum;
@@ -42,10 +45,51 @@ export const AllMenuItemInfoList: Record<MenuItemKeyEnum, ItemType> = {
       }
     },
   },
+  [MenuItemKeyEnum.SELECT_TOKEN]: {
+    key: MenuItemKeyEnum.SELECT_TOKEN,
+    label: "选择此宝石",
+    onClick: () => {
+      const name = useContextMenuStore.getState().nowSelectTokenName;
+      if (name) {
+        eventBus.emit("menuItemOnClick", { type: MenuItemKeyEnum.SELECT_TOKEN, name });
+      } else {
+        console.error("nowSelectTokenName is null");
+      }
+    },
+  },
+  [MenuItemKeyEnum.CANCEL_TOKEN]: {
+    key: MenuItemKeyEnum.CANCEL_TOKEN,
+    label: "取消选择此宝石",
+    onClick: () => {
+      const name = useContextMenuStore.getState().nowSelectTokenName;
+      if (name) {
+        eventBus.emit("menuItemOnClick", { type: MenuItemKeyEnum.CANCEL_TOKEN, name });
+      } else {
+        console.error("nowSelectTokenName is null");
+      }
+    },
+  },
+  [MenuItemKeyEnum.CONFIRM_TOKEN]: {
+    key: MenuItemKeyEnum.CONFIRM_TOKEN,
+    label: "宝石选择完毕",
+    onClick: () => {
+      const name = useContextMenuStore.getState().nowSelectTokenName;
+      if (name) {
+        eventBus.emit("menuItemOnClick", { type: MenuItemKeyEnum.CONFIRM_TOKEN, name });
+      } else {
+        console.error("nowSelectTokenName is null");
+      }
+    },
+  },
 };
 
-export type MenuType = "card";
+export type MenuType = "card" | "token";
 export const cardMenuItemList: MenuProps["items"] = [
   AllMenuItemInfoList[MenuItemKeyEnum.BUY],
   AllMenuItemInfoList[MenuItemKeyEnum.LOCKING],
+];
+export const tokenMenuItemList: MenuProps["items"] = [
+  AllMenuItemInfoList[MenuItemKeyEnum.SELECT_TOKEN],
+  AllMenuItemInfoList[MenuItemKeyEnum.CANCEL_TOKEN],
+  AllMenuItemInfoList[MenuItemKeyEnum.CONFIRM_TOKEN],
 ];
