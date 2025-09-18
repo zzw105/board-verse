@@ -4,13 +4,33 @@ import styles from "./SplendorBoard.module.less";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SplendorGameTokenNameType, SplendorGameType, TokensObjType } from "@game/shared";
 import { eventBus, type Events } from "../../utils/eventBus";
-import { MenuItemKeyEnum } from "../../enum/game";
+import { MenuItemKeyEnum, OperationKeyEnum } from "../../enum/game";
 import { useContextMenuStore } from "../../store/useContextMenuStore";
 import { Button, message } from "antd";
 import { generateCardJSX, generateTokenJSX, isTokenSelect2, isTokenSelectHasThreeOnes } from "../../utils";
 import { CurrentPlayerDashboard } from "./components/CurrentPlayerDashboard";
+import { useUserStore } from "../../store/useUserStore";
+import { useNavigate } from "react-router-dom";
 
 export function SplendorBoard(data: BoardProps<SplendorGameType>) {
+  console.log(123, data);
+
+  const { name, setIsCurrent, isCurrent, setStagesType, stagesType } = useUserStore();
+
+  if (isCurrent !== (data.playerID === data.ctx.currentPlayer)) {
+    setIsCurrent(data.playerID === data.ctx.currentPlayer);
+  }
+
+  const nowStagesType = (data.playerID !== null && data.ctx.activePlayers?.[data.playerID]) || "";
+  if (stagesType !== nowStagesType) {
+    setStagesType(nowStagesType);
+    switch (nowStagesType) {
+      case "discard":
+        message.warning("当前阶段为丢弃宝石阶段，不能进行其他操作");
+        break;
+    }
+  }
+
   // konva外部容器
   const konvaRef = useRef<HTMLDivElement>(null);
   // 画布尺寸
@@ -93,7 +113,7 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
 
   // 右键事件
   const { nowGroupName, nowSelectTokenName } = useContextMenuStore();
-  const handler = useCallback(
+  const menuItemOnClickHandler = useCallback(
     (e: Events["menuItemOnClick"]) => {
       const { type } = e;
       switch (type) {
@@ -148,16 +168,37 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
     },
     [data.moves, data.G.tokens, nowGroupName, nowSelectTokenName, nowSelectTokens]
   );
+  const operationOnClickHandler = useCallback(
+    (e: Events["operationOnClick"]) => {
+      const { type, name } = e;
+      switch (type) {
+        case OperationKeyEnum.RETURN_TOKEN:
+          data.moves.discardToken(name);
+          break;
+      }
+    },
+    [data.moves]
+  );
 
   // 绑定事件
   useEffect(() => {
-    eventBus.on("menuItemOnClick", handler);
-    return () => eventBus.off("menuItemOnClick", handler);
-  }, [handler]);
+    eventBus.on("menuItemOnClick", menuItemOnClickHandler);
+    return () => eventBus.off("menuItemOnClick", menuItemOnClickHandler);
+  }, [menuItemOnClickHandler]);
+  useEffect(() => {
+    eventBus.on("operationOnClick", operationOnClickHandler);
+    return () => eventBus.off("operationOnClick", operationOnClickHandler);
+  }, [operationOnClickHandler]);
 
+  const navigate = useNavigate();
+
+  if (data.playerID === null) {
+    return <div>playerID为空</div>;
+  }
   return (
     <div className={styles["splendor-board"]}>
       <div className={styles.title}>
+        {name}
         <Button
           size="large"
           onClick={() => {
@@ -166,7 +207,18 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
         >
           重置
         </Button>
-        {JSON.stringify(nowSelectTokens)}
+        <Button
+          size="large"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          返回
+        </Button>
+        <div>
+          当前玩家
+          {data.matchData?.find((item) => item.id === +data.ctx.currentPlayer)?.name}
+        </div>
       </div>
       <div ref={konvaRef} className={styles["konva"]}>
         <Stage
@@ -195,7 +247,7 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
             {level2CardJSX}
             {level1CardJSX}
             {tokenJSX}
-            <CurrentPlayerDashboard playerInfo={data.G.players[data.ctx.currentPlayer]}></CurrentPlayerDashboard>
+            <CurrentPlayerDashboard playerInfo={data.G.players[data.playerID]}></CurrentPlayerDashboard>
           </Layer>
         </Stage>
       </div>

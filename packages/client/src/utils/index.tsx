@@ -3,6 +3,9 @@ import { Card } from "../components/SplendorBoard/components/Card";
 import type { JSX } from "react";
 import { Token } from "../components/SplendorBoard/components/Token";
 import { Group, Rect, Text } from "react-konva";
+import { useUserStore } from "../store/useUserStore";
+import { eventBus } from "./eventBus";
+import { OperationKeyEnum } from "../enum/game";
 
 export const generateCardJSX = (
   cards: SplendorGameCardType[],
@@ -13,7 +16,8 @@ export const generateCardJSX = (
   splitIndex = 4
 ) => {
   if (!cards || cards.length === 0) return [];
-
+  const isCurrent = useUserStore.getState().isCurrent;
+  const stagesType = useUserStore.getState().stagesType;
   // 前半部分（翻开）
   const firstPart = cards
     .slice(0, splitIndex)
@@ -24,7 +28,8 @@ export const generateCardJSX = (
         y={positionY[yIndex]}
         cardName={item.name}
         isFaceUp={true}
-        canOperations={true}
+        canOperations={stagesType === "discard" ? false : true}
+        isCurrent={isCurrent}
       />
     ));
 
@@ -39,6 +44,7 @@ export const generateCardJSX = (
         y={positionY[yIndex]}
         cardName={item.name}
         isFaceUp={false}
+        canOperations={false}
       />
     ));
 
@@ -53,13 +59,16 @@ export const generateTokenJSX = (
   (["green", "red", "blue", "white", "black", "gold"] as const).forEach((tokenName) => {
     for (let i = 0; i < tokens[tokenName]; i++) {
       const isHighlight = i >= tokens[tokenName] - nowSelectTokens[tokenName];
+      const isCurrent = useUserStore.getState().isCurrent;
+      const stagesType = useUserStore.getState().stagesType;
       tokenJSX.push(
         <Token
           key={tokenName + i}
           x={tokenPosition[tokenName].x}
           y={tokenPosition[tokenName].y - 10 * i - (isHighlight ? 30 : 0)}
           type={tokenName}
-          canOperations={tokenName === "gold" ? false : true}
+          canOperations={tokenName === "gold" || stagesType === "discard" ? false : true}
+          isCurrent={isCurrent}
         />
       );
     }
@@ -85,33 +94,45 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
     gold: "#fff7da",
   } as const;
   const tokenJSX: JSX.Element[] = [];
-  const width = 80 * 2;
-  const height = 90 * 2;
-  const x = 5 * 2;
-  const y = 5 * 2;
+  const width = 140;
+  const height = 160;
+  const x = 300;
+  const y = 40;
+  const stagesType = useUserStore.getState().stagesType;
+  const canOperations = stagesType === "discard";
 
   (["green", "red", "blue", "white", "black", "gold"] as const).forEach((tokenName, i) => {
     tokenJSX.push(
-      <Group key={"OwnedTokens" + tokenName}>
+      <Group
+        x={x + i * (width + 100)}
+        y={y}
+        key={"OwnedTokens" + tokenName}
+        style={{ cursor: "pointer" }}
+        onMouseOver={() => {
+          document.body.style.cursor = "pointer";
+        }}
+        onMouseOut={() => {
+          document.body.style.cursor = "default";
+        }}
+        onClick={() => {
+          eventBus.emit("operationOnClick", { type: OperationKeyEnum.RETURN_TOKEN, name: tokenName });
+        }}
+      >
         <Rect
           key={"OwnedTokens" + tokenName + "Rect"}
-          x={x + i * width}
-          y={y}
           width={width}
           height={height}
           stroke="#555"
           strokeWidth={3}
           fill={color[tokenName]}
-          shadowColor="black"
-          shadowBlur={10}
-          shadowOpacity={0.2}
+          shadowColor={canOperations ? tokenName : "black"}
+          shadowBlur={canOperations ? 30 : 10}
+          shadowOpacity={canOperations ? 1 : 0.3}
           cornerRadius={10}
         />
 
         <Text
           key={"OwnedTokens" + tokenName + "Text"}
-          x={x + i * width}
-          y={y}
           width={width}
           height={height}
           align="center"
@@ -120,6 +141,15 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
           fontSize={60}
           fontFamily="Calibri"
           fill="#555"
+        />
+        <Token
+          key={"OwnedTokens" + tokenName + "Token"}
+          x={width}
+          y={0}
+          type={tokenName}
+          canOperations={false}
+          offsetCenter
+          scale={0.4}
         />
       </Group>
     );

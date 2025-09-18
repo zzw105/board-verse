@@ -13,9 +13,10 @@ interface SpriteImageProps {
   scale?: number;
   offsetCenter?: boolean;
   type: SplendorGameTokenNameType;
+  isCurrent?: boolean;
 }
 
-export const Token = React.memo(({ x, y, offsetCenter, scale = 0.7, type, canOperations }: SpriteImageProps) => {
+export const Token = ({ x, y, offsetCenter, scale = 0.7, type, canOperations, isCurrent }: SpriteImageProps) => {
   // 宝石筹码信息
   const tokenInfo = splendorGameTokenList[type] as SplendorGameTokenType;
   const width = 1218 / 6;
@@ -58,7 +59,7 @@ export const Token = React.memo(({ x, y, offsetCenter, scale = 0.7, type, canOpe
       scaleY={scale}
       offsetX={offsetCenter ? width / 2 : 0}
       offsetY={offsetCenter ? height / 2 : 0}
-      onContextMenu={(e) => canOperations && handleContextMenu({ e, type: "token", name: type })}
+      onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
     >
       <KonvaImage
         shadowBlur={18}
@@ -74,4 +75,4 @@ export const Token = React.memo(({ x, y, offsetCenter, scale = 0.7, type, canOpe
       />
     </Group>
   );
-});
+};

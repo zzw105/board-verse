@@ -2,7 +2,7 @@ import styles from "./Home.module.less";
 import { useUserStore } from "../../store/useUserStore";
 import { Button, message, Space, Table, Tag, type TableProps } from "antd";
 import SetUserInfoModal, { type SetUserInfoModalType } from "../../components/SetUserInfoModal/SetUserInfoModal";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type JSX } from "react";
 import CreateRoomModal, { type CreateRoomModalType } from "../../components/CreateRoomModal/CreateRoomModal";
 import { lobbyClient, useBoardgameStore } from "../../store/useBoardgameStore";
 import { GameTypeEnum, type GameTypeKeyType } from "../../enum/game";
@@ -96,7 +96,6 @@ export default function Home() {
         const JsxList: JSX.Element[] = [];
         const isFull = record.players.every((item) => item.name);
         const isMe = record.players.find((player) => player.name === name);
-        console.log(isFull, isMe);
 
         if (isFull) {
           if (isMe) {

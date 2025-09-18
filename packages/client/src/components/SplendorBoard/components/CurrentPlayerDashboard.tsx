@@ -1,6 +1,6 @@
-import { Group, Rect, Text } from "react-konva";
+import { Group, Rect } from "react-konva";
 import { type PlayerType } from "@game/shared";
-import React, { useEffect, useRef, type JSX } from "react";
+import React, { useEffect, useRef } from "react";
 import type Konva from "konva";
 import { generateOwnedTokensJSX } from "../../../utils";
 
@@ -14,7 +14,7 @@ export const CurrentPlayerDashboard = React.memo(({ playerInfo }: SpriteImagePro
   useEffect(() => {
     const g = groupRef.current;
     if (!g) return;
-    g.cache();
+    // g.cache();
   }, []);
 
   const ownedTokens = generateOwnedTokensJSX(playerInfo);
@@ -34,32 +34,6 @@ export const CurrentPlayerDashboard = React.memo(({ playerInfo }: SpriteImagePro
       />
 
       {ownedTokens}
-      {/* <Rect
-        x={20}
-        y={60}
-        stroke="#555"
-        strokeWidth={5}
-        fill="#ddd"
-        width={300}
-        height={200} // 近似高度
-        shadowColor="black"
-        shadowBlur={10}
-        shadowOffsetX={10}
-        shadowOffsetY={10}
-        shadowOpacity={0.2}
-        cornerRadius={10}
-      />
-      <Text
-        x={20}
-        y={60}
-        text={"123"}
-        fontSize={18}
-        fontFamily="Calibri"
-        fill="#555"
-        width={300}
-        padding={20}
-        align="center"
-      /> */}
     </Group>
   );
 });

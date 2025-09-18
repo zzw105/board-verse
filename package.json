@@ -7,9 +7,11 @@
     "packages/*"
   ],
   "scripts": {
+    "d:client": "pnpm run build:shared & pnpm run dev:client",
+    "d:server": "pnpm run build:shared & pnpm run start:server",
     "dev:client": "pnpm --filter splendor-game-client dev",
-    "dev:server": "pnpm --filter splendor-game-server start",
-    "dev:shared": "pnpm --filter @game/shared build"
+    "start:server": "pnpm --filter splendor-game-server start",
+    "build:shared": "pnpm --filter @game/shared build"
   },
   "dependencies": {
     "@types/lodash": "^4.17.20",

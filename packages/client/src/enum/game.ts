@@ -93,3 +93,7 @@ export const tokenMenuItemList: MenuProps["items"] = [
   AllMenuItemInfoList[MenuItemKeyEnum.CANCEL_TOKEN],
   AllMenuItemInfoList[MenuItemKeyEnum.CONFIRM_TOKEN],
 ];
+
+export enum OperationKeyEnum {
+  RETURN_TOKEN,
+}

@@ -2,19 +2,20 @@ import { Ctx } from "boardgame.io";
 import { RandomAPI } from "boardgame.io/dist/types/src/plugins/random/random";
 
 // 卡片信息
+type SplendorGameCardCostType = {
+  black: number;
+  white: number;
+  red: number;
+  blue: number;
+  green: number;
+};
 export type SplendorGameCardType = {
   name: SplendorGameCardName;
   frameX: number;
   frameY: number;
   color: SplendorGameGemNameType;
   point: number;
-  cost: {
-    black: number;
-    white: number;
-    red: number;
-    blue: number;
-    green: number;
-  };
+  cost: SplendorGameCardCostType;
   level: number;
 };
 export type SplendorGameCardName = keyof typeof splendorGameCardObj;
@@ -976,4 +977,37 @@ export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType =>
   }
 
   return gameData;
+};
+
+export const getTokenDelta = (playerTokens: TokensObjType, cost: SplendorGameCardCostType): TokensObjType | null => {
+  const delta: TokensObjType = {
+    black: 0,
+    blue: 0,
+    red: 0,
+    green: 0,
+    white: 0,
+    gold: 0,
+  };
+
+  let goldNeeded = 0;
+
+  for (const color of Object.keys(cost) as (keyof SplendorGameCardCostType)[]) {
+    const required = cost[color] || 0;
+    const available = playerTokens[color] || 0;
+
+    if (available >= required) {
+      delta[color] = -required;
+    } else {
+      delta[color] = -available;
+      goldNeeded += required - available;
+    }
+  }
+
+  if (playerTokens.gold >= goldNeeded) {
+    delta.gold = -goldNeeded;
+    return delta;
+  }
+
+  // 金子不足，购买失败
+  return null;
 };
