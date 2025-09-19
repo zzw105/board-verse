@@ -909,11 +909,96 @@ export const splendorGameTokenList: Record<SplendorGameTokenNameType, SplendorGa
   },
 };
 
+// 贵族信息
+export type SplendorGameNobleType = {
+  name: SplendorGameNobleNameType;
+  frameX: number;
+  frameY: number;
+  point: number;
+  cost: CardPointType;
+};
+export type SplendorGameNobleNameType = keyof typeof splendorGameNobleObj;
+export const splendorGameNobleObj = {
+  noble1: {
+    name: "noble1",
+    frameX: 0,
+    frameY: 0,
+    point: 3,
+    cost: { black: 0, white: 0, red: 4, blue: 0, green: 4 },
+  },
+  noble2: {
+    name: "noble2",
+    frameX: 1,
+    frameY: 0,
+    point: 3,
+    cost: { black: 0, white: 0, red: 0, blue: 4, green: 4 },
+  },
+  noble3: {
+    name: "noble3",
+    frameX: 2,
+    frameY: 0,
+    point: 3,
+    cost: { black: 0, white: 4, red: 0, blue: 4, green: 0 },
+  },
+  noble4: {
+    name: "noble4",
+    frameX: 3,
+    frameY: 0,
+    point: 3,
+    cost: { black: 4, white: 4, red: 0, blue: 0, green: 0 },
+  },
+  noble5: {
+    name: "noble5",
+    frameX: 4,
+    frameY: 0,
+    point: 3,
+    cost: { black: 4, white: 0, red: 4, blue: 0, green: 0 },
+  },
+  noble6: {
+    name: "noble6",
+    frameX: 0,
+    frameY: 1,
+    point: 3,
+    cost: { black: 3, white: 3, red: 0, blue: 3, green: 0 },
+  },
+  noble7: {
+    name: "noble7",
+    frameX: 1,
+    frameY: 1,
+    point: 3,
+    cost: { black: 3, white: 0, red: 3, blue: 0, green: 3 },
+  },
+  noble8: {
+    name: "noble8",
+    frameX: 2,
+    frameY: 1,
+    point: 3,
+    cost: { black: 3, white: 3, red: 3, blue: 0, green: 0 },
+  },
+  noble9: {
+    name: "noble9",
+    frameX: 3,
+    frameY: 1,
+    point: 3,
+    cost: { black: 0, white: 0, red: 3, blue: 3, green: 3 },
+  },
+  noble10: {
+    name: "noble10",
+    frameX: 4,
+    frameY: 1,
+    point: 3,
+    cost: { black: 0, white: 3, red: 0, blue: 3, green: 3 },
+  },
+} as const;
+
 // 玩家信息
+type CardPointType = Record<SplendorGameGemNameType, number>;
 export type PlayerType = {
   name: string;
   score: number;
+  cardPoint: CardPointType;
   cards: SplendorGameCardType[];
+  lockCards: SplendorGameCardType[];
   tokens: TokensObjType;
 };
 
@@ -922,6 +1007,7 @@ export type SplendorGameType = {
   players: Record<string, PlayerType>;
   tokens: TokensObjType;
   cards: SplendorGameCardType[];
+  nobles: SplendorGameNobleType[];
 };
 export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType => {
   // 宝石
@@ -932,21 +1018,20 @@ export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType =>
   } else if (ctx.numPlayers === 3) {
     gemCount = 5;
   }
-  // 卡牌
-  const keys = Object.keys(splendorGameCardObj) as SplendorGameCardName[];
+
   // 打乱卡牌
+  const keys = Object.keys(splendorGameCardObj) as SplendorGameCardName[];
   const disorderKeys = random.Shuffle(keys);
+  // 打乱贵族
+  const nobleKeys = Object.keys(splendorGameNobleObj) as SplendorGameNobleNameType[];
+  const disorderNobleKeys = random.Shuffle(nobleKeys);
 
   // 全部卡牌
   const splendorGameCardList = disorderKeys.map((key) => splendorGameCardObj[key]) as SplendorGameCardType[];
-  // // 牌堆
-  // const level1Card = splendorGameCardList.filter((item) => item.level === 1);
-  // const level2Card = splendorGameCardList.filter((item) => item.level === 2);
-  // const level3Card = splendorGameCardList.filter((item) => item.level === 3);
-  // // 展示牌
-  // const showLevel1Card = level1Card.splice(0, 4);
-  // const showLevel2Card = level2Card.splice(0, 4);
-  // const showLevel3Card = level3Card.splice(0, 4);
+  // 全部贵族
+  const splendorGameNobleList = (
+    disorderNobleKeys.map((key) => splendorGameNobleObj[key]) as SplendorGameNobleType[]
+  ).splice(0, 4);
 
   const gameData: SplendorGameType = {
     players: {},
@@ -959,19 +1044,28 @@ export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType =>
       gold: 5, // 金色万能不变
     },
     cards: splendorGameCardList,
+    nobles: splendorGameNobleList,
   };
   for (let i = 0; i < ctx.numPlayers; i++) {
     gameData.players[i] = {
       name: ctx.playOrder[i],
       score: 0,
       cards: [],
-      tokens: {
-        red: 0,
-        blue: 0,
+      lockCards: [],
+      cardPoint: {
         black: 0,
-        white: 0,
+        blue: 0,
+        red: 0,
         green: 0,
-        gold: 0,
+        white: 0,
+      },
+      tokens: {
+        red: 1,
+        blue: 1,
+        black: 1,
+        white: 1,
+        green: 1,
+        gold: 4,
       },
     };
   }
@@ -979,7 +1073,10 @@ export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType =>
   return gameData;
 };
 
-export const getTokenDelta = (playerTokens: TokensObjType, cost: SplendorGameCardCostType): TokensObjType | null => {
+export const getTokenDelta = (player: PlayerType, card: SplendorGameCardType): TokensObjType | null => {
+  const cost = card.cost;
+  const playerTokens = player.tokens;
+  const playerCardPoint = player.cardPoint;
   const delta: TokensObjType = {
     black: 0,
     blue: 0,
@@ -992,7 +1089,7 @@ export const getTokenDelta = (playerTokens: TokensObjType, cost: SplendorGameCar
   let goldNeeded = 0;
 
   for (const color of Object.keys(cost) as (keyof SplendorGameCardCostType)[]) {
-    const required = cost[color] || 0;
+    const required = Math.max(cost[color] - playerCardPoint[color], 0);
     const available = playerTokens[color] || 0;
 
     if (available >= required) {

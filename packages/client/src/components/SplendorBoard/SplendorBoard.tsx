@@ -121,7 +121,7 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
           data.moves.buyCard(nowGroupName);
           break;
         case MenuItemKeyEnum.LOCKING:
-          console.log(222);
+          data.moves.lockCard(nowGroupName);
           break;
         case MenuItemKeyEnum.SELECT_TOKEN:
           if (!nowSelectTokenName) return;

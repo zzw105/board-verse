@@ -15,7 +15,7 @@ const buyCard: SplendorGameMoveType = ({ G, ctx, playerID, events }, cardName) =
   if (cardIndex === -1) throw new Error(`卡牌不存在！ ${cardName}`);
   const nowCard = G.cards.splice(cardIndex, 1)[0];
   const nowUseInfo = G.players[playerID];
-  const res = getTokenDelta(nowUseInfo.tokens, nowCard.cost);
+  const res = getTokenDelta(nowUseInfo, nowCard);
   if (!res) {
     throw new Error("没有足够的宝石购买卡牌");
   }
@@ -24,6 +24,23 @@ const buyCard: SplendorGameMoveType = ({ G, ctx, playerID, events }, cardName) =
     G.tokens[color] -= res[color];
   }
   nowUseInfo.cards.push(nowCard);
+  nowUseInfo.cardPoint[nowCard.color] += 1;
+  nowUseInfo.score += nowCard.point;
+  events.endTurn();
+};
+const lockCard: SplendorGameMoveType = ({ G, ctx, playerID, events }, cardName) => {
+  const cardIndex = G.cards.findIndex((item) => item.name === cardName);
+  if (cardIndex === -1) throw new Error(`卡牌不存在！ ${cardName}`);
+  const nowCard = G.cards.splice(cardIndex, 1)[0];
+  const nowUseInfo = G.players[playerID];
+  if (nowUseInfo.lockCards.length >= 3) {
+    throw new Error("卡牌达到上限");
+  }
+  nowUseInfo.lockCards.push(nowCard);
+  if (G.tokens.gold > 0) {
+    G.tokens.gold -= 1;
+    nowUseInfo.tokens.gold += 1;
+  }
   events.endTurn();
 };
 
@@ -48,6 +65,7 @@ export const splendorGame: Game<SplendorGameType> = {
   moves: {
     buyCard,
     selectToken,
+    lockCard,
     gameReset: ({ G, ctx, random }) => {
       const newGameData = getNewGameData(ctx, random);
       return newGameData;

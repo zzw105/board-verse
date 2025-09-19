@@ -83,11 +83,12 @@ export const AllMenuItemInfoList: Record<MenuItemKeyEnum, ItemType> = {
   },
 };
 
-export type MenuType = "card" | "token";
 export const cardMenuItemList: MenuProps["items"] = [
   AllMenuItemInfoList[MenuItemKeyEnum.BUY],
   AllMenuItemInfoList[MenuItemKeyEnum.LOCKING],
 ];
+export const cardBuyMenuItemList: MenuProps["items"] = [AllMenuItemInfoList[MenuItemKeyEnum.BUY]];
+export const cardLockMenuItemList: MenuProps["items"] = [AllMenuItemInfoList[MenuItemKeyEnum.LOCKING]];
 export const tokenMenuItemList: MenuProps["items"] = [
   AllMenuItemInfoList[MenuItemKeyEnum.SELECT_TOKEN],
   AllMenuItemInfoList[MenuItemKeyEnum.CANCEL_TOKEN],

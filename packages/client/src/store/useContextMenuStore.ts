@@ -1,11 +1,11 @@
 import type { MenuProps } from "antd";
 import type Konva from "konva";
 import { create } from "zustand";
-import { cardMenuItemList, tokenMenuItemList } from "../enum/game";
+import { cardBuyMenuItemList, cardLockMenuItemList, cardMenuItemList, tokenMenuItemList } from "../enum/game";
 import type { SplendorGameCardName, SplendorGameTokenNameType } from "@game/shared";
 
 type HandleContextMenuArg =
-  | { e: Konva.KonvaEventObject<PointerEvent>; type: "card"; name: SplendorGameCardName }
+  | { e: Konva.KonvaEventObject<PointerEvent>; type: "card" | "card-lock" | "card-buy"; name: SplendorGameCardName }
   | { e: Konva.KonvaEventObject<PointerEvent>; type: "token"; name: SplendorGameTokenNameType };
 
 // 函数类型
@@ -40,6 +40,14 @@ export const useContextMenuStore = create<UseContextMenuStoreType>((set, get) =>
       case "card":
         get().setNowGroupName(name);
         get().setMenuItemList(cardMenuItemList);
+        break;
+      case "card-lock":
+        get().setNowGroupName(name);
+        get().setMenuItemList(cardLockMenuItemList);
+        break;
+      case "card-buy":
+        get().setNowGroupName(name);
+        get().setMenuItemList(cardBuyMenuItemList);
         break;
       case "token":
         get().setNowSelectTokenName(name);

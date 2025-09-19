@@ -17,13 +17,14 @@ interface CardProps {
   canOperations?: boolean;
   cardName: SplendorGameCardName;
   isCurrent?: boolean;
+  isHorizontal?: boolean;
 }
 
 const scale = 0.8;
 const width = 1235 / 5;
 const height = 2058 / 6;
 
-export const Card = React.memo(({ x, y, cardName, isFaceUp, canOperations, isCurrent }: CardProps) => {
+export const Card = React.memo(({ x, y, cardName, isFaceUp, canOperations, isCurrent, isHorizontal }: CardProps) => {
   // 当前的卡片信息
   const cardInfo = splendorGameCardObj[cardName] as SplendorGameCardType;
 
@@ -36,6 +37,8 @@ export const Card = React.memo(({ x, y, cardName, isFaceUp, canOperations, isCur
   const tweenRef = useRef<Tween | null>(null);
   // 卡片翻牌动画
   const flipTweenRef = useRef<Tween | null>(null);
+  // 卡片翻牌动画
+  const horizontalTweenRef = useRef<Tween | null>(null);
   // 当前翻转状态
   const [nowIsFaceUp, setNowIsFaceUp] = useState(isFaceUp);
 
@@ -81,6 +84,17 @@ export const Card = React.memo(({ x, y, cardName, isFaceUp, canOperations, isCur
     }
   }, [isFaceUp, nowIsFaceUp]);
 
+  // 横置动画
+  useEffect(() => {
+    if (!groupRef.current) return;
+    const g = groupRef.current;
+
+    if (horizontalTweenRef.current) horizontalTweenRef.current.finish();
+    horizontalTweenRef.current = new Tween({ node: g, duration: 0.1, rotation: isHorizontal ? -90 : 0 });
+    horizontalTweenRef.current.onFinish = () => {};
+    horizontalTweenRef.current.play();
+  }, [isHorizontal]);
+
   // 卡片花费点位置
   const cardPointPos = [
     { x: 30, y: 310 },
@@ -111,7 +125,15 @@ export const Card = React.memo(({ x, y, cardName, isFaceUp, canOperations, isCur
       offsetY={height / 2}
       scaleX={scale}
       scaleY={scale}
-      onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "card", name: cardInfo.name })}
+      onContextMenu={(e) =>
+        isCurrent &&
+        canOperations &&
+        handleContextMenu({
+          e,
+          type: isHorizontal ? "card-buy" : !isFaceUp ? "card-lock" : "card",
+          name: cardInfo.name,
+        })
+      }
     >
       <Rect width={width} height={height} fill="#fff" shadowBlur={8} cornerRadius={8} />
 

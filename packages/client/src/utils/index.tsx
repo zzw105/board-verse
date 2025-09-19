@@ -98,9 +98,11 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
   const height = 160;
   const x = 300;
   const y = 40;
+
   const stagesType = useUserStore.getState().stagesType;
   const canOperations = stagesType === "discard";
 
+  //
   (["green", "red", "blue", "white", "black", "gold"] as const).forEach((tokenName, i) => {
     tokenJSX.push(
       <Group
@@ -138,7 +140,7 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
           align="center"
           verticalAlign="middle"
           text={playerInfo.tokens[tokenName].toString()}
-          fontSize={60}
+          fontSize={70}
           fontFamily="Calibri"
           fill="#555"
         />
@@ -151,10 +153,67 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
           offsetCenter
           scale={0.4}
         />
+        {tokenName !== "gold" && (
+          <>
+            <Rect
+              key={"OwnedTokens" + tokenName + "cardPoint"}
+              width={(width * 2) / 3}
+              height={(height * 2) / 3}
+              x={0}
+              y={height}
+              offsetX={(width * 2) / 3 / 2}
+              offsetY={(height * 2) / 3 / 2}
+              stroke="#555"
+              strokeWidth={3}
+              fill={color[tokenName]}
+              shadowColor={canOperations ? tokenName : "black"}
+              shadowBlur={canOperations ? 30 : 10}
+              shadowOpacity={canOperations ? 1 : 0.3}
+              cornerRadius={10}
+            />
+            <Text
+              key={"OwnedTokens" + tokenName + "cardPointText"}
+              width={(width * 2) / 3}
+              height={(height * 2) / 3}
+              x={0}
+              y={height}
+              offsetX={(width * 2) / 3 / 2}
+              offsetY={(height * 2) / 3 / 2}
+              align="center"
+              verticalAlign="middle"
+              text={playerInfo.cardPoint[tokenName].toString()}
+              fontSize={60}
+              fontStyle="bold"
+              fontFamily="Calibri"
+              fill="#555"
+            />
+          </>
+        )}
       </Group>
     );
   });
   return tokenJSX;
+};
+
+export const generateOwnedLockCardJSX = (playerInfo: PlayerType) => {
+  const lockCardJSX: JSX.Element[] = [];
+  const lockCards = playerInfo.lockCards;
+  const isCurrent = useUserStore.getState().isCurrent;
+  lockCards.forEach((item, index) => {
+    lockCardJSX.push(
+      <Card
+        key={item.name}
+        x={80 + index * 430}
+        y={300}
+        cardName={item.name}
+        isFaceUp={true}
+        canOperations={true}
+        isCurrent={isCurrent}
+        isHorizontal
+      />
+    );
+  });
+  return lockCardJSX;
 };
 
 /* 
