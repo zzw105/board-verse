@@ -1,4 +1,10 @@
-import type { PlayerType, SplendorGameCardType, SplendorGameTokenNameType, TokensObjType } from "@game/shared";
+import type {
+  PlayerType,
+  SplendorGameCardType,
+  SplendorGameNobleType,
+  SplendorGameTokenNameType,
+  TokensObjType,
+} from "@game/shared";
 import { Card } from "../components/SplendorBoard/components/Card";
 import type { JSX } from "react";
 import { Token } from "../components/SplendorBoard/components/Token";
@@ -6,6 +12,7 @@ import { Group, Rect, Text } from "react-konva";
 import { useUserStore } from "../store/useUserStore";
 import { eventBus } from "./eventBus";
 import { OperationKeyEnum } from "../enum/game";
+import { Noble } from "../components/SplendorBoard/components/Noble";
 
 export const generateCardJSX = (
   cards: SplendorGameCardType[],
@@ -96,7 +103,7 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
   const tokenJSX: JSX.Element[] = [];
   const width = 140;
   const height = 160;
-  const x = 300;
+  const x = 500;
   const y = 40;
 
   const stagesType = useUserStore.getState().stagesType;
@@ -214,6 +221,14 @@ export const generateOwnedLockCardJSX = (playerInfo: PlayerType) => {
     );
   });
   return lockCardJSX;
+};
+
+export const generateNobleJSX = (nobles: SplendorGameNobleType[]) => {
+  const nobleJSX: JSX.Element[] = [];
+  nobles.forEach((item, index) => {
+    nobleJSX.push(<Noble x={2150} y={80 + index * 255} nobleName={item.name} />);
+  });
+  return nobleJSX;
 };
 
 /* 

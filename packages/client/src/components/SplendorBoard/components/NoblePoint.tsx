@@ -1,18 +1,18 @@
 import type { SplendorGameGemNameType } from "@game/shared";
 import type Konva from "konva";
 import React, { useEffect, useRef } from "react";
-import { Group, Text, Circle } from "react-konva";
+import { Group, Text, Rect } from "react-konva";
 
-interface CardPointProps {
+interface NoblePointProps {
   x: number;
   y: number;
   point: number;
   type: SplendorGameGemNameType;
 }
 
-export const CardPoint = React.memo(({ x, y, point, type }: CardPointProps) => {
+export const NoblePoint = React.memo(({ x, y, point, type }: NoblePointProps) => {
   // 总体字体大小
-  const fontSize = 110;
+  const fontSize = 80;
   const gemGradients: Record<SplendorGameGemNameType, (string | number)[]> = {
     white: [0, "#ffffff", 0.3, "#f0f0f0", 0.7, "#d9d9d9", 1, "#bfbfbf"],
     blue: [0, "#ffffff", 0.2, "#99ccff", 0.7, "#3399ff", 1, "#0066cc"],
@@ -28,16 +28,20 @@ export const CardPoint = React.memo(({ x, y, point, type }: CardPointProps) => {
     if (!g) return;
     g.cache();
   }, []);
+  const width = 75;
+  const height = 95;
 
   return (
     <Group ref={groupRef} x={x} y={y} scaleX={0.4} scaleY={0.4}>
       {/* 外圈 */}
-      <Circle
-        radius={60}
-        fillRadialGradientStartPoint={{ x: -20, y: -20 }}
+      <Rect
+        width={width}
+        height={height}
+        cornerRadius={8}
+        fillRadialGradientStartPoint={{ x: width / 2, y: height / 2 }}
         fillRadialGradientStartRadius={0}
-        fillRadialGradientEndPoint={{ x: 0, y: 0 }}
-        fillRadialGradientEndRadius={50}
+        fillRadialGradientEndPoint={{ x: width / 2, y: height / 2 }}
+        fillRadialGradientEndRadius={Math.max(width, height) / 2}
         fillRadialGradientColorStops={gemGradients[type]}
         stroke="white"
         strokeWidth={9}
@@ -46,19 +50,16 @@ export const CardPoint = React.memo(({ x, y, point, type }: CardPointProps) => {
       {/* 圆心数字 */}
       <Text
         text={point.toString()}
+        width={width}
+        height={height}
         fontSize={fontSize}
         fill="white"
         fontFamily="Arial"
         fontStyle="bold"
         stroke="black"
-        strokeWidth={4}
-        width={fontSize * 2} // 给一个宽度（半径 * 2）
-        height={fontSize * 2} // 高度同理
+        strokeWidth={3}
         align="center" // 水平居中
-        verticalAlign="middle" // 垂直居中
-        offsetX={fontSize - 0} // 把 (0,0) 移到圆心
-        offsetY={fontSize}
-        skewX={-0.2}
+        y={height / 2 - fontSize / 2} // 垂直居中大致算法
       />
     </Group>
   );

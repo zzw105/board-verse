@@ -98,9 +98,9 @@ export const Card = React.memo(({ x, y, cardName, isFaceUp, canOperations, isCur
   // 卡片花费点位置
   const cardPointPos = [
     { x: 30, y: 310 },
-    { x: 30, y: 265 },
-    { x: 30, y: 220 },
-    { x: 30, y: 175 },
+    { x: 30, y: 255 },
+    { x: 30, y: 200 },
+    { x: 30, y: 145 },
   ];
   // 卡片花费点
   const cardPointJsxList: JSX.Element[] = [];
@@ -159,7 +159,7 @@ export const Card = React.memo(({ x, y, cardName, isFaceUp, canOperations, isCur
               fontFamily="Arial"
               fontStyle="bold italic"
               stroke="#000"
-              strokeWidth={1}
+              strokeWidth={2}
               align="center"
               verticalAlign="middle"
               x={15}

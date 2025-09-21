@@ -1,6 +1,7 @@
 import cardsImg from "../assets/imgs/cards.png";
 import gemsImg from "../assets/imgs/gems.png";
 import tokensImg from "../assets/imgs/tokens.png";
+import noblesImg from "../assets/imgs/nobles.png";
 
 export let gemsImage: HTMLImageElement | null = null;
 export function getGemsImage(): Promise<HTMLImageElement> {
@@ -49,7 +50,23 @@ export function getTokensImage(): Promise<HTMLImageElement> {
   });
 }
 
+export let noblesImage: HTMLImageElement | null = null;
+export function getNoblesImage(): Promise<HTMLImageElement> {
+  return new Promise((resolve) => {
+    if (noblesImage) {
+      resolve(noblesImage);
+      return;
+    }
+    const img = new window.Image();
+    img.src = noblesImg;
+    img.onload = () => {
+      noblesImage = img;
+      resolve(img);
+    };
+  });
+}
+
 export const loadAllImg = async () => {
-  const res = await Promise.all([getCardsImage(), getGemsImage(), getTokensImage()]);
+  const res = await Promise.all([getCardsImage(), getGemsImage(), getTokensImage(), getNoblesImage()]);
   return res;
 };

@@ -7,7 +7,13 @@ import { eventBus, type Events } from "../../utils/eventBus";
 import { MenuItemKeyEnum, OperationKeyEnum } from "../../enum/game";
 import { useContextMenuStore } from "../../store/useContextMenuStore";
 import { Button, message } from "antd";
-import { generateCardJSX, generateTokenJSX, isTokenSelect2, isTokenSelectHasThreeOnes } from "../../utils";
+import {
+  generateCardJSX,
+  generateNobleJSX,
+  generateTokenJSX,
+  isTokenSelect2,
+  isTokenSelectHasThreeOnes,
+} from "../../utils";
 import { CurrentPlayerDashboard } from "./components/CurrentPlayerDashboard";
 import { useUserStore } from "../../store/useUserStore";
 import { useNavigate } from "react-router-dom";
@@ -73,6 +79,7 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
   const level1CardJSX = generateCardJSX(level1Card, cardPositionX, cardPositionY, 1, 2);
   const level2CardJSX = generateCardJSX(level2Card, cardPositionX, cardPositionY, 1, 1);
   const level3CardJSX = generateCardJSX(level3Card, cardPositionX, cardPositionY, 1, 0);
+  const nobleJSX = generateNobleJSX(data.G.nobles);
 
   // 宝石筹码信息
   const tokenPosition: Record<SplendorGameTokenNameType, { x: number; y: number }> = {
@@ -226,17 +233,17 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
           height={stageSize.height}
           scaleX={scale}
           scaleY={scale}
-          pixelRatio={4}
+          pixelRatio={window.devicePixelRatio}
           onContextMenu={(e) => e.evt.preventDefault()}
         >
-          <Layer>
+          <Layer imageSmoothingEnabled={true}>
             <Rect
               stroke="#555"
               strokeWidth={3}
               fill="rgba(208, 232, 240, 0.5)" // 半透明淡蓝色 (浅蓝+透明度0.5)
               x={10 * 2}
               y={10 * 2}
-              width={1070 * 2}
+              width={2440}
               height={560 * 2} // 近似高度
               shadowColor="black"
               shadowBlur={10}
@@ -248,6 +255,7 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
             {level1CardJSX}
             {tokenJSX}
             <CurrentPlayerDashboard playerInfo={data.G.players[data.playerID]}></CurrentPlayerDashboard>
+            {nobleJSX}
           </Layer>
         </Stage>
       </div>
