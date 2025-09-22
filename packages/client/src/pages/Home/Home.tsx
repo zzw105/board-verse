@@ -8,6 +8,7 @@ import { lobbyClient, useBoardgameStore } from "../../store/useBoardgameStore";
 import { GameTypeEnum, type GameTypeKeyType } from "../../enum/game";
 import type { LobbyAPI } from "boardgame.io";
 import { useNavigate } from "react-router-dom";
+import { UserEnumName } from "../../enum/user";
 
 export type roomType = LobbyAPI.Match;
 
@@ -181,12 +182,12 @@ export default function Home() {
             <Button size="large" onClick={() => setSetUserInfoModalIsOpen(true)}>
               修改个人信息
             </Button>
-
             <Button size="large" onClick={() => setCreateRoomModalIsOpen(true)}>
               创建房间
             </Button>
           </div>
         </div>
+
         <div className={styles.main}>
           <div className={styles["game-type-list"]}>
             {boardgameStore.gameList.map((item) => (
@@ -202,7 +203,11 @@ export default function Home() {
           <div className={styles.center}>
             <div className={styles.title}>{GameTypeEnum[nowGameType]}</div>
             <div className={styles["room-table"]}>
-              <Table<roomType> rowKey="matchID" columns={columns} dataSource={romeList} />
+              {name === UserEnumName.Visitor ? (
+                <div style={{ margin: "20px 20px " }}>请先修改个人信息</div>
+              ) : (
+                <Table<roomType> rowKey="matchID" columns={columns} dataSource={romeList} />
+              )}
             </div>
           </div>
         </div>

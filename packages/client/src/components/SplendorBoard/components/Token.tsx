@@ -1,7 +1,7 @@
 import { Image as KonvaImage, Group } from "react-konva";
 import { splendorGameTokenList, type SplendorGameTokenNameType, type SplendorGameTokenType } from "@game/shared";
 import { tokensImage } from "../../../utils/loadAllImg";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Konva from "konva";
 import { useContextMenuStore } from "../../../store/useContextMenuStore";
 import { Tween } from "konva/lib/Tween";

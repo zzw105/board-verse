@@ -1,8 +1,9 @@
 const { Server, Origins } = require("boardgame.io/server");
 const { splendorGame, splendorGameTest } = require("@game/shared");
+const cors = require("@koa/cors");
 const server = Server({
   games: [splendorGame, splendorGameTest],
-  origins: [Origins.LOCALHOST],
+  origins: ["*"],
 });
 // server.router.use("/api/create", async (ctx, next) => {
 //   // Decide number of players etc. based on some other API.
@@ -12,5 +13,13 @@ const server = Server({
 //   // ctx.request.body.setupData = setupData;
 //   next();
 // });
+server.router.use(
+  cors({
+    origin: "*", // 或 'https://yourdomain.com'
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // 如果前端带 cookie
+  })
+);
 
-server.run(8000);
+server.run(9002);
