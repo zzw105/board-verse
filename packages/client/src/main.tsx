@@ -3,9 +3,9 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./assets/less/index.less";
 import "./assets/less/reset.less";
-import { loadAllImg } from "./utils/loadAllImg.ts";
 import "@ant-design/v5-patch-for-react-19";
 import { message } from "antd";
+import { loadAllImg } from "./utils/loadAllImg.ts";
 
 window.onerror = (errMessage) => {
   let msg: string;
@@ -27,10 +27,10 @@ window.onerror = (errMessage) => {
   message.error(msg);
 };
 
-loadAllImg().then(() => {
-  createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-      <App />
-    </StrictMode>
-  );
-});
+loadAllImg();
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);

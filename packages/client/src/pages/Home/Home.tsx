@@ -13,10 +13,8 @@ import { UserEnumName } from "../../enum/user";
 export type roomType = LobbyAPI.Match;
 
 export default function Home() {
-  const userStore = useUserStore();
+  const { name, setCredentials, credentials } = useUserStore();
   const navigate = useNavigate();
-  const name = userStore.name;
-  const setCredentials = useUserStore((state) => state.setCredentials);
   const [setUserInfoModalIsOpen, setSetUserInfoModalIsOpen] = useState(false);
   const [createRoomModalIsOpen, setCreateRoomModalIsOpen] = useState(false);
   const setSetUserInfoModalOnSubmit: SetUserInfoModalType["onSubmit"] = (values) => {
@@ -42,7 +40,7 @@ export default function Home() {
       });
   };
 
-  const boardgameStore = useBoardgameStore();
+  const { gameList, setSplendorPlayInfo } = useBoardgameStore();
   const [nowGameType, setNowGameType] = useState<GameTypeKeyType>("splendorMonorepo");
   const updateRoomList = (nowGameType: GameTypeKeyType) => {
     lobbyClient.listMatches(nowGameType).then((res) => {
@@ -136,34 +134,34 @@ export default function Home() {
   ];
 
   const joinRoom = (record: roomType) => {
-    if (userStore.credentials) {
+    if (credentials) {
       message.error("请先退出当前房间");
       return;
     }
     lobbyClient.joinMatch(record.gameName, record.matchID, { playerName: name }).then((res) => {
       console.log(res);
       updateRoomList(nowGameType);
-      userStore.setCredentials(res.playerCredentials);
+      setCredentials(res.playerCredentials);
     });
   };
   const leaveRoom = (record: roomType) => {
     const playerID = record.players.find((item) => item.name === name)?.id;
-    if (playerID !== undefined && userStore.credentials) {
+    if (playerID !== undefined && credentials) {
       lobbyClient
         .leaveMatch(record.gameName, record.matchID, {
           playerID: `${playerID}`,
-          credentials: userStore.credentials,
+          credentials: credentials,
         })
         .then(() => {
           updateRoomList(nowGameType);
-          userStore.setCredentials(undefined);
+          setCredentials(undefined);
         });
-    } else console.error(playerID, userStore.credentials);
+    } else console.error(playerID, credentials);
   };
   const startGame = (record: roomType) => {
     const playerID = record.players.find((item) => item.name === name)?.id;
     if (playerID !== undefined) {
-      boardgameStore.setSplendorPlayInfo({
+      setSplendorPlayInfo({
         matchID: record.matchID,
         playerID: `${playerID}`,
       });
@@ -193,7 +191,7 @@ export default function Home() {
 
         <div className={styles.main}>
           <div className={styles["game-type-list"]}>
-            {boardgameStore.gameList.map((item) => (
+            {gameList.map((item) => (
               <div
                 className={`${styles["game-type-item"]} ${nowGameType === item.value ? styles.active : ""}`}
                 key={item.value}

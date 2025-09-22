@@ -17,7 +17,7 @@ export type FieldType = {
 const CreateRoomModal: React.FC<CreateRoomModalType> = (props) => {
   const { isModalOpen, setIsModalOpen, onSubmit } = props;
   const [form] = Form.useForm();
-  const boardgameStore = useBoardgameStore();
+  const { setGameList, gameList } = useBoardgameStore();
   const handleOk = async () => {
     try {
       // 校验整个表单
@@ -32,11 +32,9 @@ const CreateRoomModal: React.FC<CreateRoomModalType> = (props) => {
     setIsModalOpen(false);
   };
 
-  const gameList = boardgameStore.gameList;
-
   useEffect(() => {
-    boardgameStore.setGameList();
-  }, []);
+    setGameList();
+  }, [setGameList]);
 
   return (
     <Modal
