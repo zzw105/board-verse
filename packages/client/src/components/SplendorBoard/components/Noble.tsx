@@ -11,13 +11,13 @@ interface NobleProps {
   x: number;
   y: number;
   nobleName: SplendorGameNobleNameType;
+  scale?: number;
 }
 
-const scale = 1.15;
 const width = 1000 / 5;
 const height = 400 / 2;
 
-export const Noble = React.memo(({ x, y, nobleName }: NobleProps) => {
+export const Noble = React.memo(({ x, y, nobleName, scale = 1.15 }: NobleProps) => {
   // 当前的贵族信息
   const nobleInfo = splendorGameNobleObj[nobleName] as SplendorGameNobleType;
 
@@ -44,7 +44,7 @@ export const Noble = React.memo(({ x, y, nobleName }: NobleProps) => {
     });
     g.clearCache();
     tweenRef.current.play();
-  }, [x, y]);
+  }, [x, y, scale]);
 
   // 卡片花费点
   const noblePointJsxList: JSX.Element[] = [];

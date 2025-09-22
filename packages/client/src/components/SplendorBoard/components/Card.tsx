@@ -125,15 +125,15 @@ export const Card = React.memo(({ x, y, cardName, isFaceUp, canOperations, isCur
       offsetY={height / 2}
       scaleX={scale}
       scaleY={scale}
-      onContextMenu={(e) =>
-        isCurrent &&
-        canOperations &&
-        handleContextMenu({
-          e,
-          type: isHorizontal ? "card-buy" : !isFaceUp ? "card-lock" : "card",
-          name: cardInfo.name,
-        })
-      }
+      onContextMenu={(e) => {
+        if (isCurrent && canOperations) {
+          handleContextMenu({
+            e,
+            type: isHorizontal ? "card-buy" : !nowIsFaceUp ? "card-lock" : "card",
+            name: cardInfo.name,
+          });
+        }
+      }}
     >
       <Rect width={width} height={height} fill="#fff" shadowBlur={8} cornerRadius={8} />
 

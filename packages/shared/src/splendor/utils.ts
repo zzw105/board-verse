@@ -1000,6 +1000,7 @@ export type PlayerType = {
   cards: SplendorGameCardType[];
   lockCards: SplendorGameCardType[];
   tokens: TokensObjType;
+  nobles: SplendorGameNobleType[];
 };
 
 // 游戏信息
@@ -1052,6 +1053,7 @@ export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType =>
       score: 0,
       cards: [],
       lockCards: [],
+      nobles: [],
       cardPoint: {
         black: 0,
         blue: 0,
@@ -1060,12 +1062,12 @@ export const getNewGameData = (ctx: Ctx, random: RandomAPI): SplendorGameType =>
         white: 0,
       },
       tokens: {
-        red: 1,
-        blue: 1,
-        black: 1,
-        white: 1,
-        green: 1,
-        gold: 4,
+        red: 0,
+        blue: 0,
+        black: 0,
+        white: 0,
+        green: 0,
+        gold: 0,
       },
     };
   }
@@ -1107,4 +1109,19 @@ export const getTokenDelta = (player: PlayerType, card: SplendorGameCardType): T
 
   // 金子不足，购买失败
   return null;
+};
+
+export const isNobleCost = (player: PlayerType, nobles: SplendorGameNobleType[]): number[] => {
+  const canIndexList: number[] = [];
+
+  nobles.forEach((item, index) => {
+    const isAllHigher = (Object.keys(player.cardPoint) as Array<keyof typeof player.cardPoint>).every(
+      (key) => player.cardPoint[key] >= item.cost[key]
+    );
+    if (isAllHigher) {
+      canIndexList.push(index);
+    }
+  });
+
+  return canIndexList;
 };

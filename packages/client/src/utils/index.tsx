@@ -8,7 +8,7 @@ import type {
 import { Card } from "../components/SplendorBoard/components/Card";
 import type { JSX } from "react";
 import { Token } from "../components/SplendorBoard/components/Token";
-import { Group, Rect, Text } from "react-konva";
+import { Circle, Group, Rect, Text } from "react-konva";
 import { useUserStore } from "../store/useUserStore";
 import { eventBus } from "./eventBus";
 import { OperationKeyEnum } from "../enum/game";
@@ -51,7 +51,8 @@ export const generateCardJSX = (
         y={positionY[yIndex]}
         cardName={item.name}
         isFaceUp={false}
-        canOperations={false}
+        canOperations={stagesType === "discard" ? false : true}
+        isCurrent={isCurrent}
       />
     ));
 
@@ -91,7 +92,7 @@ export const isTokenSelectHasThreeOnes = (nowSelectTokens: TokensObjType) => {
   return count >= 3;
 };
 
-export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
+export const generateOwnedTokensJSX = (playerInfo: PlayerType, x = 500, y = 40, scale = 1) => {
   const color = {
     green: "#dbffdb",
     red: "#ffdada",
@@ -103,8 +104,6 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
   const tokenJSX: JSX.Element[] = [];
   const width = 140;
   const height = 160;
-  const x = 500;
-  const y = 40;
 
   const stagesType = useUserStore.getState().stagesType;
   const canOperations = stagesType === "discard";
@@ -113,8 +112,10 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
   (["green", "red", "blue", "white", "black", "gold"] as const).forEach((tokenName, i) => {
     tokenJSX.push(
       <Group
-        x={x + i * (width + 100)}
+        x={x + i * (width + 100) * scale}
         y={y}
+        scaleX={scale}
+        scaleY={scale}
         key={"OwnedTokens" + tokenName}
         style={{ cursor: "pointer" }}
         onMouseOver={() => {
@@ -127,10 +128,11 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
           eventBus.emit("operationOnClick", { type: OperationKeyEnum.RETURN_TOKEN, name: tokenName });
         }}
       >
-        <Rect
+        <Circle
           key={"OwnedTokens" + tokenName + "Rect"}
-          width={width}
-          height={height}
+          radius={width / 1.5}
+          x={width / 2}
+          y={height / 2}
           stroke="#555"
           strokeWidth={3}
           fill={color[tokenName]}
@@ -202,7 +204,7 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType) => {
   return tokenJSX;
 };
 
-export const generateOwnedLockCardJSX = (playerInfo: PlayerType) => {
+export const generateOwnedLockCardJSX = (playerInfo: PlayerType, canOperations = true, y = 300) => {
   const lockCardJSX: JSX.Element[] = [];
   const lockCards = playerInfo.lockCards;
   const isCurrent = useUserStore.getState().isCurrent;
@@ -210,17 +212,25 @@ export const generateOwnedLockCardJSX = (playerInfo: PlayerType) => {
     lockCardJSX.push(
       <Card
         key={item.name}
-        x={80 + index * 430}
-        y={300}
+        x={80 + index * 350}
+        y={y}
         cardName={item.name}
         isFaceUp={true}
-        canOperations={true}
+        canOperations={canOperations}
         isCurrent={isCurrent}
         isHorizontal
       />
     );
   });
   return lockCardJSX;
+};
+export const generateOwnedNobleJSX = (playerInfo: PlayerType, x = 1200, y = 330, Noblex = 300, scale = 1.15) => {
+  const nobleJSX: JSX.Element[] = [];
+  const nobles = [...playerInfo.nobles, ...playerInfo.nobles, ...playerInfo.nobles, ...playerInfo.nobles];
+  nobles.forEach((item, index) => {
+    nobleJSX.push(<Noble key={item.name} x={x + index * Noblex} y={y} scale={scale} nobleName={item.name} />);
+  });
+  return nobleJSX;
 };
 
 export const generateNobleJSX = (nobles: SplendorGameNobleType[]) => {

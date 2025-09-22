@@ -17,9 +17,15 @@ import {
 import { CurrentPlayerDashboard } from "./components/CurrentPlayerDashboard";
 import { useUserStore } from "../../store/useUserStore";
 import { useNavigate } from "react-router-dom";
+import { OtherPlayerDashboard } from "./components/OtherPlayerDashboard";
 
 export function SplendorBoard(data: BoardProps<SplendorGameType>) {
   console.log(123, data);
+
+  if (data.ctx.gameover) {
+    const index = +data.ctx.gameover;
+    message.info(`游戏已结束，${data.matchData?.[index]?.name} 玩家胜利`);
+  }
 
   const { name, setIsCurrent, isCurrent, setStagesType, stagesType } = useUserStore();
 
@@ -256,6 +262,25 @@ export function SplendorBoard(data: BoardProps<SplendorGameType>) {
             {tokenJSX}
             <CurrentPlayerDashboard playerInfo={data.G.players[data.playerID]}></CurrentPlayerDashboard>
             {nobleJSX}
+          </Layer>
+          <Layer imageSmoothingEnabled={true}>
+            {data.matchData
+              ?.filter((item) => item.id !== (data.playerID && +data.playerID))
+              .map((item, index) => {
+                const playerInfo = data.G.players[item.id];
+                if (item.id === (data.playerID && +data.playerID)) {
+                  return null;
+                }
+                return (
+                  <OtherPlayerDashboard
+                    key={"OtherPlayerDashboard" + item.id}
+                    x={2480}
+                    y={20 + index * 615}
+                    playerInfo={playerInfo}
+                    name={data.matchData?.[item.id].name || ""}
+                  ></OtherPlayerDashboard>
+                );
+              })}
           </Layer>
         </Stage>
       </div>
