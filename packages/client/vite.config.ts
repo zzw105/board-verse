@@ -13,8 +13,6 @@ export default defineConfig({
         changeOrigin: true, // 修改请求头中的 origin
         rewrite: (path) => {
           const nowPath = path.replace(/^\/games/, "/games");
-          console.log(nowPath);
-
           return nowPath;
         }, // 可选，保留 /api 前缀
       },
@@ -24,8 +22,6 @@ export default defineConfig({
         ws: true,
         rewrite: (path) => {
           const nowPath = path.replace(/^\/socket.io/, "/socket.io");
-          console.log(nowPath);
-
           return nowPath;
         }, // 可选，保留 /api 前缀
       },

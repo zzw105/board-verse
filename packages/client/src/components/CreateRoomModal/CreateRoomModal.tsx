@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Form, Modal, Radio, Select } from "antd";
+import { Button, Form, Input, Modal, Radio, Select } from "antd";
 import { useBoardgameStore } from "../../store/useBoardgameStore";
 
 export type CreateRoomModalType = {
@@ -9,6 +9,7 @@ export type CreateRoomModalType = {
 };
 
 export type FieldType = {
+  roomName: string;
   gameType: string;
   numPlayers: number;
 };
@@ -56,12 +57,16 @@ const CreateRoomModal: React.FC<CreateRoomModalType> = (props) => {
       <Form<FieldType>
         name="createRoomForm"
         preserve={false}
-        initialValues={{ numPlayers: 1 }}
+        initialValues={{ numPlayers: 1, roomName: "房间" }}
         form={form}
         autoComplete="off"
       >
         <Form.Item label="游戏类型" name="gameType" rules={[{ required: true, message: "请选择游戏类型!" }]}>
           <Select placeholder="请选择游戏类型" options={gameList} />
+        </Form.Item>
+
+        <Form.Item label="房间名称" name="roomName" rules={[{ required: true, message: "请输入房间名称!" }]}>
+          <Input placeholder="请输入房间名称" />
         </Form.Item>
 
         <Form.Item label="房间人数" name="numPlayers" rules={[{ required: true, message: "请输入房间人数!" }]}>

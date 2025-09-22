@@ -30,6 +30,9 @@ export default function Home() {
     lobbyClient
       .createMatch(values.gameType, {
         numPlayers: values.numPlayers,
+        setupData: {
+          roomName: values.roomName,
+        },
       })
       .then((res) => {
         if (res.matchID) {
@@ -56,7 +59,7 @@ export default function Home() {
       if (nowGameType) {
         updateRoomList(nowGameType);
       }
-    }, 1000);
+    }, 2000);
     return () => {
       clearInterval(i);
     };
@@ -65,8 +68,8 @@ export default function Home() {
   const [romeList, setRomeList] = useState<roomType[]>([]);
   const columns: TableProps<roomType>["columns"] = [
     {
-      title: "ID",
-      dataIndex: "matchID",
+      title: "房间名称",
+      dataIndex: ["setupData", "roomName"],
     },
     {
       title: "游戏",
