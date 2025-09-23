@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: "/game",
   server: {
-    port: 3000,
+    port: 10011,
     proxy: {
       "/games": {
         target: "http://localhost:9002", // 后端地址
