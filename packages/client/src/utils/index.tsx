@@ -236,12 +236,7 @@ export const generateOwnedNobleJSX = (playerInfo: PlayerType, x = 1200, y = 330,
 export const generateNobleJSX = (nobles: SplendorGameNobleType[]) => {
   const nobleJSX: JSX.Element[] = [];
   nobles.forEach((item, index) => {
-    nobleJSX.push(<Noble x={2150} y={80 + index * 255} nobleName={item.name} />);
+    nobleJSX.push(<Noble key={"Noble" + item.name} x={2150} y={80 + index * 255} nobleName={item.name} />);
   });
   return nobleJSX;
 };
-
-/* 
-5 2 [0, 1, 2, 3, 4]
-
-*/

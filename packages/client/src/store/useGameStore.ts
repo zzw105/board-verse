@@ -1,38 +1,28 @@
 import { LobbyClient } from "boardgame.io/client";
-import { Client } from "boardgame.io/react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { GameTypeEnum } from "../enum/game";
-import { splendorGame } from "@game/shared";
-import { SplendorBoard } from "../components/SplendorBoard/SplendorBoard";
-import { SocketIO } from "boardgame.io/multiplayer";
 
 export const lobbyClient = new LobbyClient({
   server: import.meta.env.VITE_API_URL,
-});
-
-export const SplendorClient = Client({
-  game: splendorGame,
-  board: SplendorBoard,
-  multiplayer: SocketIO({ server: import.meta.env.VITE_API_URL }),
 });
 
 export type GameInfoType = {
   label: GameTypeEnum;
   value: keyof typeof GameTypeEnum;
 };
-export type SplendorPlayInfoType = {
+export type GamePlayInfoType = {
   playerID: string;
   matchID: string;
 };
-export type useBoardgameStoreType = {
-  splendorPlayInfo?: SplendorPlayInfoType;
+export type useGameStoreType = {
+  gamePlayInfo?: GamePlayInfoType;
   gameList: GameInfoType[];
   setGameList: (newData?: GameInfoType[]) => void;
-  setSplendorPlayInfo: (newData: SplendorPlayInfoType) => void;
+  setGamePlayInfo: (newData: GamePlayInfoType) => void;
 };
 
-export const useBoardgameStore = create<useBoardgameStoreType>()(
+export const useGameStore = create<useGameStoreType>()(
   persist(
     (set) => ({
       gameList: [],
@@ -52,12 +42,12 @@ export const useBoardgameStore = create<useBoardgameStoreType>()(
           });
         }
       },
-      setSplendorPlayInfo: (newData) => {
-        set({ splendorPlayInfo: newData });
+      setGamePlayInfo: (newData) => {
+        set({ gamePlayInfo: newData });
       },
     }),
     {
-      name: "boardgame-storage", // 存储的 key，可以自定义
+      name: "game-storage", // 存储的 key，可以自定义
     }
   )
 );

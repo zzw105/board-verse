@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import Splendor from "../pages/Splendor/Splendor";
+import TheCastlesOfBurgundy from "../pages/TheCastlesOfBurgundy/TheCastlesOfBurgundy";
 
 const router = createBrowserRouter(
   [
@@ -11,6 +12,10 @@ const router = createBrowserRouter(
     {
       path: "/splendor",
       element: <Splendor />,
+    },
+    {
+      path: "/the-castles-of-burgundy",
+      element: <TheCastlesOfBurgundy />,
     },
   ],
   {

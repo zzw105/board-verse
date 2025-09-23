@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Button, Form, Input, Modal, Radio, Select } from "antd";
-import { useBoardgameStore } from "../../store/useBoardgameStore";
+import { useGameStore } from "../../store/useGameStore";
 
 export type CreateRoomModalType = {
   isModalOpen: boolean;
@@ -17,7 +17,7 @@ export type FieldType = {
 const CreateRoomModal: React.FC<CreateRoomModalType> = (props) => {
   const { isModalOpen, setIsModalOpen, onSubmit } = props;
   const [form] = Form.useForm();
-  const { setGameList, gameList } = useBoardgameStore();
+  const { setGameList, gameList } = useGameStore();
   const handleOk = async () => {
     try {
       // 校验整个表单

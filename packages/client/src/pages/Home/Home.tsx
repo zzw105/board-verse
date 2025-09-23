@@ -4,7 +4,7 @@ import { Button, message, Space, Table, Tag, type TableProps } from "antd";
 import SetUserInfoModal, { type SetUserInfoModalType } from "../../components/SetUserInfoModal/SetUserInfoModal";
 import { useEffect, useState, type JSX } from "react";
 import CreateRoomModal, { type CreateRoomModalType } from "../../components/CreateRoomModal/CreateRoomModal";
-import { lobbyClient, useBoardgameStore } from "../../store/useBoardgameStore";
+import { lobbyClient, useGameStore } from "../../store/useGameStore";
 import { GameTypeEnum, type GameTypeKeyType } from "../../enum/game";
 import type { LobbyAPI } from "boardgame.io";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +40,7 @@ export default function Home() {
       });
   };
 
-  const { gameList, setSplendorPlayInfo } = useBoardgameStore();
+  const { gameList, setGamePlayInfo } = useGameStore();
   const [nowGameType, setNowGameType] = useState<GameTypeKeyType>("splendorMonorepo");
   const updateRoomList = (nowGameType: GameTypeKeyType) => {
     lobbyClient.listMatches(nowGameType).then((res) => {
@@ -161,11 +161,16 @@ export default function Home() {
   const startGame = (record: roomType) => {
     const playerID = record.players.find((item) => item.name === name)?.id;
     if (playerID !== undefined) {
-      setSplendorPlayInfo({
+      console.log(record);
+      setGamePlayInfo({
         matchID: record.matchID,
         playerID: `${playerID}`,
       });
-      navigate("/splendor");
+      if (record.gameName === "theCastlesOfBurgundyMonorepo") {
+        navigate("/the-castles-of-burgundy");
+      } else if (record.gameName === "splendorMonorepo") {
+        navigate("/splendor");
+      }
     } else {
       message.error("请先加入房间");
     }

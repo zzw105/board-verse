@@ -3,7 +3,7 @@ import { useGameStore } from "../../store/useGameStore";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../store/useUserStore";
 import { loadAllImg } from "../../utils/loadAllImg";
-import { SplendorClient } from "./SplendorClient";
+import { TheCastlesOfBurgundyClient } from "./TheCastlesOfBurgundyClient";
 
 export default function Splendor() {
   const { gamePlayInfo } = useGameStore();
@@ -28,7 +28,11 @@ export default function Splendor() {
   return (
     <>
       {isLoad && gamePlayInfo && (
-        <SplendorClient playerID={gamePlayInfo.playerID} matchID={gamePlayInfo.matchID} credentials={credentials} />
+        <TheCastlesOfBurgundyClient
+          playerID={gamePlayInfo.playerID}
+          matchID={gamePlayInfo.matchID}
+          credentials={credentials}
+        />
       )}
     </>
   );
