@@ -1,5 +1,5 @@
 {
-  "name": "splendor-game",
+  "name": "board-verse",
   "private": true,
   "version": "1.0.0",
   "description": "Monorepo for Splendor Game (client + server + shared)",
@@ -8,9 +8,12 @@
   ],
   "scripts": {
     "d:client": "pnpm run build:shared & pnpm run dev:client",
-    "d:server": "pnpm run build:shared & pnpm run start:server",
-    "dev:client": "pnpm --filter splendor-game-client dev",
-    "start:server": "pnpm --filter splendor-game-server start",
+    "d:server": "pnpm run build:shared & pnpm run dev:server",
+    "b:all": "pnpm run build:shared & pnpm run build:client & pnpm run build:server",
+    "dev:client": "pnpm --filter board-verse-client dev",
+    "dev:server": "pnpm --filter board-verse-server dev",
+    "build:client": "pnpm --filter board-verse-client build",
+    "build:server": "pnpm --filter board-verse-server build",
     "build:shared": "pnpm --filter @game/shared build"
   },
   "dependencies": {

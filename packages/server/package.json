@@ -1,10 +1,10 @@
 {
-  "name": "splendor-game-server",
+  "name": "board-verse-server",
   "version": "1.0.0",
   "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "dev": "node src/index.js",
     "build": "node build.js"
   },
   "dependencies": {
