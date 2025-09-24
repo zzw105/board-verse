@@ -28,6 +28,33 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: SpriteImageProps) => {
   const mainBoardImageHeight = 1170; // 从文件中获取写死
   const mainBoardImageScale = 0.6;
 
+  const warehouseMarketPos = [
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale - 282,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale + 280,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale - 79,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale + 280,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale + 79,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale + 282,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale - 280,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale + 79,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale - 280,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale - 79,
+    },
+  ];
+
   return (
     <Group
       ref={groupRef}
@@ -48,7 +75,9 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: SpriteImageProps) => {
         x={(mainBoardImageWidth / 2) * mainBoardImageScale}
         y={(mainBoardImageHeight / 2) * mainBoardImageScale}
       />
-      <WarehouseMarket x={(mainBoardImageWidth / 2) * mainBoardImageScale} y={65} number={1} />
+      {warehouseMarketPos.map((item, index) => (
+        <WarehouseMarket key={"WarehouseMarket" + index} x={item.x} y={item.y} number={index + 1} />
+      ))}
     </Group>
   );
 };

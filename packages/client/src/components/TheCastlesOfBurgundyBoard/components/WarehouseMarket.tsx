@@ -12,13 +12,28 @@ interface SpriteImageProps {
 
 export const WarehouseMarket = ({ x, y, number }: SpriteImageProps) => {
   const gameData = useContext(TheCastlesOfBurgundyGameContext);
-  const warehouseMarketWidth = 110;
-  const warehouseMarketHeight = 110;
+  const warehouseMarketWidth = 109;
+  const warehouseMarketHeight = 125;
   const buildingBackgroundDist = 56;
   let warehouseMarket: BlackMarketType[] = [];
   switch (number) {
     case 1:
       warehouseMarket = gameData.G.mainBoardInfo.warehouseMarketOne;
+      break;
+    case 2:
+      warehouseMarket = gameData.G.mainBoardInfo.warehouseMarketTwo;
+      break;
+    case 3:
+      warehouseMarket = gameData.G.mainBoardInfo.warehouseMarketThree;
+      break;
+    case 4:
+      warehouseMarket = gameData.G.mainBoardInfo.warehouseMarketFour;
+      break;
+    case 5:
+      warehouseMarket = gameData.G.mainBoardInfo.warehouseMarketFive;
+      break;
+    case 6:
+      warehouseMarket = gameData.G.mainBoardInfo.warehouseMarketSix;
       break;
   }
   return (

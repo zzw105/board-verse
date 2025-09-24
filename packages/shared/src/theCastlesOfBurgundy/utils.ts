@@ -56,6 +56,11 @@ export type TheCastlesOfBurgundyGameType = {
   mainBoardInfo: {
     blackMarket: BlackMarketType[];
     warehouseMarketOne: BlackMarketType[];
+    warehouseMarketTwo: BlackMarketType[];
+    warehouseMarketThree: BlackMarketType[];
+    warehouseMarketFour: BlackMarketType[];
+    warehouseMarketFive: BlackMarketType[];
+    warehouseMarketSix: BlackMarketType[];
   };
 };
 
@@ -145,6 +150,156 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
         x: 1,
         y: 1,
         background: BuildingsColorEnum.BLUE,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+    ],
+    warehouseMarketTwo: [
+      {
+        x: 0,
+        y: 0,
+        background: BuildingsColorEnum.YELLOW,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 0,
+        background: BuildingsColorEnum.BROWN,
+        playNum: 3,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 0,
+        y: 1,
+        background: BuildingsColorEnum.DARK_GREEN,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 1,
+        background: BuildingsColorEnum.BROWN,
+        playNum: 4,
+        building: StateEnum.EMPTY,
+      },
+    ],
+    warehouseMarketThree: [
+      {
+        x: 0,
+        y: 0,
+        background: BuildingsColorEnum.GREEN,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 0,
+        background: BuildingsColorEnum.BLUE,
+        playNum: 3,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 0,
+        y: 1,
+        background: BuildingsColorEnum.BROWN,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 1,
+        background: BuildingsColorEnum.GREEN,
+        playNum: 4,
+        building: StateEnum.EMPTY,
+      },
+    ],
+    warehouseMarketFour: [
+      {
+        x: 0,
+        y: 0,
+        background: BuildingsColorEnum.BLUE,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 0,
+        background: BuildingsColorEnum.BROWN,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 0,
+        y: 1,
+        background: BuildingsColorEnum.GREY,
+        playNum: 4,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 1,
+        background: BuildingsColorEnum.GREEN,
+        playNum: 3,
+        building: StateEnum.EMPTY,
+      },
+    ],
+    warehouseMarketFive: [
+      {
+        x: 0,
+        y: 0,
+        background: BuildingsColorEnum.BROWN,
+        playNum: 3,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 0,
+        background: BuildingsColorEnum.GREY,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 0,
+        y: 1,
+        background: BuildingsColorEnum.BROWN,
+        playNum: 4,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 1,
+        background: BuildingsColorEnum.YELLOW,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+    ],
+    warehouseMarketSix: [
+      {
+        x: 0,
+        y: 0,
+        background: BuildingsColorEnum.DARK_GREEN,
+        playNum: 3,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 0,
+        background: BuildingsColorEnum.BROWN,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 0,
+        y: 1,
+        background: BuildingsColorEnum.BLUE,
+        playNum: 4,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 1,
+        background: BuildingsColorEnum.GREEN,
         playNum: 2,
         building: StateEnum.EMPTY,
       },
