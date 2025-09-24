@@ -55,6 +55,7 @@ export type TheCastlesOfBurgundyGameType = {
   // 主板图
   mainBoardInfo: {
     blackMarket: BlackMarketType[];
+    warehouseMarketOne: BlackMarketType[];
   };
 };
 
@@ -115,6 +116,36 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
         y: 2,
         background: BuildingsColorEnum.BLACK,
         playNum: 3,
+        building: StateEnum.EMPTY,
+      },
+    ],
+    warehouseMarketOne: [
+      {
+        x: 0,
+        y: 0,
+        background: BuildingsColorEnum.YELLOW,
+        playNum: 3,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 0,
+        background: BuildingsColorEnum.GREEN,
+        playNum: 4,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 0,
+        y: 1,
+        background: BuildingsColorEnum.BROWN,
+        playNum: 2,
+        building: StateEnum.EMPTY,
+      },
+      {
+        x: 1,
+        y: 1,
+        background: BuildingsColorEnum.BLUE,
+        playNum: 2,
         building: StateEnum.EMPTY,
       },
     ],

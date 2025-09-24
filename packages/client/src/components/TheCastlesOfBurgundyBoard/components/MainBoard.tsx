@@ -5,6 +5,7 @@ import useImage from "use-image";
 import mainBoardImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/mainBoard.jpg";
 import { ShadowBlurEnum } from "../../../enum/game";
 import { BlackMarket } from "./BlackMarket";
+import { WarehouseMarket } from "./WarehouseMarket";
 
 interface SpriteImageProps {
   x: number;
@@ -46,7 +47,8 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: SpriteImageProps) => {
       <BlackMarket
         x={(mainBoardImageWidth / 2) * mainBoardImageScale}
         y={(mainBoardImageHeight / 2) * mainBoardImageScale}
-      ></BlackMarket>
+      />
+      <WarehouseMarket x={(mainBoardImageWidth / 2) * mainBoardImageScale} y={65} number={1} />
     </Group>
   );
 };
