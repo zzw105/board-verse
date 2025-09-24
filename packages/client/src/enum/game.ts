@@ -3,6 +3,11 @@ import type { ItemType } from "antd/es/menu/interface";
 import { eventBus } from "../utils/eventBus";
 import { useContextMenuStore } from "../store/useContextMenuStore";
 
+export enum ShadowBlurEnum {
+  MAIN = 40,
+  BACKGROUND_TOKEN = 5,
+}
+
 export type GameTypeKeyType = keyof typeof GameTypeEnum;
 
 export enum GameTypeEnum {

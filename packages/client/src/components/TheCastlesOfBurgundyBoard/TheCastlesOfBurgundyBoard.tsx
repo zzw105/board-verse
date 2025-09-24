@@ -5,15 +5,16 @@ import { useUserStore } from "../../store/useUserStore";
 import { Button, InputNumber, Slider } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Layer, Rect, Stage, Text } from "react-konva";
+import { Layer, Rect, Stage } from "react-konva";
 import type Konva from "konva";
 import useImage from "use-image";
 import backMainImg from "../../assets/theCastlesOfBurgundyMonorepo/imgs/back-main.jpg";
 import { MainBoard } from "./components/MainBoard";
 import { cloneDeep } from "lodash";
+import { TheCastlesOfBurgundyGameContext } from "../../store/TheCastlesOfBurgundyGameContext";
 
-export function TheCastlesOfBurgundyBoard(data: BoardProps<TheCastlesOfBurgundyGameType>) {
-  console.log(123, data);
+export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgundyGameType>) {
+  console.log(123, gameData);
   /* hook */
   const navigate = useNavigate();
   const { name } = useUserStore();
@@ -68,7 +69,7 @@ export function TheCastlesOfBurgundyBoard(data: BoardProps<TheCastlesOfBurgundyG
     setStagePositionLocal({ x, y });
   };
   /* 可拖动图形组件 */
-  const initShapes = [{ id: "MainBoard", x: 0, y: 0 }];
+  const initShapes = [{ id: "MainBoard", x: 10, y: 10 }];
   const [shapes, setShapes] = useState(cloneDeep(initShapes));
   const setShapesLocal = (newShapes: typeof shapes) => {
     localStorage.setItem("shapes", JSON.stringify(newShapes));
@@ -132,7 +133,7 @@ export function TheCastlesOfBurgundyBoard(data: BoardProps<TheCastlesOfBurgundyG
         <Button
           size="large"
           onClick={() => {
-            data.moves.gameReset();
+            gameData.moves.gameReset();
           }}
         >
           重置游戏
@@ -157,7 +158,7 @@ export function TheCastlesOfBurgundyBoard(data: BoardProps<TheCastlesOfBurgundyG
         </Button>
         <div>
           当前玩家
-          {data.matchData?.find((item) => item.id === +data.ctx.currentPlayer)?.name}
+          {gameData.matchData?.find((item) => item.id === +gameData.ctx.currentPlayer)?.name}
         </div>
         <Slider min={0} max={3} onChange={handleSliderChange} value={stageScale} step={0.01} />
         <InputNumber
@@ -169,45 +170,47 @@ export function TheCastlesOfBurgundyBoard(data: BoardProps<TheCastlesOfBurgundyG
           onChange={handleSliderChange}
         />
       </div>
-      <div ref={konvaRef} className={styles["konva"]}>
-        <Stage
-          ref={stageRef}
-          position={stagePosition}
-          width={stageSize.width}
-          height={stageSize.height}
-          onContextMenu={(e) => e.evt.preventDefault()}
-          scale={{ x: stageScale, y: stageScale }}
-          onWheel={handleStageWheel}
-          draggable
-          onDragEnd={handleStageDragEnd}
-        >
-          <Layer listening={false}>
-            <Rect
-              x={-stageSize.width * 5}
-              y={-stageSize.height * 5}
-              width={stageSize.width * 10} // 注意这里用缩放后的尺寸
-              height={stageSize.height * 10}
-              fillPatternImage={backMainImage}
-              fillPatternRepeat="repeat" // 平铺
-            />
-          </Layer>
-          <Layer>
-            {shapes.map((shape) => {
-              if (shape.id === "MainBoard") {
-                return (
-                  <MainBoard
-                    key={shape.id}
-                    draggable
-                    x={shape.x}
-                    y={shape.y}
-                    onDragEnd={(e) => handleShapesDragEnd(e, shape.id)}
-                  />
-                );
-              }
-            })}
-          </Layer>
-        </Stage>
-      </div>
+      <TheCastlesOfBurgundyGameContext.Provider value={gameData}>
+        <div ref={konvaRef} className={styles["konva"]}>
+          <Stage
+            ref={stageRef}
+            position={stagePosition}
+            width={stageSize.width}
+            height={stageSize.height}
+            onContextMenu={(e) => e.evt.preventDefault()}
+            scale={{ x: stageScale, y: stageScale }}
+            onWheel={handleStageWheel}
+            draggable
+            onDragEnd={handleStageDragEnd}
+          >
+            <Layer listening={false}>
+              <Rect
+                x={-stageSize.width * 2}
+                y={-stageSize.height * 2}
+                width={stageSize.width * 10} // 注意这里用缩放后的尺寸
+                height={stageSize.height * 10}
+                fillPatternImage={backMainImage}
+                fillPatternRepeat="repeat" // 平铺
+              />
+            </Layer>
+            <Layer>
+              {shapes.map((shape) => {
+                if (shape.id === "MainBoard") {
+                  return (
+                    <MainBoard
+                      key={shape.id}
+                      draggable
+                      x={shape.x}
+                      y={shape.y}
+                      onDragEnd={(e) => handleShapesDragEnd(e, shape.id)}
+                    />
+                  );
+                }
+              })}
+            </Layer>
+          </Stage>
+        </div>
+      </TheCastlesOfBurgundyGameContext.Provider>
     </div>
   );
 }

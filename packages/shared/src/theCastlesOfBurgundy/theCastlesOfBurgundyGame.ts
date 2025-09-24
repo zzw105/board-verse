@@ -1,11 +1,18 @@
 import type { Game } from "boardgame.io";
-
-export type TheCastlesOfBurgundyGameType = {};
+import { completeTheCastlesOfBurgundyGameInfo, StateEnum, TheCastlesOfBurgundyGameType } from "./utils";
+import { cloneDeep } from "lodash";
 
 export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
   name: "theCastlesOfBurgundyMonorepo",
   setup: ({ ctx, random }) => {
-    return {};
+    const newData = cloneDeep(completeTheCastlesOfBurgundyGameInfo);
+
+    // newData.mainBoardInfo.blackMarket.forEach((item) => {
+    //   if (item.playNum > ctx.numPlayers) {
+    //     item.background = StateEnum.EMPTY;
+    //   }
+    // });
+    return newData;
   },
   phases: {
     play: {
