@@ -2,59 +2,59 @@ import { Image, Group } from "react-konva";
 import { useEffect, useRef } from "react";
 import Konva from "konva";
 import useImage from "use-image";
-import spaceMbBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/space_mb_bg.png";
+import spaceMbBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/goods2019.jpg";
 import { ShadowBlurEnum } from "../../../enum/game";
-import { BuildingsColorEnum } from "@game/shared";
+import { DicePointsEnum, type CargoType } from "@game/shared";
 
 interface Props {
   x: number;
   y: number;
-  type: BuildingsColorEnum;
+  cargoInfo: CargoType;
   center?: boolean;
-  onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
 }
-export const BuildingBackground = ({ x, type, y, center, onDragEnd }: Props) => {
-  const imageWidth = 800 / 8;
-  const imageHeight = 112;
-  const imageScale = 0.53;
+
+export const Cargo = ({ x, y, cargoInfo, center }: Props) => {
+  const { point, isBack } = cargoInfo;
+  const imageWidth = 560 / 7;
+  const imageHeight = 80;
+  const imageScale = 0.62;
 
   const cropFrame = {
     x: 0,
     y: 0,
   };
-
-  switch (type) {
-    case BuildingsColorEnum.BROWN:
-      cropFrame.x = 0;
-      cropFrame.y = 0;
-      break;
-    case BuildingsColorEnum.YELLOW:
-      cropFrame.x = 1;
-      cropFrame.y = 0;
-      break;
-    case BuildingsColorEnum.DARK_GREEN:
-      cropFrame.x = 2;
-      cropFrame.y = 0;
-      break;
-    case BuildingsColorEnum.GREY:
-      cropFrame.x = 3;
-      cropFrame.y = 0;
-      break;
-    case BuildingsColorEnum.BLUE:
-      cropFrame.x = 4;
-      cropFrame.y = 0;
-      break;
-    case BuildingsColorEnum.GREEN:
-      cropFrame.x = 5;
-      cropFrame.y = 0;
-      break;
-    case BuildingsColorEnum.BLACK:
-      cropFrame.x = 6;
-      cropFrame.y = 0;
-      break;
-
-    default:
-      break;
+  if (isBack) {
+    cropFrame.x = 6;
+    cropFrame.y = 0;
+  } else {
+    switch (point) {
+      case DicePointsEnum.ONE:
+        cropFrame.x = 0;
+        cropFrame.y = 0;
+        break;
+      case DicePointsEnum.TWO:
+        cropFrame.x = 1;
+        cropFrame.y = 0;
+        break;
+      case DicePointsEnum.THREE:
+        cropFrame.x = 2;
+        cropFrame.y = 0;
+        break;
+      case DicePointsEnum.FOUR:
+        cropFrame.x = 3;
+        cropFrame.y = 0;
+        break;
+      case DicePointsEnum.FIVE:
+        cropFrame.x = 4;
+        cropFrame.y = 0;
+        break;
+      case DicePointsEnum.SIX:
+        cropFrame.x = 5;
+        cropFrame.y = 0;
+        break;
+      default:
+        break;
+    }
   }
 
   const [spaceMbBgImage] = useImage(spaceMbBgImg);
@@ -74,7 +74,6 @@ export const BuildingBackground = ({ x, type, y, center, onDragEnd }: Props) => 
       y={y}
       offsetX={center ? (imageWidth / 2) * imageScale : 0}
       offsetY={center ? (imageHeight / 2) * imageScale : 0}
-      onDragEnd={onDragEnd}
       // onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
     >
       <Image

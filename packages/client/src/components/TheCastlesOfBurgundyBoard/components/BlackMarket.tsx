@@ -4,12 +4,12 @@ import { BuildingBackground } from "./BuildingBackground";
 import { useContext } from "react";
 import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
 
-interface SpriteImageProps {
+interface Props {
   x: number;
   y: number;
 }
 
-export const BlackMarket = ({ x, y }: SpriteImageProps) => {
+export const BlackMarket = ({ x, y }: Props) => {
   const gameData = useContext(TheCastlesOfBurgundyGameContext);
 
   const blackMarketWidth = 165;

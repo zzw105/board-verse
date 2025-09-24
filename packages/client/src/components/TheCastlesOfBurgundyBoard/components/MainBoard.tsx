@@ -1,20 +1,23 @@
-import { Image, Group } from "react-konva";
-import { useRef } from "react";
+import { Image, Group, Circle } from "react-konva";
+import { useContext, useRef } from "react";
 import Konva from "konva";
 import useImage from "use-image";
 import mainBoardImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/mainBoard.jpg";
 import { ShadowBlurEnum } from "../../../enum/game";
 import { BlackMarket } from "./BlackMarket";
 import { WarehouseMarket } from "./WarehouseMarket";
+import { Cargo } from "./Cargo";
+import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
 
-interface SpriteImageProps {
+interface Props {
   x: number;
   y: number;
   draggable?: boolean;
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
 }
 
-export const MainBoard = ({ x, y, draggable, onDragEnd }: SpriteImageProps) => {
+export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
+  const gameData = useContext(TheCastlesOfBurgundyGameContext);
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
   // useEffect(() => {
@@ -56,14 +59,7 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: SpriteImageProps) => {
   ];
 
   return (
-    <Group
-      ref={groupRef}
-      x={x}
-      y={y}
-      draggable={draggable}
-      onDragEnd={onDragEnd}
-      // onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
-    >
+    <Group ref={groupRef} x={x} y={y} draggable={draggable} onDragEnd={onDragEnd}>
       <Image
         width={mainBoardImageWidth}
         height={mainBoardImageHeight}
@@ -78,6 +74,22 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: SpriteImageProps) => {
       {warehouseMarketPos.map((item, index) => (
         <WarehouseMarket key={"WarehouseMarket" + index} x={item.x} y={item.y} number={index + 1} />
       ))}
+
+      {gameData.G.mainBoardInfo.nowCargos.map((item, index) => {
+        if (item.point === 0) {
+          return null;
+        }
+        return <Cargo key={"Cargo" + index} x={4 + index * 54} y={106} cargoInfo={item} />;
+      })}
+
+      <Circle
+        x={87 + (gameData.G.currentTurn - 1) * 41} // 圆心 x 坐标
+        y={23} // 圆心 y 坐标
+        radius={20} // 圆半径
+        stroke="red" // 描边颜色
+        strokeWidth={3} // 描边宽度
+        fill="" // 空心圆
+      />
     </Group>
   );
 };

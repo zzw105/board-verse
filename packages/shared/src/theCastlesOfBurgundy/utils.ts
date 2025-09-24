@@ -2,6 +2,15 @@ export enum StateEnum {
   EMPTY,
 }
 
+export enum DicePointsEnum {
+  ONE = 1,
+  TWO = 2,
+  THREE = 3,
+  FOUR = 4,
+  FIVE = 5,
+  SIX = 6,
+}
+
 export enum BuildingsColorEnum {
   YELLOW = "修道院",
   BLUE = "船只",
@@ -51,7 +60,15 @@ export type BlackMarketType = {
   building: BuildingsType | StateEnum.EMPTY;
 };
 
+// 货物
+export type CargoType = {
+  point: DicePointsEnum | 0;
+  isBack?: boolean;
+};
+
 export type TheCastlesOfBurgundyGameType = {
+  // 当前回合
+  currentTurn: number;
   // 主板图
   mainBoardInfo: {
     blackMarket: BlackMarketType[];
@@ -61,10 +78,16 @@ export type TheCastlesOfBurgundyGameType = {
     warehouseMarketFour: BlackMarketType[];
     warehouseMarketFive: BlackMarketType[];
     warehouseMarketSix: BlackMarketType[];
+    nowCargos: CargoType[];
+  };
+  // 所有资源标记
+  allTokens: {
+    cargos: CargoType[];
   };
 };
 
 export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType = {
+  currentTurn: 1,
   mainBoardInfo: {
     blackMarket: [
       {
@@ -304,5 +327,10 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
         building: StateEnum.EMPTY,
       },
     ],
+    nowCargos: [],
+  },
+  // 所有资源标记
+  allTokens: {
+    cargos: Array.from({ length: 42 }, (_, i) => ({ point: Math.floor(i / 7) + 1 })),
   },
 };

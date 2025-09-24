@@ -1,16 +1,16 @@
-import { Group, Rect } from "react-konva";
+import { Group } from "react-konva";
 import { StateEnum, type BlackMarketType } from "@game/shared";
 import { BuildingBackground } from "./BuildingBackground";
 import { useContext } from "react";
 import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
 
-interface SpriteImageProps {
+interface Props {
   x: number;
   y: number;
   number: number;
 }
 
-export const WarehouseMarket = ({ x, y, number }: SpriteImageProps) => {
+export const WarehouseMarket = ({ x, y, number }: Props) => {
   const gameData = useContext(TheCastlesOfBurgundyGameContext);
   const warehouseMarketWidth = 109;
   const warehouseMarketHeight = 125;
