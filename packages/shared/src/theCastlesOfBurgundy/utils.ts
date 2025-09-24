@@ -20,6 +20,22 @@ export enum BuildingsColorEnum {
   BROWN = "建筑物",
   BLACK = "黑市",
 }
+export enum BuildingsBrownTypeEnum {
+  MARKET = "市集",
+  CARPENTER = "木匠工厂",
+  CHURCH = "教堂",
+  WAREHOUSE = "货仓",
+  DORMITORY = "宿舍",
+  BANK = "银行",
+  TOWN_HALL = "大会堂",
+  LOOKOUT = "瞭望台",
+}
+export enum BuildingsGreenTypeEnum {
+  CHICKEN = "鸡",
+  SHEEP = "羊",
+  PIG = "猪",
+  COWS = "牛",
+}
 
 type BuildingBaseType = {
   isBlack: boolean;
@@ -39,9 +55,12 @@ export type BuildingsGreyType = BuildingBaseType & {
 };
 export type BuildingsGreenType = BuildingBaseType & {
   color: BuildingsColorEnum.GREEN;
+  greenType: BuildingsGreenTypeEnum;
+  number: 2 | 3 | 4;
 };
 export type BuildingsBrownType = BuildingBaseType & {
   color: BuildingsColorEnum.BROWN;
+  brownType: BuildingsBrownTypeEnum;
 };
 
 export type BuildingsType =
@@ -62,7 +81,7 @@ export type BlackMarketType = {
 
 // 货物
 export type CargoType = {
-  point: DicePointsEnum | 0;
+  point: DicePointsEnum | StateEnum.EMPTY;
   isBack?: boolean;
 };
 
@@ -83,7 +102,12 @@ export type TheCastlesOfBurgundyGameType = {
   // 所有资源标记
   allTokens: {
     cargos: CargoType[];
+    buildings: BuildingsType[];
   };
+};
+
+const createBuildingsList = <T extends BuildingsType>(length: number, data: T): T[] => {
+  return Array.from({ length }, () => ({ ...data }));
 };
 
 export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType = {
@@ -332,5 +356,216 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
   // 所有资源标记
   allTokens: {
     cargos: Array.from({ length: 42 }, (_, i) => ({ point: Math.floor(i / 7) + 1 })),
+    buildings: [
+      // 建筑物-普通
+      ...createBuildingsList(5, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.MARKET,
+        isBlack: false,
+      }),
+      ...createBuildingsList(5, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.CARPENTER,
+        isBlack: false,
+      }),
+      ...createBuildingsList(5, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.CHURCH,
+        isBlack: false,
+      }),
+      ...createBuildingsList(5, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.WAREHOUSE,
+        isBlack: false,
+      }),
+      ...createBuildingsList(5, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.DORMITORY,
+        isBlack: false,
+      }),
+      ...createBuildingsList(5, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.BANK,
+        isBlack: false,
+      }),
+      ...createBuildingsList(5, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.TOWN_HALL,
+        isBlack: false,
+      }),
+      ...createBuildingsList(5, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.LOOKOUT,
+        isBlack: false,
+      }),
+      // 建筑物-黑市
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.MARKET,
+        isBlack: true,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.CARPENTER,
+        isBlack: true,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.CHURCH,
+        isBlack: true,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.WAREHOUSE,
+        isBlack: true,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.DORMITORY,
+        isBlack: true,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.BANK,
+        isBlack: true,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.TOWN_HALL,
+        isBlack: true,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.BROWN,
+        brownType: BuildingsBrownTypeEnum.LOOKOUT,
+        isBlack: true,
+      }),
+      // 牲口-普通
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        number: 2,
+        isBlack: false,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        number: 3,
+        isBlack: false,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        number: 4,
+        isBlack: false,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.SHEEP,
+        number: 2,
+        isBlack: false,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.SHEEP,
+        number: 3,
+        isBlack: false,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.SHEEP,
+        number: 4,
+        isBlack: false,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.PIG,
+        number: 2,
+        isBlack: false,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.PIG,
+        number: 3,
+        isBlack: false,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.PIG,
+        number: 4,
+        isBlack: false,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.COWS,
+        number: 2,
+        isBlack: false,
+      }),
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.COWS,
+        number: 3,
+        isBlack: false,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.COWS,
+        number: 4,
+        isBlack: false,
+      }),
+      // 牲口-黑市
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        number: 3,
+        isBlack: true,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        number: 4,
+        isBlack: true,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.SHEEP,
+        number: 3,
+        isBlack: true,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.SHEEP,
+        number: 4,
+        isBlack: true,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.PIG,
+        number: 3,
+        isBlack: true,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.PIG,
+        number: 4,
+        isBlack: true,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.COWS,
+        number: 3,
+        isBlack: true,
+      }),
+      ...createBuildingsList(1, {
+        color: BuildingsColorEnum.GREEN,
+        greenType: BuildingsGreenTypeEnum.COWS,
+        number: 4,
+        isBlack: true,
+      }),
+     
+
+      // 船只
+      ...Array.from({ length: 20 }).map(() => ({ color: BuildingsColorEnum.BLUE, isBlack: false }) as const),
+      ...Array.from({ length: 6 }).map(() => ({ color: BuildingsColorEnum.BLUE, isBlack: true }) as const),
+    ],
   },
 };
