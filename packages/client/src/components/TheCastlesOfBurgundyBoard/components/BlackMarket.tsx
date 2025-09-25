@@ -3,6 +3,7 @@ import { StateEnum } from "@game/shared";
 import { BuildingBackground } from "./BuildingBackground";
 import { useContext } from "react";
 import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
+import { Building } from "./Building";
 
 interface Props {
   x: number;
@@ -32,30 +33,60 @@ export const BlackMarket = ({ x, y }: Props) => {
         }
         if (item.y === 0) {
           return (
-            <BuildingBackground
-              x={28 + item.x * buildingBackgroundDist}
-              y={blackMarketHeight / 2 - 47}
-              type={item.background}
-              center
-            />
+            <>
+              <BuildingBackground
+                x={28 + item.x * buildingBackgroundDist}
+                y={blackMarketHeight / 2 - 47}
+                type={item.background}
+                center
+              />
+              {item.building !== StateEnum.EMPTY && (
+                <Building
+                  x={28 + item.x * buildingBackgroundDist}
+                  y={blackMarketHeight / 2 - 47}
+                  buildingInfo={item.building}
+                  center
+                />
+              )}
+            </>
           );
         } else if (item.y === 1) {
           return (
-            <BuildingBackground
-              x={1 + (item.x + 1) * buildingBackgroundDist}
-              y={blackMarketHeight / 2}
-              type={item.background}
-              center
-            />
+            <>
+              <BuildingBackground
+                x={1 + (item.x + 1) * buildingBackgroundDist}
+                y={blackMarketHeight / 2}
+                type={item.background}
+                center
+              />
+              {item.building !== StateEnum.EMPTY && (
+                <Building
+                  x={1 + (item.x + 1) * buildingBackgroundDist}
+                  y={blackMarketHeight / 2}
+                  buildingInfo={item.building}
+                  center
+                />
+              )}
+            </>
           );
         } else if (item.y === 2) {
           return (
-            <BuildingBackground
-              x={28 + item.x * buildingBackgroundDist}
-              y={blackMarketHeight / 2 + 47}
-              type={item.background}
-              center
-            />
+            <>
+              <BuildingBackground
+                x={28 + item.x * buildingBackgroundDist}
+                y={blackMarketHeight / 2 + 47}
+                type={item.background}
+                center
+              />
+              {item.building !== StateEnum.EMPTY && (
+                <Building
+                  x={28 + item.x * buildingBackgroundDist}
+                  y={blackMarketHeight / 2 + 47}
+                  buildingInfo={item.building}
+                  center
+                />
+              )}
+            </>
           );
         }
       })}

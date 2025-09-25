@@ -3,6 +3,7 @@ import { StateEnum, type BlackMarketType } from "@game/shared";
 import { BuildingBackground } from "./BuildingBackground";
 import { useContext } from "react";
 import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
+import { Building } from "./Building";
 
 interface Props {
   x: number;
@@ -53,9 +54,23 @@ export const WarehouseMarket = ({ x, y, number }: Props) => {
           return null;
         }
         if (item.y === 0) {
-          return <BuildingBackground x={item.x * buildingBackgroundDist} y={0} type={item.background} />;
+          return (
+            <>
+              <BuildingBackground x={item.x * buildingBackgroundDist} y={0} type={item.background} />
+              {item.building !== StateEnum.EMPTY && (
+                <Building x={item.x * buildingBackgroundDist} y={0} buildingInfo={item.building} />
+              )}
+            </>
+          );
         } else if (item.y === 1) {
-          return <BuildingBackground x={item.x * buildingBackgroundDist} y={65} type={item.background} />;
+          return (
+            <>
+              <BuildingBackground x={item.x * buildingBackgroundDist} y={65} type={item.background} />
+              {item.building !== StateEnum.EMPTY && (
+                <Building x={item.x * buildingBackgroundDist} y={65} buildingInfo={item.building} />
+              )}
+            </>
+          );
         }
       })}
     </Group>

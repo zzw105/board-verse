@@ -12,6 +12,7 @@ import backMainImg from "../../assets/theCastlesOfBurgundyMonorepo/imgs/back-mai
 import { MainBoard } from "./components/MainBoard";
 import { cloneDeep } from "lodash";
 import { TheCastlesOfBurgundyGameContext } from "../../store/TheCastlesOfBurgundyGameContext";
+import { Tooltip } from "./components/Tooltip";
 
 export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgundyGameType>) {
   console.log(123, gameData);
@@ -174,7 +175,8 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
         <div ref={konvaRef} className={styles["konva"]}>
           <Stage
             ref={stageRef}
-            position={stagePosition}
+            x={stagePosition.x}
+            y={stagePosition.y}
             width={stageSize.width}
             height={stageSize.height}
             onContextMenu={(e) => e.evt.preventDefault()}
@@ -207,6 +209,9 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
                   );
                 }
               })}
+            </Layer>
+            <Layer>
+              <Tooltip />
             </Layer>
           </Stage>
         </div>

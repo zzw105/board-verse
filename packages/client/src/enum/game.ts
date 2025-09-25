@@ -5,6 +5,7 @@ import { useContextMenuStore } from "../store/useContextMenuStore";
 
 export enum ShadowBlurEnum {
   MAIN = 40,
+  TOKEN = 20,
   BACKGROUND_TOKEN = 5,
 }
 

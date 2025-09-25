@@ -1,3 +1,11 @@
+export function takeOne<T>(arr: T[], predicate: (item: T, index: number, array: T[]) => boolean): T | undefined {
+  const index = arr.findIndex(predicate);
+  if (index !== -1) {
+    return arr.splice(index, 1)[0];
+  }
+  return undefined;
+}
+
 export enum StateEnum {
   EMPTY,
 }
@@ -31,8 +39,8 @@ export enum BuildingsBrownTypeEnum {
   LOOKOUT = "瞭望台",
 }
 export enum BuildingsGreenTypeEnum {
-  CHICKEN = "鸡",
-  SHEEP = "羊",
+  GOAT = "山羊",
+  SHEEP = "绵羊",
   PIG = "猪",
   COWS = "牛",
 }
@@ -43,6 +51,33 @@ type BuildingBaseType = {
 
 export type BuildingsYellowType = BuildingBaseType & {
   color: BuildingsColorEnum.YELLOW;
+  yellowType:
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 13
+    | 14
+    | 15
+    | 16
+    | 17
+    | 18
+    | 19
+    | 20
+    | 21
+    | 22
+    | 23
+    | 24
+    | 25
+    | 26;
 };
 export type BuildingsBlueType = BuildingBaseType & {
   color: BuildingsColorEnum.BLUE;
@@ -442,19 +477,19 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
       // 牲口-普通
       ...createBuildingsList(2, {
         color: BuildingsColorEnum.GREEN,
-        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        greenType: BuildingsGreenTypeEnum.GOAT,
         number: 2,
         isBlack: false,
       }),
       ...createBuildingsList(2, {
         color: BuildingsColorEnum.GREEN,
-        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        greenType: BuildingsGreenTypeEnum.GOAT,
         number: 3,
         isBlack: false,
       }),
       ...createBuildingsList(1, {
         color: BuildingsColorEnum.GREEN,
-        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        greenType: BuildingsGreenTypeEnum.GOAT,
         number: 4,
         isBlack: false,
       }),
@@ -515,13 +550,13 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
       // 牲口-黑市
       ...createBuildingsList(1, {
         color: BuildingsColorEnum.GREEN,
-        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        greenType: BuildingsGreenTypeEnum.GOAT,
         number: 3,
         isBlack: true,
       }),
       ...createBuildingsList(1, {
         color: BuildingsColorEnum.GREEN,
-        greenType: BuildingsGreenTypeEnum.CHICKEN,
+        greenType: BuildingsGreenTypeEnum.GOAT,
         number: 4,
         isBlack: true,
       }),
@@ -561,11 +596,48 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
         number: 4,
         isBlack: true,
       }),
-     
-
-      // 船只
-      ...Array.from({ length: 20 }).map(() => ({ color: BuildingsColorEnum.BLUE, isBlack: false }) as const),
-      ...Array.from({ length: 6 }).map(() => ({ color: BuildingsColorEnum.BLUE, isBlack: true }) as const),
+      // 修道院-全部
+      ...Array(26)
+        .fill(null)
+        .map((_, index) => {
+          const yellowType = (index + 1) as BuildingsYellowType["yellowType"];
+          const isBlack = [7, 12, 14, 15, 24, 25].includes(yellowType);
+          return {
+            color: BuildingsColorEnum.YELLOW,
+            yellowType,
+            isBlack,
+          } as const;
+        }),
+      // 城堡-普通
+      ...createBuildingsList(14, {
+        color: BuildingsColorEnum.DARK_GREEN,
+        isBlack: false,
+      }),
+      // 城堡-黑市
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.DARK_GREEN,
+        isBlack: true,
+      }),
+      // 矿坑-普通
+      ...createBuildingsList(10, {
+        color: BuildingsColorEnum.GREY,
+        isBlack: false,
+      }),
+      // 矿坑-黑市
+      ...createBuildingsList(2, {
+        color: BuildingsColorEnum.GREY,
+        isBlack: true,
+      }),
+      // 船只-普通
+      ...createBuildingsList(20, {
+        color: BuildingsColorEnum.BLUE,
+        isBlack: false,
+      }),
+      // 船只-黑市
+      ...createBuildingsList(6, {
+        color: BuildingsColorEnum.BLUE,
+        isBlack: true,
+      }),
     ],
   },
 };
