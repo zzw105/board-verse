@@ -1,4 +1,4 @@
-import { Image, Group, Text } from "react-konva";
+import { Image, Group } from "react-konva";
 import { useEffect, useRef } from "react";
 import Konva from "konva";
 import useImage from "use-image";
@@ -23,13 +23,15 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
     x: 0,
     y: 0,
   };
-
+  let text = `板块类型: ${buildingInfo.color}`;
   switch (buildingInfo.color) {
     case BuildingsColorEnum.BROWN:
+      text += `\n建筑物类型: ${buildingInfo.brownType}`;
       switch (buildingInfo.brownType) {
         case BuildingsBrownTypeEnum.MARKET:
           cropFrame.x = 3;
           cropFrame.y = 0;
+
           break;
         case BuildingsBrownTypeEnum.CARPENTER:
           cropFrame.x = 1;
@@ -62,6 +64,7 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
       }
       break;
     case BuildingsColorEnum.YELLOW:
+      text += `\n修道院类型: ${buildingInfo.yellowType}`;
       switch (buildingInfo.yellowType) {
         case 1:
           cropFrame.x = 0;
@@ -182,8 +185,10 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
       cropFrame.y = 5;
       break;
     case BuildingsColorEnum.GREEN:
+      text += `\n牲口类型: ${buildingInfo.greenType}`;
       switch (buildingInfo.greenType) {
         case BuildingsGreenTypeEnum.GOAT:
+          text += `\n山羊数量: ${buildingInfo.number}`;
           switch (buildingInfo.number) {
             case 2:
               cropFrame.x = 0;
@@ -200,6 +205,7 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
           }
           break;
         case BuildingsGreenTypeEnum.COWS:
+          text += `\n奶牛数量: ${buildingInfo.number}`;
           switch (buildingInfo.number) {
             case 2:
               cropFrame.x = 5;
@@ -216,6 +222,7 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
           }
           break;
         case BuildingsGreenTypeEnum.PIG:
+          text += `\n猪数量: ${buildingInfo.number}`;
           switch (buildingInfo.number) {
             case 2:
               cropFrame.x = 2;
@@ -232,6 +239,7 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
           }
           break;
         case BuildingsGreenTypeEnum.SHEEP:
+          text += `\n绵羊数量: ${buildingInfo.number}`;
           switch (buildingInfo.number) {
             case 2:
               cropFrame.x = 7;
@@ -271,9 +279,16 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
       offsetY={center ? (imageHeight / 2) * imageScale : 0}
       onDragEnd={onDragEnd}
       // onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
-      onMouseEnter={(e) =>
-        targetEnter(e, <Text text={`建筑: ${buildingInfo.color}`} fontSize={14} padding={5} fill="white" />)
-      }
+      onMouseEnter={(e) => {
+        targetEnter(
+          e,
+          <>
+            {text.split("\n").map((item) => (
+              <div>{item}</div>
+            ))}
+          </>
+        );
+      }}
       onMouseLeave={targetLeave}
       onMouseMove={targetMove}
     >

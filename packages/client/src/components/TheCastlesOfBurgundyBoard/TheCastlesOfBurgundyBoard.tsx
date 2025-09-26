@@ -210,10 +210,8 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
                 }
               })}
             </Layer>
-            <Layer>
-              <Tooltip />
-            </Layer>
           </Stage>
+          <Tooltip />
         </div>
       </TheCastlesOfBurgundyGameContext.Provider>
     </div>

@@ -21,7 +21,7 @@ export type TooltipStoreType = {
 export const useTooltipStore = create<TooltipStoreType>((set, get) => {
   const throttledMove = _.throttle((pos: { x: number; y: number }) => {
     set({ position: pos });
-  }, 50); // 每 50ms 最多触发一次
+  }, 30); // 每 50ms 最多触发一次
 
   return {
     visible: false,
@@ -33,29 +33,20 @@ export const useTooltipStore = create<TooltipStoreType>((set, get) => {
     setContent: (content: JSX.Element) => set({ content }),
     setTimer: (timer: NodeJS.Timeout | null) => set({ timer }),
     targetEnter: (e, content) => {
-      const item = setTimeout(() => {
-        const stage = e.target.getStage();
-        if (stage) {
-          const pos = stage.getPointerPosition();
-          if (pos) {
-            get().setPosition({ x: pos.x - stage.attrs.x, y: pos.y - stage.attrs.y });
-            get().setVisible(true);
-            get().setContent(content);
-          }
-        }
+      const timer = setTimeout(() => {
+        get().setVisible(true);
+        get().setContent(content);
       }, 500);
-      get().setTimer(item);
+      get().setTimer(timer);
     },
+
     targetMove: (e) => {
-      if (!get().visible) return;
-      const stage = e.target.getStage();
-      if (stage) {
-        const pos = stage.getPointerPosition();
-        if (pos) {
-          throttledMove({ x: pos.x - stage.attrs.x, y: pos.y - stage.attrs.y });
-        }
-      }
+      const evt = e.evt;
+      const pageX = evt.clientX;
+      const pageY = evt.clientY;
+      throttledMove({ x: pageX, y: pageY });
     },
+
     targetLeave: () => {
       const timer = get().timer;
       if (timer) clearTimeout(timer);
