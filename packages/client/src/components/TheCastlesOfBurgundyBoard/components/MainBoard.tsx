@@ -8,6 +8,8 @@ import { BlackMarket } from "./BlackMarket";
 import { WarehouseMarket } from "./WarehouseMarket";
 import { Cargo } from "./Cargo";
 import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
+import { StateEnum } from "@game/shared";
+import { Dice } from "./Dice";
 
 interface Props {
   x: number;
@@ -76,7 +78,7 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
       ))}
 
       {gameData.G.mainBoardInfo.nowCargos.map((item, index) => {
-        if (item.point === 0) {
+        if (item.point === StateEnum.EMPTY) {
           return null;
         }
         return <Cargo key={"Cargo" + index} x={4 + index * 54} y={106} cargoInfo={item} />;
@@ -90,6 +92,7 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
         strokeWidth={3} // 描边宽度
         fill="" // 空心圆
       />
+      <Dice x={20} y={30} point={gameData.G.mainBoardInfo.dice} type={4}></Dice>
     </Group>
   );
 };

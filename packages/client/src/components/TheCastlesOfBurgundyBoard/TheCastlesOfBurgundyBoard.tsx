@@ -13,8 +13,8 @@ import { MainBoard } from "./components/MainBoard";
 import { cloneDeep } from "lodash";
 import { TheCastlesOfBurgundyGameContext } from "../../store/TheCastlesOfBurgundyGameContext";
 import { Tooltip } from "./components/Tooltip";
-import { UserBoard } from "./components/userBoard";
-import { useUserDebugStore } from "../../store/useUserDebugStore";
+import { UserBoard } from "./components/UserBoard";
+import { useDebugStore } from "../../store/useDebugStore";
 
 export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgundyGameType>) {
   console.log(123, gameData);
@@ -55,7 +55,7 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
     if (e.evt.ctrlKey) {
       direction = -direction;
     }
-    const scaleBy = 1.03;
+    const scaleBy = 1.04;
     const newScale = +(direction > 0 ? oldScale * scaleBy : oldScale / scaleBy).toFixed(2);
     setStageScaleLocal(newScale);
     const newPos = {
@@ -146,7 +146,7 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
     setDebugNum3,
     setDebugNum4,
     setDebugNum5,
-  } = useUserDebugStore();
+  } = useDebugStore();
 
   return (
     <div className={styles.board}>

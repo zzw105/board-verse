@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type UserDebug = {
+export type Debug = {
   debugNum1: number;
   debugNum2: number;
   debugNum3: number;
@@ -13,9 +13,9 @@ export type UserDebug = {
   setDebugNum5: (debugNum5: number) => void;
 };
 
-export const useUserDebugStore = create<UserDebug>((set) => ({
-  debugNum1: 0,
-  debugNum2: 0,
+export const useDebugStore = create<Debug>((set) => ({
+  debugNum1: 255,
+  debugNum2: 10,
   debugNum3: 0,
   debugNum4: 0,
   debugNum5: 0,
@@ -32,10 +32,5 @@ const {
   debugNum3,
   debugNum4,
   debugNum5,
-  setDebugNum1,
-  setDebugNum2,
-  setDebugNum3,
-  setDebugNum4,
-  setDebugNum5,
-} = useUserDebugStore(); 
+} = useDebugStore(); 
 */

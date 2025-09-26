@@ -7,7 +7,7 @@ export function takeOne<T>(arr: T[], predicate: (item: T, index: number, array: 
 }
 
 export enum StateEnum {
-  EMPTY,
+  EMPTY = "EMPTY",
 }
 
 export enum DicePointsEnum {
@@ -123,7 +123,16 @@ export type PlayerTerritoryType = Omit<BlackMarketType, "playNum"> & {
   pointNum: DicePointsEnum;
 };
 export type PlayersInfoType = {
+  id: number;
   territory: PlayerTerritoryType[];
+  dices?: {
+    point: DicePointsEnum;
+    isUse: boolean;
+  }[];
+};
+export type WarehouseMarketListType = {
+  warehouse: CargoType[];
+  market: BlackMarketType[];
 };
 
 export type TheCastlesOfBurgundyGameType = {
@@ -132,16 +141,12 @@ export type TheCastlesOfBurgundyGameType = {
   // 主板图
   mainBoardInfo: {
     blackMarket: BlackMarketType[];
-    warehouseMarketOne: BlackMarketType[];
-    warehouseMarketTwo: BlackMarketType[];
-    warehouseMarketThree: BlackMarketType[];
-    warehouseMarketFour: BlackMarketType[];
-    warehouseMarketFive: BlackMarketType[];
-    warehouseMarketSix: BlackMarketType[];
+    warehouseMarketList: WarehouseMarketListType[];
     nowCargos: CargoType[];
+    dice: DicePointsEnum | StateEnum.EMPTY;
   };
   // 玩家信息
-  playersInfo: Record<number, PlayersInfoType>;
+  playersInfo: PlayersInfoType[];
   // 所有资源标记
   allTokens: {
     cargos: CargoType[];
@@ -214,189 +219,210 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
         building: StateEnum.EMPTY,
       },
     ],
-    warehouseMarketOne: [
+    warehouseMarketList: [
       {
-        x: 0,
-        y: 0,
-        background: BuildingsColorEnum.YELLOW,
-        playNum: 3,
-        building: StateEnum.EMPTY,
+        warehouse: [],
+        market: [
+          {
+            x: 0,
+            y: 0,
+            background: BuildingsColorEnum.YELLOW,
+            playNum: 3,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 0,
+            background: BuildingsColorEnum.GREEN,
+            playNum: 4,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 0,
+            y: 1,
+            background: BuildingsColorEnum.BROWN,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 1,
+            background: BuildingsColorEnum.BLUE,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+        ],
       },
       {
-        x: 1,
-        y: 0,
-        background: BuildingsColorEnum.GREEN,
-        playNum: 4,
-        building: StateEnum.EMPTY,
+        warehouse: [],
+        market: [
+          {
+            x: 0,
+            y: 0,
+            background: BuildingsColorEnum.YELLOW,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 0,
+            background: BuildingsColorEnum.BROWN,
+            playNum: 3,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 0,
+            y: 1,
+            background: BuildingsColorEnum.DARK_GREEN,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 1,
+            background: BuildingsColorEnum.BROWN,
+            playNum: 4,
+            building: StateEnum.EMPTY,
+          },
+        ],
       },
       {
-        x: 0,
-        y: 1,
-        background: BuildingsColorEnum.BROWN,
-        playNum: 2,
-        building: StateEnum.EMPTY,
+        warehouse: [],
+        market: [
+          {
+            x: 0,
+            y: 0,
+            background: BuildingsColorEnum.GREEN,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 0,
+            background: BuildingsColorEnum.BLUE,
+            playNum: 3,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 0,
+            y: 1,
+            background: BuildingsColorEnum.BROWN,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 1,
+            background: BuildingsColorEnum.GREEN,
+            playNum: 4,
+            building: StateEnum.EMPTY,
+          },
+        ],
       },
       {
-        x: 1,
-        y: 1,
-        background: BuildingsColorEnum.BLUE,
-        playNum: 2,
-        building: StateEnum.EMPTY,
-      },
-    ],
-    warehouseMarketTwo: [
-      {
-        x: 0,
-        y: 0,
-        background: BuildingsColorEnum.YELLOW,
-        playNum: 2,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 1,
-        y: 0,
-        background: BuildingsColorEnum.BROWN,
-        playNum: 3,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 0,
-        y: 1,
-        background: BuildingsColorEnum.DARK_GREEN,
-        playNum: 2,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 1,
-        y: 1,
-        background: BuildingsColorEnum.BROWN,
-        playNum: 4,
-        building: StateEnum.EMPTY,
-      },
-    ],
-    warehouseMarketThree: [
-      {
-        x: 0,
-        y: 0,
-        background: BuildingsColorEnum.GREEN,
-        playNum: 2,
-        building: StateEnum.EMPTY,
+        warehouse: [],
+        market: [
+          {
+            x: 0,
+            y: 0,
+            background: BuildingsColorEnum.BLUE,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 0,
+            background: BuildingsColorEnum.BROWN,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 0,
+            y: 1,
+            background: BuildingsColorEnum.GREY,
+            playNum: 4,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 1,
+            background: BuildingsColorEnum.GREEN,
+            playNum: 3,
+            building: StateEnum.EMPTY,
+          },
+        ],
       },
       {
-        x: 1,
-        y: 0,
-        background: BuildingsColorEnum.BLUE,
-        playNum: 3,
-        building: StateEnum.EMPTY,
+        warehouse: [],
+        market: [
+          {
+            x: 0,
+            y: 0,
+            background: BuildingsColorEnum.BROWN,
+            playNum: 3,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 0,
+            background: BuildingsColorEnum.GREY,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 0,
+            y: 1,
+            background: BuildingsColorEnum.BROWN,
+            playNum: 4,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 1,
+            background: BuildingsColorEnum.YELLOW,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+        ],
       },
       {
-        x: 0,
-        y: 1,
-        background: BuildingsColorEnum.BROWN,
-        playNum: 2,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 1,
-        y: 1,
-        background: BuildingsColorEnum.GREEN,
-        playNum: 4,
-        building: StateEnum.EMPTY,
-      },
-    ],
-    warehouseMarketFour: [
-      {
-        x: 0,
-        y: 0,
-        background: BuildingsColorEnum.BLUE,
-        playNum: 2,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 1,
-        y: 0,
-        background: BuildingsColorEnum.BROWN,
-        playNum: 2,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 0,
-        y: 1,
-        background: BuildingsColorEnum.GREY,
-        playNum: 4,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 1,
-        y: 1,
-        background: BuildingsColorEnum.GREEN,
-        playNum: 3,
-        building: StateEnum.EMPTY,
-      },
-    ],
-    warehouseMarketFive: [
-      {
-        x: 0,
-        y: 0,
-        background: BuildingsColorEnum.BROWN,
-        playNum: 3,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 1,
-        y: 0,
-        background: BuildingsColorEnum.GREY,
-        playNum: 2,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 0,
-        y: 1,
-        background: BuildingsColorEnum.BROWN,
-        playNum: 4,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 1,
-        y: 1,
-        background: BuildingsColorEnum.YELLOW,
-        playNum: 2,
-        building: StateEnum.EMPTY,
-      },
-    ],
-    warehouseMarketSix: [
-      {
-        x: 0,
-        y: 0,
-        background: BuildingsColorEnum.DARK_GREEN,
-        playNum: 3,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 1,
-        y: 0,
-        background: BuildingsColorEnum.BROWN,
-        playNum: 2,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 0,
-        y: 1,
-        background: BuildingsColorEnum.BLUE,
-        playNum: 4,
-        building: StateEnum.EMPTY,
-      },
-      {
-        x: 1,
-        y: 1,
-        background: BuildingsColorEnum.GREEN,
-        playNum: 2,
-        building: StateEnum.EMPTY,
+        warehouse: [],
+        market: [
+          {
+            x: 0,
+            y: 0,
+            background: BuildingsColorEnum.DARK_GREEN,
+            playNum: 3,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 0,
+            background: BuildingsColorEnum.BROWN,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 0,
+            y: 1,
+            background: BuildingsColorEnum.BLUE,
+            playNum: 4,
+            building: StateEnum.EMPTY,
+          },
+          {
+            x: 1,
+            y: 1,
+            background: BuildingsColorEnum.GREEN,
+            playNum: 2,
+            building: StateEnum.EMPTY,
+          },
+        ],
       },
     ],
     nowCargos: [],
+    dice: StateEnum.EMPTY,
   },
-  playersInfo: {},
+  playersInfo: [],
   // 所有资源标记
   allTokens: {
     cargos: Array.from({ length: 42 }, (_, i) => ({ point: Math.floor(i / 7) + 1 })),

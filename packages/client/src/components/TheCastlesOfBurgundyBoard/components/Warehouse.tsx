@@ -1,5 +1,5 @@
 import { Group } from "react-konva";
-import { StateEnum } from "@game/shared";
+import { StateEnum, type BlackMarketType } from "@game/shared";
 import { BuildingBackground } from "./BuildingBackground";
 import { useContext } from "react";
 import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
@@ -12,12 +12,13 @@ interface Props {
   number: number;
 }
 
-export const WarehouseMarket = ({ x, y, number }: Props) => {
+export const Warehouse = ({ x, y, number }: Props) => {
   const gameData = useContext(TheCastlesOfBurgundyGameContext);
   const warehouseMarketWidth = 109;
   const warehouseMarketHeight = 125;
   const buildingBackgroundDist = 56;
-  const warehouseMarket = gameData.G.mainBoardInfo.warehouseMarketList[number - 1].market;
+  let warehouseMarket: BlackMarketType[] = [];
+  warehouseMarket = gameData.G.mainBoardInfo.warehouseMarketList[number - 1].market;
 
   return (
     <Group

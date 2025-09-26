@@ -7,6 +7,7 @@ import { ShadowBlurEnum } from "../../../enum/game";
 import { StateEnum, type PlayersInfoType } from "@game/shared";
 import type { FilteredMetadata } from "boardgame.io";
 import { PointBuildingBackground } from "./PointBuildingBackground";
+import { Dice } from "./Dice";
 
 interface Props {
   x: number;
@@ -48,6 +49,17 @@ export const UserBoard = ({ x, y, draggable, playerInfo, matchData, onDragEnd }:
             type={item.background}
             point={item.pointNum}
             center
+          />
+        );
+      })}
+      {playerInfo.dices?.map((item, index) => {
+        return (
+          <Dice
+            key={`Dice-${matchData.id}-${playerInfo.id}-${index}`}
+            x={255 + (item.isUse ? 1 : 0) * 80}
+            y={10 + index * 40}
+            point={item.point}
+            type={playerInfo.id}
           />
         );
       })}
