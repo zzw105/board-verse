@@ -13,6 +13,8 @@ import { MainBoard } from "./components/MainBoard";
 import { cloneDeep } from "lodash";
 import { TheCastlesOfBurgundyGameContext } from "../../store/TheCastlesOfBurgundyGameContext";
 import { Tooltip } from "./components/Tooltip";
+import { UserBoard } from "./components/userBoard";
+import { useUserDebugStore } from "../../store/useUserDebugStore";
 
 export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgundyGameType>) {
   console.log(123, gameData);
@@ -70,7 +72,13 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
     setStagePositionLocal({ x, y });
   };
   /* 可拖动图形组件 */
-  const initShapes = [{ id: "MainBoard", x: 10, y: 10 }];
+  const initShapes = [
+    { id: "MainBoard", x: 10, y: 10 },
+    { id: "UserBoard0", x: 730, y: 10 },
+    { id: "UserBoard1", x: 1210, y: 10 },
+    { id: "UserBoard2", x: 730, y: 660 },
+    { id: "UserBoard3", x: 1210, y: 660 },
+  ];
   const [shapes, setShapes] = useState(cloneDeep(initShapes));
   const setShapesLocal = (newShapes: typeof shapes) => {
     localStorage.setItem("shapes", JSON.stringify(newShapes));
@@ -127,6 +135,19 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
 
   const [backMainImage] = useImage(backMainImg);
 
+  const {
+    debugNum1,
+    debugNum2,
+    debugNum3,
+    debugNum4,
+    debugNum5,
+    setDebugNum1,
+    setDebugNum2,
+    setDebugNum3,
+    setDebugNum4,
+    setDebugNum5,
+  } = useUserDebugStore();
+
   return (
     <div className={styles.board}>
       <div className={styles.title}>
@@ -170,6 +191,26 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
           value={stageScale}
           onChange={handleSliderChange}
         />
+        <div>
+          调试1
+          <InputNumber step={0.01} value={debugNum1} onChange={(e) => setDebugNum1(e ?? 0)} />
+        </div>
+        <div>
+          调试2
+          <InputNumber step={0.01} value={debugNum2} onChange={(e) => setDebugNum2(e ?? 0)} />
+        </div>
+        <div>
+          调试3
+          <InputNumber step={0.01} value={debugNum3} onChange={(e) => setDebugNum3(e ?? 0)} />
+        </div>
+        <div>
+          调试4
+          <InputNumber step={0.01} value={debugNum4} onChange={(e) => setDebugNum4(e ?? 0)} />
+        </div>
+        <div>
+          调试5
+          <InputNumber step={0.01} value={debugNum5} onChange={(e) => setDebugNum5(e ?? 0)} />
+        </div>
       </div>
       <TheCastlesOfBurgundyGameContext.Provider value={gameData}>
         <div ref={konvaRef} className={styles["konva"]}>
@@ -208,6 +249,22 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
                     />
                   );
                 }
+              })}
+
+              {gameData.matchData?.map((item) => {
+                const playerInfo = gameData.G.playersInfo[item.id];
+                const key = "UserBoard" + item.id;
+                return (
+                  <UserBoard
+                    key={key}
+                    x={shapes.find((item) => item.id === key)?.x || 0}
+                    y={shapes.find((item) => item.id === key)?.y || 0}
+                    draggable
+                    playerInfo={playerInfo}
+                    matchData={gameData.matchData?.[item.id] || { id: 0 }}
+                    onDragEnd={(e) => handleShapesDragEnd(e, key)}
+                  ></UserBoard>
+                );
               })}
             </Layer>
           </Stage>

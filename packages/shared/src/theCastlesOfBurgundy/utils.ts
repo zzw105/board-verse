@@ -119,6 +119,12 @@ export type CargoType = {
   point: DicePointsEnum | StateEnum.EMPTY;
   isBack?: boolean;
 };
+export type PlayerTerritoryType = Omit<BlackMarketType, "playNum"> & {
+  pointNum: DicePointsEnum;
+};
+export type PlayersInfoType = {
+  territory: PlayerTerritoryType[];
+};
 
 export type TheCastlesOfBurgundyGameType = {
   // 当前回合
@@ -134,6 +140,8 @@ export type TheCastlesOfBurgundyGameType = {
     warehouseMarketSix: BlackMarketType[];
     nowCargos: CargoType[];
   };
+  // 玩家信息
+  playersInfo: Record<number, PlayersInfoType>;
   // 所有资源标记
   allTokens: {
     cargos: CargoType[];
@@ -388,6 +396,7 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
     ],
     nowCargos: [],
   },
+  playersInfo: {},
   // 所有资源标记
   allTokens: {
     cargos: Array.from({ length: 42 }, (_, i) => ({ point: Math.floor(i / 7) + 1 })),

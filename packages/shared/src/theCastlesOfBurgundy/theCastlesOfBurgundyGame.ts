@@ -1,6 +1,7 @@
 import type { Ctx, Game } from "boardgame.io";
 import { completeTheCastlesOfBurgundyGameInfo, StateEnum, takeOne, TheCastlesOfBurgundyGameType } from "./utils";
 import { cloneDeep } from "lodash";
+import { playersTerritoryList } from "./playersTerritory";
 
 const settingUpCargos = (gameData: TheCastlesOfBurgundyGameType) => {
   const cargos = gameData.allTokens.cargos.splice(0, 5);
@@ -57,6 +58,14 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
     // 布置货物
     settingUpCargos(newData);
     settingUpBuildings(newData, ctx);
+
+    // 初始化玩家
+    for (let i = 0; i < ctx.numPlayers; i++) {
+      const territoryIndex = random.Die(1);
+      newData.playersInfo[i] = {
+        territory: playersTerritoryList[territoryIndex - 1],
+      };
+    }
 
     return newData;
   },

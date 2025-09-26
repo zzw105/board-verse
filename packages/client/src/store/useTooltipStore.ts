@@ -32,7 +32,7 @@ export const useTooltipStore = create<TooltipStoreType>((set, get) => {
     setPosition: (position) => set({ position }),
     setContent: (content: JSX.Element) => set({ content }),
     setTimer: (timer: NodeJS.Timeout | null) => set({ timer }),
-    targetEnter: (e, content) => {
+    targetEnter: (_e, content) => {
       const timer = setTimeout(() => {
         get().setVisible(true);
         get().setContent(content);
