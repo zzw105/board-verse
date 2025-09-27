@@ -56,7 +56,26 @@ const settingUpDices = (gameData: TheCastlesOfBurgundyGameType, random: RandomAP
   });
 };
 
-const settingUpMainBoard = (gameData: TheCastlesOfBurgundyGameType) => {};
+const settingUpMainBoard = (gameData: TheCastlesOfBurgundyGameType) => {
+  // 防止货物
+  const index = gameData.mainBoardInfo.nowCargos.findIndex((item) => item.point !== StateEnum.EMPTY);
+  if (index === -1) {
+    throw new Error("nowCargos 中必须有一个货物的 point 不是 StateEnum.EMPTY");
+  }
+  const nowCargo = { ...gameData.mainBoardInfo.nowCargos[index] };
+  gameData.mainBoardInfo.warehouseMarketList[gameData.mainBoardInfo.dice - 1].warehouse.push(nowCargo);
+  gameData.mainBoardInfo.nowCargos[index].point = StateEnum.EMPTY;
+
+  // 放置玩家次序token
+  if (gameData.playOrder.length === 0) {
+    gameData.playOrder = Array.from({ length: 7 }).map((item, index) => {
+      if (index === 0) {
+        return [0, 1, 2, 3];
+      }
+      return [];
+    });
+  }
+};
 
 export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
   name: "theCastlesOfBurgundyMonorepo",
@@ -79,6 +98,8 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
       dices: [],
     }));
     settingUpDices(newData, random);
+
+    settingUpMainBoard(newData);
     return newData;
   },
   phases: {

@@ -14,8 +14,8 @@ export type Debug = {
 };
 
 export const useDebugStore = create<Debug>((set) => ({
-  debugNum1: 255,
-  debugNum2: 10,
+  debugNum1: 0,
+  debugNum2: 0,
   debugNum3: 0,
   debugNum4: 0,
   debugNum5: 0,

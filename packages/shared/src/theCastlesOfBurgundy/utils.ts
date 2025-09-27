@@ -143,10 +143,12 @@ export type TheCastlesOfBurgundyGameType = {
     blackMarket: BlackMarketType[];
     warehouseMarketList: WarehouseMarketListType[];
     nowCargos: CargoType[];
-    dice: DicePointsEnum | StateEnum.EMPTY;
+    dice: DicePointsEnum;
   };
   // 玩家信息
   playersInfo: PlayersInfoType[];
+  // 玩家次序
+  playOrder: number[][];
   // 所有资源标记
   allTokens: {
     cargos: CargoType[];
@@ -420,9 +422,11 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
       },
     ],
     nowCargos: [],
-    dice: StateEnum.EMPTY,
+    dice: DicePointsEnum.ONE,
   },
   playersInfo: [],
+  // 玩家次序
+  playOrder: [],
   // 所有资源标记
   allTokens: {
     cargos: Array.from({ length: 42 }, (_, i) => ({ point: Math.floor(i / 7) + 1 })),

@@ -10,6 +10,7 @@ import { Cargo } from "./Cargo";
 import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
 import { StateEnum } from "@game/shared";
 import { Dice } from "./Dice";
+import { Warehouse } from "./Warehouse";
 
 interface Props {
   x: number;
@@ -60,6 +61,33 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
     },
   ];
 
+  const warehousePos = [
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale - 150,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale + 155,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale - 79,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale + 155,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale + 79,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale + 150,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale - 155,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale + 79,
+    },
+    {
+      x: (mainBoardImageWidth / 2) * mainBoardImageScale - 155,
+      y: (mainBoardImageHeight / 2) * mainBoardImageScale - 79,
+    },
+  ];
+
   return (
     <Group ref={groupRef} x={x} y={y} draggable={draggable} onDragEnd={onDragEnd}>
       <Image
@@ -93,6 +121,9 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
         fill="" // 空心圆
       />
       <Dice x={20} y={30} point={gameData.G.mainBoardInfo.dice} type={4}></Dice>
+      {warehousePos.map((item, index) => (
+        <Warehouse key={"Warehouse" + index} x={item.x} y={item.y} number={index + 1} />
+      ))}
     </Group>
   );
 };

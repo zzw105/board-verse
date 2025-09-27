@@ -1,10 +1,12 @@
-import { Group } from "react-konva";
+import { Group, Rect, Text } from "react-konva";
 import { StateEnum, type BlackMarketType } from "@game/shared";
 import { BuildingBackground } from "./BuildingBackground";
 import { useContext } from "react";
 import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
 import { Building } from "./Building";
 import React from "react";
+import { useDebugStore } from "../../../store/useDebugStore";
+import { Cargo } from "./Cargo";
 
 interface Props {
   x: number;
@@ -14,67 +16,29 @@ interface Props {
 
 export const Warehouse = ({ x, y, number }: Props) => {
   const gameData = useContext(TheCastlesOfBurgundyGameContext);
-  const warehouseMarketWidth = 109;
-  const warehouseMarketHeight = 125;
-  const buildingBackgroundDist = 56;
-  let warehouseMarket: BlackMarketType[] = [];
-  warehouseMarket = gameData.G.mainBoardInfo.warehouseMarketList[number - 1].market;
+  const warehouseWidth = 106;
+  const warehouseHeight = 106;
+  // const buildingBackgroundDist = 56;
+  const warehouse = gameData.G.mainBoardInfo.warehouseMarketList[number - 1].warehouse;
 
   return (
     <Group
       x={x}
       y={y}
-      width={warehouseMarketWidth}
-      height={warehouseMarketHeight}
-      offsetX={warehouseMarketWidth / 2}
-      offsetY={warehouseMarketHeight / 2}
+      width={warehouseWidth}
+      height={warehouseHeight}
+      offsetX={warehouseWidth / 2}
+      offsetY={warehouseHeight / 2}
       // onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
     >
-      {/* <Rect width={warehouseMarketWidth} height={warehouseMarketHeight} fill="blue" /> */}
+      {/* <Rect width={warehouseWidth} height={warehouseHeight} fill="blue" opacity={0.5} /> */}
+      {warehouse.map((item, index) => {
+        const groupIndex = Math.floor(index / 4); // 第几组
+        const posInGroup = index % 4; // 组内位置
 
-      {warehouseMarket.map((item) => {
-        if (item.background === StateEnum.EMPTY) {
-          return null;
-        }
-        if (item.y === 0) {
-          return (
-            <React.Fragment key={`WarehouseMarket-${item.x}-${item.y}`}>
-              <BuildingBackground
-                key={`BuildingBackground-${item.x}-${item.y}`}
-                x={item.x * buildingBackgroundDist}
-                y={0}
-                type={item.background}
-              />
-              {item.building !== StateEnum.EMPTY && (
-                <Building
-                  key={`Building-${item.x}-${item.y}`}
-                  x={item.x * buildingBackgroundDist}
-                  y={0}
-                  buildingInfo={item.building}
-                />
-              )}
-            </React.Fragment>
-          );
-        } else if (item.y === 1) {
-          return (
-            <React.Fragment key={`WarehouseMarket-${item.x}-${item.y}`}>
-              <BuildingBackground
-                key={`BuildingBackground-${item.x}-${item.y}`}
-                x={item.x * buildingBackgroundDist}
-                y={65}
-                type={item.background}
-              />
-              {item.building !== StateEnum.EMPTY && (
-                <Building
-                  key={`Building-${item.x}-${item.y}`}
-                  x={item.x * buildingBackgroundDist}
-                  y={65}
-                  buildingInfo={item.building}
-                />
-              )}
-            </React.Fragment>
-          );
-        }
+        const x = (posInGroup % 2) * 55 + groupIndex * 20;
+        const y = Math.floor(posInGroup / 2) * 55;
+        return <Cargo key={"Cargo" + index} x={x} y={y} cargoInfo={item} />;
       })}
     </Group>
   );

@@ -2,7 +2,7 @@ import { Image, Group } from "react-konva";
 import { useEffect, useRef } from "react";
 import Konva from "konva";
 import useImage from "use-image";
-import img from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/dice.png";
+import img from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/discs.png";
 import { ShadowBlurEnum } from "../../../enum/game";
 import { DicePointsEnum, StateEnum } from "@game/shared";
 
@@ -14,7 +14,7 @@ interface Props {
   center?: boolean;
 }
 
-export const Dice = ({ x, y, point, type, center }: Props) => {
+export const Disc = ({ x, y, point, type, center }: Props) => {
   const imageWidth = 420 / 6;
   const imageHeight = 350 / 5;
   const imageScale = 0.5;
