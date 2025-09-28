@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import useImage from "use-image";
 
 import backMainImg from "../../assets/theCastlesOfBurgundyMonorepo/imgs/back-main.jpg";
-import { TheCastlesOfBurgundyGameContext } from "../../store/TheCastlesOfBurgundyGameContext";
+import { BoardContext } from "../../store/BoardContext";
 import { useDebugStore } from "../../store/useDebugStore";
 import { useUserStore } from "../../store/useUserStore";
 import styles from "./TheCastlesOfBurgundyBoard.module.less";
@@ -19,7 +19,7 @@ import { Tooltip } from "./components/Tooltip";
 import { UserBoard } from "./components/UserBoard";
 
 export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgundyGameType>) {
-  console.log(123, gameData);
+  console.log({ gameData });
   /* hook */
   const navigate = useNavigate();
   const { name } = useUserStore();
@@ -214,7 +214,13 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
           <InputNumber step={0.01} value={debugNum5} onChange={(e) => setDebugNum5(e ?? 0)} />
         </div>
       </div>
-      <TheCastlesOfBurgundyGameContext.Provider value={gameData}>
+      <BoardContext.Provider
+        value={{
+          gameData,
+          clientPlayerID: +gameData.ctx.currentPlayer,
+          nowPlayingPlayerID: +(gameData.playerID ?? -1),
+        }}
+      >
         <div ref={konvaRef} className={styles["konva"]}>
           <Stage
             ref={stageRef}
@@ -264,7 +270,6 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
                     draggable
                     playerInfo={playerInfo}
                     matchData={gameData.matchData?.[item.id] || { id: 0 }}
-                    canOperation={item.id === +(gameData.playerID || -1)}
                     onDragEnd={(e) => handleShapesDragEnd(e, key)}
                   />
                 );
@@ -273,7 +278,7 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
           </Stage>
           <Tooltip />
         </div>
-      </TheCastlesOfBurgundyGameContext.Provider>
+      </BoardContext.Provider>
     </div>
   );
 }

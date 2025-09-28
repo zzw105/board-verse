@@ -4,7 +4,7 @@ import React from "react";
 import { StateEnum } from "@game/shared";
 import { Group } from "react-konva";
 
-import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
+import { BoardContext } from "../../../store/BoardContext";
 import { Building } from "./Building";
 import { BuildingBackground } from "./BuildingBackground";
 
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const BlackMarket = ({ x, y }: Props) => {
-  const gameData = useContext(TheCastlesOfBurgundyGameContext);
+  const { gameData } = useContext(BoardContext);
 
   const blackMarketWidth = 165;
   const blackMarketHeight = 165;
@@ -34,70 +34,28 @@ export const BlackMarket = ({ x, y }: Props) => {
         if (item.background === StateEnum.EMPTY) {
           return null;
         }
-        if (item.y === 0) {
-          return (
-            <React.Fragment key={`BlackMarket-${item.x}-${item.y}`}>
-              <BuildingBackground
-                key={`BlackMarket-BuildingBackground-${item.x}-${item.y}`}
-                x={28 + item.x * buildingBackgroundDist}
-                y={blackMarketHeight / 2 - 47}
-                type={item.background}
-                center
-              />
-              {item.building !== StateEnum.EMPTY && (
-                <Building
-                  key={`BlackMarket-Building-${item.x}-${item.y}`}
-                  x={28 + item.x * buildingBackgroundDist}
-                  y={blackMarketHeight / 2 - 47}
-                  buildingInfo={item.building}
-                  center
-                />
-              )}
-            </React.Fragment>
-          );
-        } else if (item.y === 1) {
-          return (
-            <React.Fragment key={`BlackMarket-${item.x}-${item.y}`}>
-              <BuildingBackground
-                key={`BlackMarket-BuildingBackground-${item.x}-${item.y}`}
-                x={1 + (item.x + 1) * buildingBackgroundDist}
-                y={blackMarketHeight / 2}
-                type={item.background}
-                center
-              />
-              {item.building !== StateEnum.EMPTY && (
-                <Building
-                  key={`BlackMarket-Building-${item.x}-${item.y}`}
-                  x={1 + (item.x + 1) * buildingBackgroundDist}
-                  y={blackMarketHeight / 2}
-                  buildingInfo={item.building}
-                  center
-                />
-              )}
-            </React.Fragment>
-          );
-        } else if (item.y === 2) {
-          return (
-            <React.Fragment key={`BlackMarket-${item.x}-${item.y}`}>
-              <BuildingBackground
-                key={`BlackMarket-BuildingBackground-${item.x}-${item.y}`}
-                x={28 + item.x * buildingBackgroundDist}
-                y={blackMarketHeight / 2 + 47}
-                type={item.background}
-                center
-              />
-              {item.building !== StateEnum.EMPTY && (
-                <Building
-                  key={`BlackMarket-Building-${item.x}-${item.y}`}
-                  x={28 + item.x * buildingBackgroundDist}
-                  y={blackMarketHeight / 2 + 47}
-                  buildingInfo={item.building}
-                  center
-                />
-              )}
-            </React.Fragment>
-          );
-        }
+        const baseY = blackMarketHeight / 2;
+        const yPos = baseY + (item.y - 1) * 47;
+
+        const xPos = item.y === 1 ? 1 + (item.x + 1) * buildingBackgroundDist : 28 + item.x * buildingBackgroundDist;
+        <React.Fragment key={`BlackMarket-${item.x}-${item.y}`}>
+          <BuildingBackground
+            key={`BlackMarket-BuildingBackground-${item.x}-${item.y}`}
+            x={xPos}
+            y={yPos}
+            type={item.background}
+            center
+          />
+          {item.building !== StateEnum.EMPTY && (
+            <Building
+              key={`BlackMarket-Building-${item.x}-${item.y}`}
+              x={xPos}
+              y={yPos}
+              buildingInfo={item.building}
+              center
+            />
+          )}
+        </React.Fragment>;
       })}
     </Group>
   );

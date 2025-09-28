@@ -1,18 +1,22 @@
+import type { JSX } from "react";
+
 import type {
   PlayerType,
   SplendorGameCardType,
   SplendorGameNobleType,
   SplendorGameTokenNameType,
+  TheCastlesOfBurgundyGameType,
   TokensObjType,
 } from "@game/shared";
-import { Card } from "../components/SplendorBoard/components/Card";
-import type { JSX } from "react";
-import { Token } from "../components/SplendorBoard/components/Token";
+import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import { Circle, Group, Rect, Text } from "react-konva";
+
+import { Card } from "../components/SplendorBoard/components/Card";
+import { Noble } from "../components/SplendorBoard/components/Noble";
+import { Token } from "../components/SplendorBoard/components/Token";
+import { OperationKeyEnum } from "../enum/game";
 import { useUserStore } from "../store/useUserStore";
 import { eventBus } from "./eventBus";
-import { OperationKeyEnum } from "../enum/game";
-import { Noble } from "../components/SplendorBoard/components/Noble";
 
 export const generateCardJSX = (
   cards: SplendorGameCardType[],
@@ -20,7 +24,7 @@ export const generateCardJSX = (
   positionY: Record<number, number>,
   xIndex: number,
   yIndex: number,
-  splitIndex = 4
+  splitIndex = 4,
 ) => {
   if (!cards || cards.length === 0) return [];
   const isCurrent = useUserStore.getState().isCurrent;
@@ -61,7 +65,7 @@ export const generateCardJSX = (
 export const generateTokenJSX = (
   tokens: TokensObjType,
   nowSelectTokens: TokensObjType,
-  tokenPosition: Record<SplendorGameTokenNameType, { x: number; y: number }>
+  tokenPosition: Record<SplendorGameTokenNameType, { x: number; y: number }>,
 ) => {
   const tokenJSX: JSX.Element[] = [];
   (["green", "red", "blue", "white", "black", "gold"] as const).forEach((tokenName) => {
@@ -77,7 +81,7 @@ export const generateTokenJSX = (
           type={tokenName}
           canOperations={tokenName === "gold" || stagesType === "discard" ? false : true}
           isCurrent={isCurrent}
-        />
+        />,
       );
     }
   });
@@ -198,7 +202,7 @@ export const generateOwnedTokensJSX = (playerInfo: PlayerType, x = 500, y = 40, 
             />
           </>
         )}
-      </Group>
+      </Group>,
     );
   });
   return tokenJSX;
@@ -219,7 +223,7 @@ export const generateOwnedLockCardJSX = (playerInfo: PlayerType, canOperations =
         canOperations={canOperations}
         isCurrent={isCurrent}
         isHorizontal
-      />
+      />,
     );
   });
   return lockCardJSX;
@@ -239,4 +243,8 @@ export const generateNobleJSX = (nobles: SplendorGameNobleType[]) => {
     nobleJSX.push(<Noble key={"Noble" + item.name} x={2150} y={80 + index * 255} nobleName={item.name} />);
   });
   return nobleJSX;
+};
+
+export const getCurrentPlayer = (gameData: BoardProps<TheCastlesOfBurgundyGameType>) => {
+  return +(gameData.ctx.currentPlayer || -1);
 };

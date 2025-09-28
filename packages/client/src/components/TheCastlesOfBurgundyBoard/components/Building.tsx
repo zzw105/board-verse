@@ -6,7 +6,8 @@ import { Group, Image } from "react-konva";
 import useImage from "use-image";
 
 import spaceMbBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/tiles2019.png";
-import { ShadowBlurEnum } from "../../../enum/game";
+import { ShadowBlurEnum, ShadowColorEnum } from "../../../enum/game";
+import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
 import { useTooltipStore } from "../../../store/useTooltipStore";
 
 interface Props {
@@ -15,11 +16,16 @@ interface Props {
   buildingInfo: BuildingsType;
   center?: boolean;
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
+  marketId?: number;
 }
-export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
+export const Building = ({ x, buildingInfo, y, center, onDragEnd, marketId }: Props) => {
   const imageWidth = 800 / 8;
   const imageHeight = 1120 / 10;
   const imageScale = 0.53;
+
+  const { choiceDice } = useTheCastlesOfBurgundyStore();
+
+  const canSelect = choiceDice.dicePoint === marketId;
 
   const cropFrame = {
     x: 0,
@@ -293,6 +299,21 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
       }}
       onMouseLeave={targetLeave}
       onMouseMove={targetMove}
+      onMouseOver={() => {
+        if (canSelect) {
+          document.body.style.cursor = "pointer";
+        }
+      }}
+      onMouseOut={() => {
+        if (canSelect) {
+          document.body.style.cursor = "default";
+        }
+      }}
+      onClick={() => {
+        if (canSelect) {
+          console.log(buildingInfo);
+        }
+      }}
     >
       <Image
         image={spaceMbBgImage}
@@ -306,6 +327,7 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
           width: imageWidth,
           height: imageHeight,
         }}
+        shadowColor={canSelect ? ShadowColorEnum.CAN_OPERATE : ShadowColorEnum.DEFAULT}
       />
     </Group>
   );

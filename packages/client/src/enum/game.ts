@@ -1,7 +1,8 @@
 import type { MenuProps } from "antd";
 import type { ItemType } from "antd/es/menu/interface";
-import { eventBus } from "../utils/eventBus";
+
 import { useContextMenuStore } from "../store/useContextMenuStore";
+import { eventBus } from "../utils/eventBus";
 
 export enum ShadowBlurEnum {
   MAIN = 40,
@@ -104,4 +105,10 @@ export const tokenMenuItemList: MenuProps["items"] = [
 
 export enum OperationKeyEnum {
   RETURN_TOKEN,
+}
+
+export enum ShadowColorEnum {
+  DEFAULT = "black",
+  SELECT = "red",
+  CAN_OPERATE = "blue",
 }

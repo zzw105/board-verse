@@ -1,23 +1,33 @@
-import { useEffect, useRef } from "react";
+import { useContext } from "react";
 
 import { DicePointsEnum, StateEnum } from "@game/shared";
-import Konva from "konva";
+import { message } from "antd";
 import { Group, Image } from "react-konva";
 import useImage from "use-image";
 
 import img from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/dice.png";
-import { ShadowBlurEnum } from "../../../enum/game";
+import { ShadowBlurEnum, ShadowColorEnum } from "../../../enum/game";
+import { BoardContext, UserBoardContext } from "../../../store/BoardContext";
+import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
 
 interface Props {
   x: number;
   y: number;
   point: DicePointsEnum | StateEnum.EMPTY;
   type: number;
-  canOperation: boolean;
+  id: string;
   center?: boolean;
 }
 
-export const Dice = ({ x, y, point, type, canOperation, center }: Props) => {
+export const Dice = ({ x, y, point, type, id, center }: Props) => {
+  const { boardPlayerInfo } = useContext(UserBoardContext);
+
+  const { nowPlayingPlayerID, clientPlayerID } = useContext(BoardContext);
+
+  const canOperation =
+    boardPlayerInfo && nowPlayingPlayerID === clientPlayerID && clientPlayerID === boardPlayerInfo.id;
+
+  const { choiceDice, setChoiceDice } = useTheCastlesOfBurgundyStore();
   const imageWidth = 420 / 6;
   const imageHeight = 350 / 5;
   const imageScale = 0.5;
@@ -28,14 +38,6 @@ export const Dice = ({ x, y, point, type, canOperation, center }: Props) => {
   };
 
   const [image] = useImage(img);
-  // 锁定
-  const groupRef = useRef<Konva.Group>(null);
-  useEffect(() => {
-    const g = groupRef.current;
-    if (g && image) {
-      g.cache();
-    }
-  }, [image]);
 
   if (point === StateEnum.EMPTY) {
     return null;
@@ -43,7 +45,6 @@ export const Dice = ({ x, y, point, type, canOperation, center }: Props) => {
 
   return (
     <Group
-      ref={groupRef}
       x={x}
       y={y}
       offsetX={center ? (imageWidth / 2) * imageScale : 0}
@@ -59,6 +60,12 @@ export const Dice = ({ x, y, point, type, canOperation, center }: Props) => {
           document.body.style.cursor = "default";
         }
       }}
+      onClick={() => {
+        if (canOperation) {
+          setChoiceDice({ playerId: clientPlayerID, dicePoint: point, id });
+          message.info(`选择了 ${point}点 骰子，请选择对应操作`);
+        }
+      }}
     >
       <Image
         image={image}
@@ -72,6 +79,13 @@ export const Dice = ({ x, y, point, type, canOperation, center }: Props) => {
           width: imageWidth,
           height: imageHeight,
         }}
+        shadowColor={
+          choiceDice.id === id
+            ? ShadowColorEnum.SELECT
+            : canOperation
+              ? ShadowColorEnum.CAN_OPERATE
+              : ShadowColorEnum.DEFAULT
+        }
       />
     </Group>
   );

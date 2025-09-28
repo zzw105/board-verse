@@ -1,13 +1,8 @@
 import { useContext } from "react";
-import React from "react";
 
-import { type BlackMarketType, StateEnum } from "@game/shared";
-import { Group, Rect, Text } from "react-konva";
+import { Group } from "react-konva";
 
-import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
-import { useDebugStore } from "../../../store/useDebugStore";
-import { Building } from "./Building";
-import { BuildingBackground } from "./BuildingBackground";
+import { BoardContext } from "../../../store/BoardContext";
 import { Cargo } from "./Cargo";
 
 interface Props {
@@ -17,7 +12,7 @@ interface Props {
 }
 
 export const Warehouse = ({ x, y, number }: Props) => {
-  const gameData = useContext(TheCastlesOfBurgundyGameContext);
+  const { gameData } = useContext(BoardContext);
   const warehouseWidth = 106;
   const warehouseHeight = 106;
   // const buildingBackgroundDist = 56;

@@ -7,7 +7,7 @@ import useImage from "use-image";
 
 import mainBoardImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/mainBoard.jpg";
 import { ShadowBlurEnum } from "../../../enum/game";
-import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
+import { BoardContext } from "../../../store/BoardContext";
 import { BlackMarket } from "./BlackMarket";
 import { Cargo } from "./Cargo";
 import { Dice } from "./Dice";
@@ -23,7 +23,7 @@ interface Props {
 }
 
 export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
-  const gameData = useContext(TheCastlesOfBurgundyGameContext);
+  const { gameData } = useContext(BoardContext);
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
   // useEffect(() => {
@@ -123,7 +123,7 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
         strokeWidth={3} // 描边宽度
         fill="" // 空心圆
       />
-      <Dice x={20} y={30} point={gameData.G.mainBoardInfo.dice} type={4}></Dice>
+      <Dice id="Dice-1" x={20} y={30} point={gameData.G.mainBoardInfo.dice} type={4}></Dice>
       {warehousePos.map((item, index) => (
         <Warehouse key={"Warehouse" + index} x={item.x} y={item.y} number={index + 1} />
       ))}

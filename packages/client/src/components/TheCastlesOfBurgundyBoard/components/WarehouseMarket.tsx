@@ -4,7 +4,7 @@ import React from "react";
 import { StateEnum } from "@game/shared";
 import { Group } from "react-konva";
 
-import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
+import { BoardContext } from "../../../store/BoardContext";
 import { Building } from "./Building";
 import { BuildingBackground } from "./BuildingBackground";
 
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const WarehouseMarket = ({ x, y, number }: Props) => {
-  const gameData = useContext(TheCastlesOfBurgundyGameContext);
+  const { gameData } = useContext(BoardContext);
   const warehouseMarketWidth = 109;
   const warehouseMarketHeight = 125;
   const buildingBackgroundDist = 56;
@@ -37,45 +37,27 @@ export const WarehouseMarket = ({ x, y, number }: Props) => {
         if (item.background === StateEnum.EMPTY) {
           return null;
         }
-        if (item.y === 0) {
-          return (
-            <React.Fragment key={`WarehouseMarket-${item.x}-${item.y}`}>
-              <BuildingBackground
-                key={`BuildingBackground-${item.x}-${item.y}`}
-                x={item.x * buildingBackgroundDist}
-                y={0}
-                type={item.background}
+        const xPos = item.x * buildingBackgroundDist;
+        const yPos = item.y === 0 ? 0 : 65;
+        return (
+          <React.Fragment key={`WarehouseMarket-${item.x}-${item.y}`}>
+            <BuildingBackground
+              key={`BuildingBackground-${item.x}-${item.y}`}
+              x={xPos}
+              y={yPos}
+              type={item.background}
+            />
+            {item.building !== StateEnum.EMPTY && (
+              <Building
+                key={`Building-${item.x}-${item.y}`}
+                x={xPos}
+                y={yPos}
+                buildingInfo={item.building}
+                marketId={number}
               />
-              {item.building !== StateEnum.EMPTY && (
-                <Building
-                  key={`Building-${item.x}-${item.y}`}
-                  x={item.x * buildingBackgroundDist}
-                  y={0}
-                  buildingInfo={item.building}
-                />
-              )}
-            </React.Fragment>
-          );
-        } else if (item.y === 1) {
-          return (
-            <React.Fragment key={`WarehouseMarket-${item.x}-${item.y}`}>
-              <BuildingBackground
-                key={`BuildingBackground-${item.x}-${item.y}`}
-                x={item.x * buildingBackgroundDist}
-                y={65}
-                type={item.background}
-              />
-              {item.building !== StateEnum.EMPTY && (
-                <Building
-                  key={`Building-${item.x}-${item.y}`}
-                  x={item.x * buildingBackgroundDist}
-                  y={65}
-                  buildingInfo={item.building}
-                />
-              )}
-            </React.Fragment>
-          );
-        }
+            )}
+          </React.Fragment>
+        );
       })}
     </Group>
   );
