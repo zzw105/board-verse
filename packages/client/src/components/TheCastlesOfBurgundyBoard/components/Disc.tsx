@@ -4,24 +4,22 @@ import Konva from "konva";
 import useImage from "use-image";
 import img from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/discs.png";
 import { ShadowBlurEnum } from "../../../enum/game";
-import { DicePointsEnum, StateEnum } from "@game/shared";
 
 interface Props {
   x: number;
   y: number;
-  point: DicePointsEnum | StateEnum.EMPTY;
   type: number;
   center?: boolean;
 }
 
-export const Disc = ({ x, y, point, type, center }: Props) => {
-  const imageWidth = 420 / 6;
-  const imageHeight = 350 / 5;
+export const Disc = ({ x, y, type, center }: Props) => {
+  const imageWidth = 200 / 4;
+  const imageHeight = 50;
   const imageScale = 0.5;
 
   const cropFrame = {
-    x: point === StateEnum.EMPTY ? 0 : point - 1,
-    y: type,
+    x: type,
+    y: 0,
   };
 
   const [image] = useImage(img);
@@ -34,10 +32,6 @@ export const Disc = ({ x, y, point, type, center }: Props) => {
     }
   }, [image]);
 
-  if (point === StateEnum.EMPTY) {
-    return null;
-  }
-
   return (
     <Group
       ref={groupRef}
@@ -49,7 +43,7 @@ export const Disc = ({ x, y, point, type, center }: Props) => {
     >
       <Image
         image={image}
-        shadowBlur={ShadowBlurEnum.TOKEN}
+        shadowBlur={ShadowBlurEnum.BACKGROUND_TOKEN}
         width={imageWidth}
         height={imageHeight}
         scale={{ x: imageScale, y: imageScale }}

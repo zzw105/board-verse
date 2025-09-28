@@ -8,6 +8,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.GREEN,
     pointNum: DicePointsEnum.SIX,
     building: StateEnum.EMPTY,
+    group: 1,
   },
   {
     x: 1,
@@ -15,6 +16,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.DARK_GREEN,
     pointNum: DicePointsEnum.FIVE,
     building: StateEnum.EMPTY,
+    group: 2,
   },
   {
     x: 2,
@@ -22,6 +24,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.DARK_GREEN,
     pointNum: DicePointsEnum.FOUR,
     building: StateEnum.EMPTY,
+    group: 2,
   },
   {
     x: 3,
@@ -29,6 +32,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.YELLOW,
     pointNum: DicePointsEnum.THREE,
     building: StateEnum.EMPTY,
+    group: 3,
   },
   //
   {
@@ -37,6 +41,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.GREEN,
     pointNum: DicePointsEnum.TWO,
     building: StateEnum.EMPTY,
+    group: 1,
   },
   {
     x: 1,
@@ -44,6 +49,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.GREEN,
     pointNum: DicePointsEnum.ONE,
     building: StateEnum.EMPTY,
+    group: 1,
   },
   {
     x: 2,
@@ -51,6 +57,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.DARK_GREEN,
     pointNum: DicePointsEnum.SIX,
     building: StateEnum.EMPTY,
+    group: 2,
   },
   {
     x: 3,
@@ -58,6 +65,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.YELLOW,
     pointNum: DicePointsEnum.FIVE,
     building: StateEnum.EMPTY,
+    group: 3,
   },
   {
     x: 4,
@@ -65,13 +73,16 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.FOUR,
     building: StateEnum.EMPTY,
+    group: 4,
   },
+  //
   {
     x: -1,
     y: 2,
     background: BuildingsColorEnum.GREEN,
     pointNum: DicePointsEnum.FIVE,
     building: StateEnum.EMPTY,
+    group: 1,
   },
   {
     x: 0,
@@ -79,6 +90,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.GREEN,
     pointNum: DicePointsEnum.FOUR,
     building: StateEnum.EMPTY,
+    group: 1,
   },
   {
     x: 1,
@@ -86,6 +98,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.THREE,
     building: StateEnum.EMPTY,
+    group: 5,
   },
   {
     x: 2,
@@ -93,6 +106,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.YELLOW,
     pointNum: DicePointsEnum.ONE,
     building: StateEnum.EMPTY,
+    group: 3,
   },
   {
     x: 3,
@@ -100,6 +114,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.TWO,
     building: StateEnum.EMPTY,
+    group: 4,
   },
   {
     x: 4,
@@ -107,6 +122,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.THREE,
     building: StateEnum.EMPTY,
+    group: 4,
   },
   //
   {
@@ -115,6 +131,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BLUE,
     pointNum: DicePointsEnum.SIX,
     building: StateEnum.EMPTY,
+    group: 6,
   },
   {
     x: 0,
@@ -122,6 +139,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BLUE,
     pointNum: DicePointsEnum.ONE,
     building: StateEnum.EMPTY,
+    group: 6,
   },
   {
     x: 1,
@@ -129,6 +147,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BLUE,
     pointNum: DicePointsEnum.TWO,
     building: StateEnum.EMPTY,
+    group: 6,
   },
   {
     x: 2,
@@ -136,6 +155,8 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.DARK_GREEN,
     pointNum: DicePointsEnum.SIX,
     building: StateEnum.EMPTY,
+    center: true,
+    group: 7,
   },
   {
     x: 3,
@@ -143,6 +164,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BLUE,
     pointNum: DicePointsEnum.FIVE,
     building: StateEnum.EMPTY,
+    group: 8,
   },
   {
     x: 4,
@@ -150,6 +172,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BLUE,
     pointNum: DicePointsEnum.FOUR,
     building: StateEnum.EMPTY,
+    group: 8,
   },
   {
     x: 5,
@@ -157,6 +180,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BLUE,
     pointNum: DicePointsEnum.ONE,
     building: StateEnum.EMPTY,
+    group: 8,
   },
   //
   {
@@ -165,6 +189,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.TWO,
     building: StateEnum.EMPTY,
+    group: 9,
   },
   {
     x: 0,
@@ -172,6 +197,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.FIVE,
     building: StateEnum.EMPTY,
+    group: 9,
   },
   {
     x: 1,
@@ -179,6 +205,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.GREY,
     pointNum: DicePointsEnum.FOUR,
     building: StateEnum.EMPTY,
+    group: 10,
   },
   {
     x: 2,
@@ -186,6 +213,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.THREE,
     building: StateEnum.EMPTY,
+    group: 11,
   },
   {
     x: 3,
@@ -193,6 +221,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.ONE,
     building: StateEnum.EMPTY,
+    group: 11,
   },
   {
     x: 4,
@@ -200,6 +229,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.GREEN,
     pointNum: DicePointsEnum.TWO,
     building: StateEnum.EMPTY,
+    group: 12,
   },
   //
   {
@@ -208,6 +238,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.SIX,
     building: StateEnum.EMPTY,
+    group: 9,
   },
   {
     x: 1,
@@ -215,6 +246,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.GREY,
     pointNum: DicePointsEnum.ONE,
     building: StateEnum.EMPTY,
+    group: 10,
   },
   {
     x: 2,
@@ -222,6 +254,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.YELLOW,
     pointNum: DicePointsEnum.TWO,
     building: StateEnum.EMPTY,
+    group: 13,
   },
   {
     x: 3,
@@ -229,6 +262,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.FIVE,
     building: StateEnum.EMPTY,
+    group: 11,
   },
   {
     x: 4,
@@ -236,6 +270,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.SIX,
     building: StateEnum.EMPTY,
+    group: 11,
   },
   //
   {
@@ -244,6 +279,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.GREEN,
     pointNum: DicePointsEnum.THREE,
     building: StateEnum.EMPTY,
+    group: 14,
   },
   {
     x: 1,
@@ -251,6 +287,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.YELLOW,
     pointNum: DicePointsEnum.FOUR,
     building: StateEnum.EMPTY,
+    group: 13,
   },
   {
     x: 2,
@@ -258,6 +295,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.YELLOW,
     pointNum: DicePointsEnum.ONE,
     building: StateEnum.EMPTY,
+    group: 13,
   },
   {
     x: 3,
@@ -265,6 +303,7 @@ const playersTerritoryList1: PlayerTerritoryType[] = [
     background: BuildingsColorEnum.BROWN,
     pointNum: DicePointsEnum.THREE,
     building: StateEnum.EMPTY,
+    group: 11,
   },
 ];
 

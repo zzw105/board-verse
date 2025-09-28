@@ -11,13 +11,13 @@ interface Props {
   y: number;
   cargoInfo: CargoType;
   center?: boolean;
+  imageScale?: number;
 }
 
-export const Cargo = ({ x, y, cargoInfo, center }: Props) => {
+export const Cargo = ({ x, y, cargoInfo, center, imageScale = 0.62 }: Props) => {
   const { point, isBack } = cargoInfo;
   const imageWidth = 560 / 7;
   const imageHeight = 80;
-  const imageScale = 0.62;
 
   const cropFrame = {
     x: 0,

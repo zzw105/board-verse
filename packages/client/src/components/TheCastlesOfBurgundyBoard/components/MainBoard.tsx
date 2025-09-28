@@ -11,6 +11,8 @@ import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurg
 import { StateEnum } from "@game/shared";
 import { Dice } from "./Dice";
 import { Warehouse } from "./Warehouse";
+import { Disc } from "./Disc";
+import { useDebugStore } from "../../../store/useDebugStore";
 
 interface Props {
   x: number;
@@ -88,6 +90,8 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
     },
   ];
 
+  const { debugNum1, debugNum2, debugNum3, debugNum4, debugNum5 } = useDebugStore();
+
   return (
     <Group ref={groupRef} x={x} y={y} draggable={draggable} onDragEnd={onDragEnd}>
       <Image
@@ -124,6 +128,11 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
       {warehousePos.map((item, index) => (
         <Warehouse key={"Warehouse" + index} x={item.x} y={item.y} number={index + 1} />
       ))}
+      {gameData.G.playOrder.map((item, index) => {
+        return item.reverse().map((info, i) => {
+          return <Disc x={460 + index * 36} y={47 - i * 9} type={info} center={true} />;
+        });
+      })}
     </Group>
   );
 };

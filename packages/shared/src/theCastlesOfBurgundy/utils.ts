@@ -1,9 +1,18 @@
-export function takeOne<T>(arr: T[], predicate: (item: T, index: number, array: T[]) => boolean): T | undefined {
-  const index = arr.findIndex(predicate);
-  if (index !== -1) {
-    return arr.splice(index, 1)[0];
+export function takeMany<T>(arr: T[], count: number, predicate: (item: T, index: number, array: T[]) => boolean): T[] {
+  const result: T[] = [];
+  let i = 0;
+
+  while (i < arr.length && result.length < count) {
+    if (predicate(arr[i], i, arr)) {
+      result.push(arr[i]);
+      arr.splice(i, 1); // 移除当前元素
+      // 注意：删除后不要递增 i，因为后面的元素会前移
+    } else {
+      i++;
+    }
   }
-  return undefined;
+
+  return result;
 }
 
 export enum StateEnum {
@@ -121,6 +130,8 @@ export type CargoType = {
 };
 export type PlayerTerritoryType = Omit<BlackMarketType, "playNum"> & {
   pointNum: DicePointsEnum;
+  center?: boolean;
+  group: number;
 };
 export type PlayersInfoType = {
   id: number;
@@ -129,6 +140,10 @@ export type PlayersInfoType = {
     point: DicePointsEnum;
     isUse: boolean;
   }[];
+  coins: number;
+  workers: number;
+  cargos: CargoType[][];
+  score: number;
 };
 export type WarehouseMarketListType = {
   warehouse: CargoType[];

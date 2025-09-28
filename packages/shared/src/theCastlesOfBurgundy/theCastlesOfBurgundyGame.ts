@@ -1,9 +1,10 @@
 import type { Ctx, Game } from "boardgame.io";
 import {
+  CargoType,
   completeTheCastlesOfBurgundyGameInfo,
   DicePointsEnum,
   StateEnum,
-  takeOne,
+  takeMany,
   TheCastlesOfBurgundyGameType,
 } from "./utils";
 import { cloneDeep } from "lodash";
@@ -20,7 +21,8 @@ const settingUpBuildings = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx) =>
     if (item.playNum > ctx.numPlayers) {
       item.background = StateEnum.EMPTY;
     } else {
-      item.building = takeOne(gameData.allTokens.buildings, (building) => building.isBlack === true) ?? StateEnum.EMPTY;
+      item.building =
+        takeMany(gameData.allTokens.buildings, 1, (building) => building.isBlack === true)[0] ?? StateEnum.EMPTY;
     }
   });
 
@@ -30,10 +32,11 @@ const settingUpBuildings = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx) =>
         item.background = StateEnum.EMPTY;
       } else {
         item.building =
-          takeOne(
+          takeMany(
             gameData.allTokens.buildings,
+            1,
             (building) => building.isBlack === false && item.background === building.color
-          ) ?? StateEnum.EMPTY;
+          )[0] ?? StateEnum.EMPTY;
       }
     });
   });
@@ -57,7 +60,7 @@ const settingUpDices = (gameData: TheCastlesOfBurgundyGameType, random: RandomAP
 };
 
 const settingUpMainBoard = (gameData: TheCastlesOfBurgundyGameType) => {
-  // 防止货物
+  // 放置货物
   const index = gameData.mainBoardInfo.nowCargos.findIndex((item) => item.point !== StateEnum.EMPTY);
   if (index === -1) {
     throw new Error("nowCargos 中必须有一个货物的 point 不是 StateEnum.EMPTY");
@@ -75,6 +78,45 @@ const settingUpMainBoard = (gameData: TheCastlesOfBurgundyGameType) => {
       return [];
     });
   }
+
+  // gameData.playOrder = [[0, 1], [], [3], [], [], [], [2]];
+};
+
+const settingUpPlayerCoins = (gameData: TheCastlesOfBurgundyGameType, playID: number, dCoins: number) => {
+  gameData.playersInfo[playID].coins += dCoins;
+};
+const settingUpPlayerWorkers = (gameData: TheCastlesOfBurgundyGameType, playID: number, dWorkers: number) => {
+  gameData.playersInfo[playID].workers += dWorkers;
+};
+const settingUpPlayerCargos = (gameData: TheCastlesOfBurgundyGameType, playID: number, nowCargos: CargoType[]) => {
+  nowCargos.forEach((cargo) => {
+    const index = gameData.playersInfo[playID].cargos.findIndex((item) => item[0]?.point === cargo.point);
+    if (index !== -1) {
+      gameData.playersInfo[playID].cargos[index].push(cargo);
+    } else {
+      gameData.playersInfo[playID].cargos.push([cargo]);
+    }
+  });
+  // ZZW_TODO: 检查玩家是否有需要丢弃货物
+};
+
+const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, random: RandomAPI) => {
+  // 初始化玩家起始资源
+  gameData.playersInfo = Array.from({ length: ctx.numPlayers }, (_, i) => ({
+    id: i,
+    territory: playersTerritoryList[random.Die(playersTerritoryList.length) - 1],
+    dices: [],
+    coins: 0,
+    workers: 0,
+    cargos: [],
+    score: 0,
+  }));
+  gameData.playersInfo.forEach((player, index) => {
+    settingUpPlayerCoins(gameData, player.id, 1);
+    settingUpPlayerWorkers(gameData, player.id, index + 1);
+    const newCargos = takeMany(gameData.allTokens.cargos, 3, (cargo) => cargo.point !== StateEnum.EMPTY);
+    settingUpPlayerCargos(gameData, player.id, newCargos);
+  });
 };
 
 export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
@@ -88,15 +130,12 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
 
     // 布置货物
     settingUpCargos(newData);
+    // 布置建筑
     settingUpBuildings(newData, ctx);
 
     // 初始化玩家
+    initPlayerBoard(newData, ctx, random);
 
-    newData.playersInfo = Array.from({ length: ctx.numPlayers }, (_, i) => ({
-      id: i,
-      territory: playersTerritoryList[random.Die(playersTerritoryList.length) - 1],
-      dices: [],
-    }));
     settingUpDices(newData, random);
 
     settingUpMainBoard(newData);
