@@ -1,10 +1,12 @@
-import { Image, Group } from "react-konva";
 import { useEffect, useRef } from "react";
+
+import { BuildingsBrownTypeEnum, BuildingsColorEnum, BuildingsGreenTypeEnum, type BuildingsType } from "@game/shared";
 import Konva from "konva";
+import { Group, Image } from "react-konva";
 import useImage from "use-image";
+
 import spaceMbBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/tiles2019.png";
 import { ShadowBlurEnum } from "../../../enum/game";
-import { BuildingsBrownTypeEnum, BuildingsColorEnum, BuildingsGreenTypeEnum, type BuildingsType } from "@game/shared";
 import { useTooltipStore } from "../../../store/useTooltipStore";
 
 interface Props {
@@ -284,9 +286,9 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd }: Props) => {
           e,
           <>
             {text.split("\n").map((item) => (
-              <div>{item}</div>
+              <div key={item}>{item}</div>
             ))}
-          </>
+          </>,
         );
       }}
       onMouseLeave={targetLeave}

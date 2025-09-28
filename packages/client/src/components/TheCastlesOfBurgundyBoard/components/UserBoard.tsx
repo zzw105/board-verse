@@ -1,16 +1,19 @@
-import { Image, Group, Text, Star } from "react-konva";
 import { useRef } from "react";
-import Konva from "konva";
-import useImage from "use-image";
-import plBoardImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/plBoard.jpg";
-import countersImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/counters.png";
-import { ShadowBlurEnum } from "../../../enum/game";
-import { StateEnum, type PlayersInfoType } from "@game/shared";
+import React from "react";
+
+import { type PlayersInfoType, StateEnum } from "@game/shared";
 import type { FilteredMetadata } from "boardgame.io";
-import { PointBuildingBackground } from "./PointBuildingBackground";
-import { Dice } from "./Dice";
+import Konva from "konva";
+import { Group, Image, Star, Text } from "react-konva";
+import useImage from "use-image";
+
+import countersImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/counters.png";
+import plBoardImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/plBoard.jpg";
+import { ShadowBlurEnum } from "../../../enum/game";
+import { Building } from "./Building";
 import { Cargo } from "./Cargo";
-import { useDebugStore } from "../../../store/useDebugStore";
+import { Dice } from "./Dice";
+import { PointBuildingBackground } from "./PointBuildingBackground";
 
 interface Props {
   x: number;
@@ -18,10 +21,11 @@ interface Props {
   draggable?: boolean;
   playerInfo: PlayersInfoType;
   matchData: FilteredMetadata[number];
+  canOperation: boolean;
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
 }
 
-export const UserBoard = ({ x, y, draggable, playerInfo, matchData, onDragEnd }: Props) => {
+export const UserBoard = ({ x, y, draggable, playerInfo, matchData, canOperation, onDragEnd }: Props) => {
   // const gameData = useContext(TheCastlesOfBurgundyGameContext);
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
@@ -36,8 +40,6 @@ export const UserBoard = ({ x, y, draggable, playerInfo, matchData, onDragEnd }:
   const countersImageHeight = 92; // 从文件中获取写死
   const countersImageScale = 0.4;
 
-  const { debugNum1, debugNum2, debugNum3, debugNum4, debugNum5 } = useDebugStore();
-
   return (
     <Group ref={groupRef} x={x} y={y} draggable={draggable} onDragEnd={onDragEnd}>
       {/* 玩家面板 */}
@@ -47,6 +49,7 @@ export const UserBoard = ({ x, y, draggable, playerInfo, matchData, onDragEnd }:
         scale={{ x: plBoardImageScale, y: plBoardImageScale }}
         image={plBoardImage}
         shadowBlur={ShadowBlurEnum.MAIN}
+        shadowColor={canOperation ? "red" : "black"}
       />
       {/* 版图 */}
       {playerInfo.territory.map((item) => {
@@ -54,14 +57,23 @@ export const UserBoard = ({ x, y, draggable, playerInfo, matchData, onDragEnd }:
           return null;
         }
         return (
-          <PointBuildingBackground
-            key={`PointBuildingBackground-${matchData.id}-${item.x}-${item.y}`}
-            x={118.5 + item.x * 56.1 + (item.y % 2) * -28}
-            y={129.8 + item.y * 48}
-            type={item.background}
-            point={item.pointNum}
-            center
-          />
+          <React.Fragment key={`UserBoard-${playerInfo.id}-${item.x}-${item.y}`}>
+            <PointBuildingBackground
+              x={118.5 + item.x * 56.1 + (item.y % 2) * -28}
+              y={129.8 + item.y * 48}
+              type={item.background}
+              point={item.pointNum}
+              center
+            />
+            {item.building !== StateEnum.EMPTY && (
+              <Building
+                x={118.5 + item.x * 56.1 + (item.y % 2) * -28}
+                y={129.8 + item.y * 48}
+                buildingInfo={item.building}
+                center
+              />
+            )}
+          </React.Fragment>
         );
       })}
       {/* 骰子 */}
@@ -73,6 +85,7 @@ export const UserBoard = ({ x, y, draggable, playerInfo, matchData, onDragEnd }:
             y={10 + index * 40}
             point={item.point}
             type={playerInfo.id}
+            canOperation={canOperation}
           />
         );
       })}

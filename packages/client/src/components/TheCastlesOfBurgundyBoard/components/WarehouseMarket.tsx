@@ -1,10 +1,12 @@
-import { Group } from "react-konva";
-import { StateEnum } from "@game/shared";
-import { BuildingBackground } from "./BuildingBackground";
 import { useContext } from "react";
+import React from "react";
+
+import { StateEnum } from "@game/shared";
+import { Group } from "react-konva";
+
 import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
 import { Building } from "./Building";
-import React from "react";
+import { BuildingBackground } from "./BuildingBackground";
 
 interface Props {
   x: number;

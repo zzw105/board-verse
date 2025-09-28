@@ -1,5 +1,6 @@
 import type { Ctx, Game } from "boardgame.io";
 import {
+  BuildingsColorEnum,
   CargoType,
   completeTheCastlesOfBurgundyGameInfo,
   DicePointsEnum,
@@ -116,6 +117,16 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
     settingUpPlayerWorkers(gameData, player.id, index + 1);
     const newCargos = takeMany(gameData.allTokens.cargos, 3, (cargo) => cargo.point !== StateEnum.EMPTY);
     settingUpPlayerCargos(gameData, player.id, newCargos);
+    const center = player.territory.find((item) => item.center);
+    if (center) {
+      center.building = takeMany(
+        gameData.allTokens.buildings,
+        1,
+        (item) => item.color === BuildingsColorEnum.DARK_GREEN
+      )[0];
+    } else {
+      throw new Error("玩家 Territory 中必须有一个中心");
+    }
   });
 };
 

@@ -1,20 +1,22 @@
-import type { TheCastlesOfBurgundyGameType } from "@game/shared";
-import type { BoardProps } from "boardgame.io/dist/types/packages/react";
-import styles from "./TheCastlesOfBurgundyBoard.module.less";
-import { useUserStore } from "../../store/useUserStore";
-import { Button, InputNumber, Slider } from "antd";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Layer, Rect, Stage } from "react-konva";
+
+import type { TheCastlesOfBurgundyGameType } from "@game/shared";
+import { Button, InputNumber, Slider } from "antd";
+import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import type Konva from "konva";
-import useImage from "use-image";
-import backMainImg from "../../assets/theCastlesOfBurgundyMonorepo/imgs/back-main.jpg";
-import { MainBoard } from "./components/MainBoard";
 import { cloneDeep } from "lodash";
+import { Layer, Rect, Stage } from "react-konva";
+import { useNavigate } from "react-router-dom";
+import useImage from "use-image";
+
+import backMainImg from "../../assets/theCastlesOfBurgundyMonorepo/imgs/back-main.jpg";
 import { TheCastlesOfBurgundyGameContext } from "../../store/TheCastlesOfBurgundyGameContext";
+import { useDebugStore } from "../../store/useDebugStore";
+import { useUserStore } from "../../store/useUserStore";
+import styles from "./TheCastlesOfBurgundyBoard.module.less";
+import { MainBoard } from "./components/MainBoard";
 import { Tooltip } from "./components/Tooltip";
 import { UserBoard } from "./components/UserBoard";
-import { useDebugStore } from "../../store/useDebugStore";
 
 export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgundyGameType>) {
   console.log(123, gameData);
@@ -262,8 +264,9 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
                     draggable
                     playerInfo={playerInfo}
                     matchData={gameData.matchData?.[item.id] || { id: 0 }}
+                    canOperation={item.id === +(gameData.playerID || -1)}
                     onDragEnd={(e) => handleShapesDragEnd(e, key)}
-                  ></UserBoard>
+                  />
                 );
               })}
             </Layer>

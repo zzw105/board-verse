@@ -1,10 +1,12 @@
-import { Image, Group } from "react-konva";
 import { useEffect, useRef } from "react";
+
+import { BuildingsColorEnum } from "@game/shared";
 import Konva from "konva";
+import { Group, Image } from "react-konva";
 import useImage from "use-image";
+
 import spaceMbBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/space_mb_bg.png";
 import { ShadowBlurEnum } from "../../../enum/game";
-import { BuildingsColorEnum } from "@game/shared";
 
 interface Props {
   x: number;

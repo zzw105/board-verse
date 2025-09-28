@@ -1,10 +1,12 @@
-import { Image, Group } from "react-konva";
 import { useEffect, useRef } from "react";
+
+import { type CargoType, DicePointsEnum } from "@game/shared";
 import Konva from "konva";
+import { Group, Image } from "react-konva";
 import useImage from "use-image";
+
 import spaceMbBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/goods2019.jpg";
 import { ShadowBlurEnum } from "../../../enum/game";
-import { DicePointsEnum, type CargoType } from "@game/shared";
 
 interface Props {
   x: number;

@@ -1,11 +1,13 @@
-import { Group, Rect, Text } from "react-konva";
-import { StateEnum, type BlackMarketType } from "@game/shared";
-import { BuildingBackground } from "./BuildingBackground";
 import { useContext } from "react";
-import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
-import { Building } from "./Building";
 import React from "react";
+
+import { type BlackMarketType, StateEnum } from "@game/shared";
+import { Group, Rect, Text } from "react-konva";
+
+import { TheCastlesOfBurgundyGameContext } from "../../../store/TheCastlesOfBurgundyGameContext";
 import { useDebugStore } from "../../../store/useDebugStore";
+import { Building } from "./Building";
+import { BuildingBackground } from "./BuildingBackground";
 import { Cargo } from "./Cargo";
 
 interface Props {

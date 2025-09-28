@@ -1,11 +1,13 @@
-import { Image, Group } from "react-konva";
 import { useEffect, useRef } from "react";
-import Konva from "konva";
-import useImage from "use-image";
-import spaceDieBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/space_die_bg.png";
-import spaceBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/space_background.png";
-import { ShadowBlurEnum } from "../../../enum/game";
+
 import { BuildingsColorEnum, DicePointsEnum } from "@game/shared";
+import Konva from "konva";
+import { Group, Image } from "react-konva";
+import useImage from "use-image";
+
+import spaceBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/space_background.png";
+import spaceDieBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/space_die_bg.png";
+import { ShadowBlurEnum } from "../../../enum/game";
 
 interface Props {
   x: number;
