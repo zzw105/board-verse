@@ -270,7 +270,7 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
                     x={shapes.find((item) => item.id === key)?.x || 0}
                     y={shapes.find((item) => item.id === key)?.y || 0}
                     draggable
-                    playerInfo={playerInfo}
+                    boardPlayerInfo={playerInfo}
                     matchData={gameData.matchData?.[item.id] || { id: 0 }}
                     onDragEnd={(e) => handleShapesDragEnd(e, key)}
                   />

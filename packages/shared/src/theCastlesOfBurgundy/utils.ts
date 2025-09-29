@@ -152,6 +152,9 @@ export type PlayersInfoType = {
   cargos: CargoType[][];
   buildings: BuildingsType[];
   score: number;
+  ability: {
+    workerPoints: number;
+  };
 };
 export type WarehouseMarketListType = {
   warehouse: CargoType[];

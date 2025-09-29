@@ -105,7 +105,7 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
         y={(mainBoardImageHeight / 2) * mainBoardImageScale}
       />
       {warehouseMarketPos.map((item, index) => (
-        <WarehouseMarket key={"WarehouseMarket" + index} x={item.x} y={item.y} number={index + 1} />
+        <WarehouseMarket key={"WarehouseMarket" + index} x={item.x} y={item.y} marketNumber={index + 1} />
       ))}
 
       {gameData.G.mainBoardInfo.nowCargos.map((item, index) => {
@@ -123,13 +123,7 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
         strokeWidth={3} // 描边宽度
         fill="" // 空心圆
       />
-      <Dice
-        id="Dice-1"
-        x={20}
-        y={30}
-        diceInfoType={{ point: gameData.G.mainBoardInfo.dice, isUse: true }}
-        type={4}
-      ></Dice>
+      <Dice x={20} y={30} diceInfoType={{ point: gameData.G.mainBoardInfo.dice, isUse: true }} type={4}></Dice>
       {warehousePos.map((item, index) => (
         <Warehouse key={"Warehouse" + index} x={item.x} y={item.y} number={index + 1} />
       ))}

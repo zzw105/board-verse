@@ -38,24 +38,28 @@ export const BlackMarket = ({ x, y }: Props) => {
         const yPos = baseY + (item.y - 1) * 47;
 
         const xPos = item.y === 1 ? 1 + (item.x + 1) * buildingBackgroundDist : 28 + item.x * buildingBackgroundDist;
-        <React.Fragment key={`BlackMarket-${item.x}-${item.y}`}>
-          <BuildingBackground
-            key={`BlackMarket-BuildingBackground-${item.x}-${item.y}`}
-            x={xPos}
-            y={yPos}
-            type={item.background}
-            center
-          />
-          {item.building !== StateEnum.EMPTY && (
-            <Building
-              key={`BlackMarket-Building-${item.x}-${item.y}`}
+        console.log({ xPos, yPos });
+
+        return (
+          <React.Fragment key={`BlackMarket-${item.x}-${item.y}`}>
+            <BuildingBackground
+              key={`BlackMarket-BuildingBackground-${item.x}-${item.y}`}
               x={xPos}
               y={yPos}
-              buildingInfo={item.building}
+              type={item.background}
               center
             />
-          )}
-        </React.Fragment>;
+            {item.building !== StateEnum.EMPTY && (
+              <Building
+                key={`BlackMarket-Building-${item.x}-${item.y}`}
+                x={xPos}
+                y={yPos}
+                buildingInfo={item.building}
+                center
+              />
+            )}
+          </React.Fragment>
+        );
       })}
     </Group>
   );

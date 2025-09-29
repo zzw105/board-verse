@@ -14,11 +14,14 @@ import { RandomAPI } from "boardgame.io/dist/types/src/plugins/random/random";
 import { TurnOrder } from "boardgame.io/core";
 import { EventsAPI } from "boardgame.io/dist/types/src/plugins/events/events";
 
+// 设置货物展示区
 const settingUpCargos = (gameData: TheCastlesOfBurgundyGameType) => {
   const cargos = gameData.allTokens.cargos.splice(0, 5);
   gameData.mainBoardInfo.nowCargos = cargos;
+  console.log("设置货物展示区完成");
 };
 
+// 设置黑市和市场
 const settingUpBuildings = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx) => {
   gameData.mainBoardInfo.blackMarket.forEach((item) => {
     if (item.playNum > ctx.numPlayers) {
@@ -28,7 +31,7 @@ const settingUpBuildings = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx) =>
         takeMany(gameData.allTokens.buildings, 1, (building) => building.isBlack === true)[0] ?? StateEnum.EMPTY;
     }
   });
-
+  console.log("设置黑市完成");
   gameData.mainBoardInfo.warehouseMarketList.forEach((warehouseMarket) => {
     warehouseMarket.market.forEach((item) => {
       if (item.playNum > ctx.numPlayers) {
@@ -43,15 +46,10 @@ const settingUpBuildings = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx) =>
       }
     });
   });
-  // gameData.mainBoardInfo.warehouseMarketOne.forEach((item) => {
-  //   if (item.playNum > ctx.numPlayers) {
-  //     item.background = StateEnum.EMPTY;
-  //   } else {
-  //     item.building = takeOne(gameData.allTokens.buildings, (building) => building.isBlack === false) ?? StateEnum.EMPTY;
-  //   }
-  // });
+  console.log("设置仓库完成");
 };
 
+// 设置玩家和主板图骰子
 const settingUpDices = (gameData: TheCastlesOfBurgundyGameType, random: RandomAPI) => {
   gameData.mainBoardInfo.dice = random.D6();
   gameData.playersInfo.forEach((player) => {
@@ -60,10 +58,12 @@ const settingUpDices = (gameData: TheCastlesOfBurgundyGameType, random: RandomAP
       isUse: false,
     }));
   });
+  console.log("设置玩家和主板图骰子完成");
 };
 
+// 设置每回合主板
 const settingUpMainBoard = (gameData: TheCastlesOfBurgundyGameType) => {
-  // 放置货物
+  // 放置当前回合货物
   const index = gameData.mainBoardInfo.nowCargos.findIndex((item) => item.point !== StateEnum.EMPTY);
   if (index === -1) {
     throw new Error("nowCargos 中必须有一个货物的 point 不是 StateEnum.EMPTY");
@@ -71,6 +71,7 @@ const settingUpMainBoard = (gameData: TheCastlesOfBurgundyGameType) => {
   const nowCargo = { ...gameData.mainBoardInfo.nowCargos[index] };
   gameData.mainBoardInfo.warehouseMarketList[gameData.mainBoardInfo.dice - 1].warehouse.push(nowCargo);
   gameData.mainBoardInfo.nowCargos[index].point = StateEnum.EMPTY;
+  console.log("设置当前回合货物完成");
 
   // 放置玩家次序token
   if (gameData.playOrder.length === 0) {
@@ -108,15 +109,14 @@ const getBuilding = (
   events: EventsAPI,
   playID: number,
   buildingId: string,
-  marketId: number
+  dicePoint: DicePointsEnum,
+  marketNumber: number,
+  workerPoints: number
 ) => {
-  const warehouseMarket = gameData.mainBoardInfo.warehouseMarketList[marketId];
-  console.log(warehouseMarket);
-  console.log({ playID, buildingId, marketId });
-
+  const warehouseMarket = gameData.mainBoardInfo.warehouseMarketList[marketNumber - 1];
   const playerInfo = gameData.playersInfo[playID];
 
-  const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === marketId + 1);
+  const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === dicePoint);
   if (!manipulatedDice) {
     throw new Error("未使用的骰子中没有与市场点匹配的骰子");
   }
@@ -129,6 +129,7 @@ const getBuilding = (
   if (building !== StateEnum.EMPTY) {
     playerInfo.buildings.push(building);
     manipulatedDice.isUse = true;
+    if (workerPoints > 0) settingUpPlayerWorkers(gameData, playID, -workerPoints);
   } else {
     throw new Error("建筑不存在");
   }
@@ -145,6 +146,9 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
     cargos: [],
     buildings: [],
     score: 0,
+    ability: {
+      workerPoints: 1,
+    },
   }));
   gameData.playersInfo.forEach((player, index) => {
     settingUpPlayerCoins(gameData, player.id, 1);
@@ -211,12 +215,20 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
         },
       },
       moves: {
-        getBuildingMove: (data, buildingId, marketId) => {
-          getBuilding(data.G, data.events, Number(data.ctx.currentPlayer), buildingId, marketId);
+        getBuildingMove: (data, buildingId, dicePoint, marketNumber, workerPoints) => {
+          getBuilding(
+            data.G,
+            data.events,
+            Number(data.ctx.currentPlayer),
+            buildingId,
+            dicePoint,
+            marketNumber,
+            workerPoints
+          );
         },
-        endPlayerTurn: (G, ctx) => {
+        endPlayerTurn: ({ G, ctx, events }) => {
           // 这里可以做每个玩家回合结束的逻辑
-          ctx.events.endTurn(); // 自动切换到下一个玩家
+          events.endTurn(); // 自动切换到下一个玩家
         },
       },
       endIf: ({ G, ctx }) => {

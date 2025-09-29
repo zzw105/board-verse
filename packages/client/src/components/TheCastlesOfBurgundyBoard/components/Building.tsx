@@ -1,15 +1,12 @@
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 
 import { BuildingsBrownTypeEnum, BuildingsColorEnum, BuildingsGreenTypeEnum, type BuildingsType } from "@game/shared";
-import { message } from "antd";
 import Konva from "konva";
 import { Group, Image } from "react-konva";
 import useImage from "use-image";
 
 import spaceMbBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/tiles2019.png";
 import { ShadowBlurEnum, ShadowColorEnum } from "../../../enum/game";
-import { BoardContext } from "../../../store/BoardContext";
-import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
 import { useTooltipStore } from "../../../store/useTooltipStore";
 
 interface Props {
@@ -17,19 +14,13 @@ interface Props {
   y: number;
   buildingInfo: BuildingsType;
   center?: boolean;
-  onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
-  marketId?: number;
+  selectable?: boolean;
+  onSelect?: (evt: Konva.KonvaEventObject<MouseEvent>) => void;
 }
-export const Building = ({ x, buildingInfo, y, center, onDragEnd, marketId }: Props) => {
+export const Building = ({ x, buildingInfo, y, center, selectable, onSelect }: Props) => {
   const imageWidth = 800 / 8;
   const imageHeight = 1120 / 10;
   const imageScale = 0.53;
-
-  const { clientPlayerInfo } = useContext(BoardContext);
-  const { choiceDice, cleanChoiceDice } = useTheCastlesOfBurgundyStore();
-  const { gameData } = useContext(BoardContext);
-
-  const canSelect = choiceDice.dicePoint === marketId;
 
   const cropFrame = {
     x: 0,
@@ -278,7 +269,7 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd, marketId }: Pr
   //   if (g && spaceMbBgImage) {
   //     g.cache();
   //   }
-  // }, [spaceMbBgImage, canSelect]);
+  // }, [spaceMbBgImage, selectable]);
 
   const { targetEnter, targetLeave, targetMove } = useTooltipStore();
   // useEffect(() => {
@@ -298,8 +289,6 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd, marketId }: Pr
       y={y}
       offsetX={center ? (imageWidth / 2) * imageScale : 0}
       offsetY={center ? (imageHeight / 2) * imageScale : 0}
-      onDragEnd={onDragEnd}
-      // onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
       onMouseEnter={(e) => {
         targetEnter(
           e,
@@ -313,27 +302,18 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd, marketId }: Pr
       onMouseLeave={targetLeave}
       onMouseMove={targetMove}
       onMouseOver={() => {
-        if (canSelect) {
+        if (selectable) {
           document.body.style.cursor = "pointer";
         }
       }}
       onMouseOut={() => {
-        if (canSelect) {
+        if (selectable) {
           document.body.style.cursor = "default";
         }
       }}
-      onClick={() => {
-        if (canSelect) {
-          if (clientPlayerInfo.buildings.length >= 3) {
-            message.error("已由3个建筑，无法购买");
-            return;
-          }
-          console.log(buildingInfo);
-          gameData.moves.getBuildingMove(buildingInfo.id, marketId - 1);
-          document.body.style.cursor = "default";
-          message.success(`成功获取 ${buildingInfo.color}`);
-          targetLeave();
-          cleanChoiceDice();
+      onClick={(e) => {
+        if (selectable) {
+          onSelect?.(e);
         }
       }}
     >
@@ -349,7 +329,9 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd, marketId }: Pr
           width: imageWidth,
           height: imageHeight,
         }}
-        shadowColor={canSelect ? ShadowColorEnum.CAN_OPERATE : ShadowColorEnum.DEFAULT}
+        shadowColor={selectable ? ShadowColorEnum.CAN_OPERATE : ShadowColorEnum.DEFAULT}
+        stroke={selectable ? ShadowColorEnum.CAN_OPERATE : ""} // 描边颜色
+        strokeWidth={4} // 描边宽度
       />
     </Group>
   );

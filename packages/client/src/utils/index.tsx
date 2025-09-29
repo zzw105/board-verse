@@ -1,12 +1,14 @@
 import type { JSX } from "react";
 
-import type {
-  PlayerType,
-  SplendorGameCardType,
-  SplendorGameNobleType,
-  SplendorGameTokenNameType,
-  TheCastlesOfBurgundyGameType,
-  TokensObjType,
+import {
+  type DicePointsEnum,
+  type PlayerType,
+  type SplendorGameCardType,
+  type SplendorGameNobleType,
+  type SplendorGameTokenNameType,
+  StateEnum,
+  type TheCastlesOfBurgundyGameType,
+  type TokensObjType,
 } from "@game/shared";
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import { Circle, Group, Rect, Text } from "react-konva";
@@ -248,3 +250,44 @@ export const generateNobleJSX = (nobles: SplendorGameNobleType[]) => {
 export const getCurrentPlayer = (gameData: BoardProps<TheCastlesOfBurgundyGameType>) => {
   return +(gameData.ctx.currentPlayer || -1);
 };
+
+export function canReach(
+  dice: DicePointsEnum | StateEnum,
+  target: DicePointsEnum | StateEnum,
+  maxOp: number,
+  maxSteps: number,
+) {
+  // dice: 初始点数 (1-6)
+  // target: 目标点数 (1-6)
+  // maxOp: 可操作的最大数字 (比如 2 表示 ±1, ±2)
+  // maxSteps: 最大修改次数
+
+  if (dice === StateEnum.EMPTY || target === StateEnum.EMPTY) {
+    return { can: false, steps: -1 };
+  }
+
+  const visited = new Set();
+  const queue: [number, number][] = [[dice, 0]]; // [当前点数, 已走步数]
+
+  while (queue.length) {
+    const [cur, steps] = queue.shift()!;
+
+    if (cur === target) return { can: true, steps };
+
+    if (steps >= maxSteps) continue;
+
+    for (let op = 1; op <= maxOp; op++) {
+      for (const dir of [1, -1]) {
+        const next = ((((cur - 1 + dir * op) % 6) + 6) % 6) + 1;
+        // 保证在 1~6 循环
+        const key = `${next}-${steps + 1}`;
+        if (!visited.has(key)) {
+          visited.add(key);
+          queue.push([next, steps + 1]);
+        }
+      }
+    }
+  }
+
+  return { can: false, steps: -1 };
+}
