@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { DicePointsEnum, StateEnum } from "@game/shared";
+import { type DiceInfoType } from "@game/shared";
 import { message } from "antd";
 import { Group, Image } from "react-konva";
 import useImage from "use-image";
@@ -13,19 +13,22 @@ import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurg
 interface Props {
   x: number;
   y: number;
-  point: DicePointsEnum | StateEnum.EMPTY;
+  diceInfoType: DiceInfoType;
   type: number;
   id: string;
   center?: boolean;
 }
 
-export const Dice = ({ x, y, point, type, id, center }: Props) => {
+export const Dice = ({ x, y, diceInfoType, type, id, center }: Props) => {
   const { boardPlayerInfo } = useContext(UserBoardContext);
 
   const { nowPlayingPlayerID, clientPlayerID } = useContext(BoardContext);
 
   const canOperation =
-    boardPlayerInfo && nowPlayingPlayerID === clientPlayerID && clientPlayerID === boardPlayerInfo.id;
+    boardPlayerInfo &&
+    nowPlayingPlayerID === clientPlayerID &&
+    clientPlayerID === boardPlayerInfo.id &&
+    !diceInfoType.isUse;
 
   const { choiceDice, setChoiceDice } = useTheCastlesOfBurgundyStore();
   const imageWidth = 420 / 6;
@@ -33,15 +36,11 @@ export const Dice = ({ x, y, point, type, id, center }: Props) => {
   const imageScale = 0.5;
 
   const cropFrame = {
-    x: point === StateEnum.EMPTY ? 0 : point - 1,
+    x: diceInfoType.point - 1,
     y: type,
   };
 
   const [image] = useImage(img);
-
-  if (point === StateEnum.EMPTY) {
-    return null;
-  }
 
   return (
     <Group
@@ -62,8 +61,8 @@ export const Dice = ({ x, y, point, type, id, center }: Props) => {
       }}
       onClick={() => {
         if (canOperation) {
-          setChoiceDice({ playerId: clientPlayerID, dicePoint: point, id });
-          message.info(`选择了 ${point}点 骰子，请选择对应操作`);
+          setChoiceDice({ playerId: clientPlayerID, dicePoint: diceInfoType.point, id });
+          message.info(`选择了 ${diceInfoType.point}点 骰子，请选择对应操作`);
         }
       }}
     >
@@ -86,6 +85,8 @@ export const Dice = ({ x, y, point, type, id, center }: Props) => {
               ? ShadowColorEnum.CAN_OPERATE
               : ShadowColorEnum.DEFAULT
         }
+        stroke={choiceDice.id === id ? ShadowColorEnum.SELECT : canOperation ? ShadowColorEnum.CAN_OPERATE : ""} // 描边颜色
+        strokeWidth={4} // 描边宽度
       />
     </Group>
   );

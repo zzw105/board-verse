@@ -6,7 +6,9 @@ import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 export type BoardContextType = {
   gameData: BoardProps<TheCastlesOfBurgundyGameType>;
   clientPlayerID: number;
+  clientPlayerInfo: PlayersInfoType;
   nowPlayingPlayerID: number;
+  nowPlayingPlayerInfo: PlayersInfoType;
 };
 
 export type UserBoardContextType = {

@@ -11,6 +11,8 @@ import {
 import { cloneDeep } from "lodash";
 import { playersTerritoryList } from "./playersTerritory";
 import { RandomAPI } from "boardgame.io/dist/types/src/plugins/random/random";
+import { TurnOrder } from "boardgame.io/core";
+import { EventsAPI } from "boardgame.io/dist/types/src/plugins/events/events";
 
 const settingUpCargos = (gameData: TheCastlesOfBurgundyGameType) => {
   const cargos = gameData.allTokens.cargos.splice(0, 5);
@@ -101,6 +103,37 @@ const settingUpPlayerCargos = (gameData: TheCastlesOfBurgundyGameType, playID: n
   // ZZW_TODO: 检查玩家是否有需要丢弃货物
 };
 
+const getBuilding = (
+  gameData: TheCastlesOfBurgundyGameType,
+  events: EventsAPI,
+  playID: number,
+  buildingId: string,
+  marketId: number
+) => {
+  const warehouseMarket = gameData.mainBoardInfo.warehouseMarketList[marketId];
+  console.log(warehouseMarket);
+  console.log({ playID, buildingId, marketId });
+
+  const playerInfo = gameData.playersInfo[playID];
+
+  const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === marketId + 1);
+  if (!manipulatedDice) {
+    throw new Error("未使用的骰子中没有与市场点匹配的骰子");
+  }
+
+  const building = takeMany(warehouseMarket.market, 1, (item) => {
+    if (item.building !== StateEnum.EMPTY && item.building.id === buildingId) {
+      return true;
+    }
+  })[0].building;
+  if (building !== StateEnum.EMPTY) {
+    playerInfo.buildings.push(building);
+    manipulatedDice.isUse = true;
+  } else {
+    throw new Error("建筑不存在");
+  }
+};
+
 const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, random: RandomAPI) => {
   // 初始化玩家起始资源
   gameData.playersInfo = Array.from({ length: ctx.numPlayers }, (_, i) => ({
@@ -110,6 +143,7 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
     coins: 0,
     workers: 0,
     cargos: [],
+    buildings: [],
     score: 0,
   }));
   gameData.playersInfo.forEach((player, index) => {
@@ -156,13 +190,30 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
     playerTurn: {
       start: true,
       turn: {
+        order: TurnOrder.DEFAULT,
         onBegin: ({ G, ctx }) => {
           const player = G.playersInfo[Number(ctx.currentPlayer)];
           // 玩家回合开始时可以做一些初始化
           console.log(`玩家 ${ctx.currentPlayer} 回合开始`);
         },
+        stages: {
+          removeBuilding: {
+            moves: {
+              removeBuilding: (data) => {
+                // data.events.setStage("default");
+                // 玩家掷骰子
+                // const dice = G.mainBoardInfo.dice;
+                // console.log(`玩家 ${ctx.currentPlayer} 掷出了 ${dice}`);
+                // 这里可以添加掷骰子后的逻辑
+              },
+            },
+          },
+        },
       },
       moves: {
+        getBuildingMove: (data, buildingId, marketId) => {
+          getBuilding(data.G, data.events, Number(data.ctx.currentPlayer), buildingId, marketId);
+        },
         endPlayerTurn: (G, ctx) => {
           // 这里可以做每个玩家回合结束的逻辑
           ctx.events.endTurn(); // 自动切换到下一个玩家

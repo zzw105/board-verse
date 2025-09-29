@@ -26,11 +26,5 @@ export const useDebugStore = create<Debug>((set) => ({
   setDebugNum5: (debugNum5) => set({ debugNum5 }),
 }));
 /*   
-const {
-  debugNum1,
-  debugNum2,
-  debugNum3,
-  debugNum4,
-  debugNum5,
-} = useDebugStore(); 
+  const { debugNum1, debugNum2, debugNum3, debugNum4, debugNum5 } = useDebugStore();
 */

@@ -1,12 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 
 import { BuildingsBrownTypeEnum, BuildingsColorEnum, BuildingsGreenTypeEnum, type BuildingsType } from "@game/shared";
+import { message } from "antd";
 import Konva from "konva";
 import { Group, Image } from "react-konva";
 import useImage from "use-image";
 
 import spaceMbBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/tiles2019.png";
 import { ShadowBlurEnum, ShadowColorEnum } from "../../../enum/game";
+import { BoardContext } from "../../../store/BoardContext";
 import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
 import { useTooltipStore } from "../../../store/useTooltipStore";
 
@@ -23,7 +25,9 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd, marketId }: Pr
   const imageHeight = 1120 / 10;
   const imageScale = 0.53;
 
-  const { choiceDice } = useTheCastlesOfBurgundyStore();
+  const { clientPlayerInfo } = useContext(BoardContext);
+  const { choiceDice, cleanChoiceDice } = useTheCastlesOfBurgundyStore();
+  const { gameData } = useContext(BoardContext);
 
   const canSelect = choiceDice.dicePoint === marketId;
 
@@ -269,15 +273,24 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd, marketId }: Pr
   const [spaceMbBgImage] = useImage(spaceMbBgImg);
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
-  useEffect(() => {
-    const g = groupRef.current;
-    if (g && spaceMbBgImage) {
-      g.cache();
-    }
-  }, [spaceMbBgImage]);
+  // useEffect(() => {
+  //   const g = groupRef.current;
+  //   if (g && spaceMbBgImage) {
+  //     g.cache();
+  //   }
+  // }, [spaceMbBgImage, canSelect]);
 
   const { targetEnter, targetLeave, targetMove } = useTooltipStore();
-
+  // useEffect(() => {
+  //   if (groupRef.current) {
+  //     // 用 Konva 节点自带的 .to() 方法平滑过渡
+  //     groupRef.current.to({
+  //       x,
+  //       y,
+  //       easing: Konva.Easings.EaseInOut,
+  //     });
+  //   }
+  // }, [x, y]);
   return (
     <Group
       ref={groupRef}
@@ -311,7 +324,16 @@ export const Building = ({ x, buildingInfo, y, center, onDragEnd, marketId }: Pr
       }}
       onClick={() => {
         if (canSelect) {
+          if (clientPlayerInfo.buildings.length >= 3) {
+            message.error("已由3个建筑，无法购买");
+            return;
+          }
           console.log(buildingInfo);
+          gameData.moves.getBuildingMove(buildingInfo.id, marketId - 1);
+          document.body.style.cursor = "default";
+          message.success(`成功获取 ${buildingInfo.color}`);
+          targetLeave();
+          cleanChoiceDice();
         }
       }}
     >

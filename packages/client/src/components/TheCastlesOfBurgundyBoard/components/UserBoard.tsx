@@ -40,7 +40,6 @@ export const UserBoard = ({ x, y, draggable, playerInfo, matchData, onDragEnd }:
   const countersImageScale = 0.4;
 
   const isHighlight = playerInfo.id === getCurrentPlayer(gameData);
-
   return (
     <Group ref={groupRef} x={x} y={y} draggable={draggable} onDragEnd={onDragEnd}>
       <UserBoardContext.Provider
@@ -90,7 +89,7 @@ export const UserBoard = ({ x, y, draggable, playerInfo, matchData, onDragEnd }:
               id={`Dice-${matchData.id}-${playerInfo.id}-${index}`}
               x={255 + (item.isUse ? 1 : 0) * 80}
               y={10 + index * 40}
-              point={item.point}
+              diceInfoType={item}
               type={playerInfo.id}
             />
           );
@@ -155,6 +154,10 @@ export const UserBoard = ({ x, y, draggable, playerInfo, matchData, onDragEnd }:
             );
           });
         })}
+        {/* 建筑 */}
+        {playerInfo.buildings.map((building, index) => (
+          <Building key={building.id} x={21 + index * 60.5} y={467} buildingInfo={building} />
+        ))}
       </UserBoardContext.Provider>
     </Group>
   );

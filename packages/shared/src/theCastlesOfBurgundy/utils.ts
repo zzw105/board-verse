@@ -1,4 +1,8 @@
-export function takeMany<T>(arr: T[], count: number, predicate: (item: T, index: number, array: T[]) => boolean): T[] {
+export function takeMany<T>(
+  arr: T[],
+  count: number,
+  predicate: (item: T, index: number, array: T[]) => boolean | undefined | null
+): T[] {
   const result: T[] = [];
   let i = 0;
 
@@ -55,6 +59,7 @@ export enum BuildingsGreenTypeEnum {
 }
 
 type BuildingBaseType = {
+  id: string;
   isBlack: boolean;
 };
 
@@ -125,6 +130,7 @@ export type BlackMarketType = {
 
 // 货物
 export type CargoType = {
+  id: string;
   point: DicePointsEnum | StateEnum.EMPTY;
   isBack?: boolean;
 };
@@ -133,16 +139,18 @@ export type PlayerTerritoryType = Omit<BlackMarketType, "playNum"> & {
   center?: boolean;
   group: number;
 };
+export type DiceInfoType = {
+  point: DicePointsEnum;
+  isUse: boolean;
+};
 export type PlayersInfoType = {
   id: number;
   territory: PlayerTerritoryType[];
-  dices?: {
-    point: DicePointsEnum;
-    isUse: boolean;
-  }[];
+  dices: DiceInfoType[];
   coins: number;
   workers: number;
   cargos: CargoType[][];
+  buildings: BuildingsType[];
   score: number;
 };
 export type WarehouseMarketListType = {
@@ -172,7 +180,7 @@ export type TheCastlesOfBurgundyGameType = {
 };
 
 const createBuildingsList = <T extends BuildingsType>(length: number, data: T): T[] => {
-  return Array.from({ length }, () => ({ ...data }));
+  return Array.from({ length }, () => ({ ...data, id: crypto.randomUUID() }));
 };
 
 export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType = {
@@ -444,158 +452,186 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
   playOrder: [],
   // 所有资源标记
   allTokens: {
-    cargos: Array.from({ length: 42 }, (_, i) => ({ point: Math.floor(i / 7) + 1 })),
+    cargos: Array.from({ length: 42 }, (_, i) => ({ id: crypto.randomUUID(), point: Math.floor(i / 7) + 1 })),
     buildings: [
       // 建筑物-普通
       ...createBuildingsList(5, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.MARKET,
         isBlack: false,
       }),
       ...createBuildingsList(5, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.CARPENTER,
         isBlack: false,
       }),
       ...createBuildingsList(5, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.CHURCH,
         isBlack: false,
       }),
       ...createBuildingsList(5, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.WAREHOUSE,
         isBlack: false,
       }),
       ...createBuildingsList(5, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.DORMITORY,
         isBlack: false,
       }),
       ...createBuildingsList(5, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.BANK,
         isBlack: false,
       }),
       ...createBuildingsList(5, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.TOWN_HALL,
         isBlack: false,
       }),
       ...createBuildingsList(5, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.LOOKOUT,
         isBlack: false,
       }),
       // 建筑物-黑市
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.MARKET,
         isBlack: true,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.CARPENTER,
         isBlack: true,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.CHURCH,
         isBlack: true,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.WAREHOUSE,
         isBlack: true,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.DORMITORY,
         isBlack: true,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.BANK,
         isBlack: true,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.TOWN_HALL,
         isBlack: true,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BROWN,
         brownType: BuildingsBrownTypeEnum.LOOKOUT,
         isBlack: true,
       }),
       // 牲口-普通
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.GOAT,
         number: 2,
         isBlack: false,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.GOAT,
         number: 3,
         isBlack: false,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.GOAT,
         number: 4,
         isBlack: false,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.SHEEP,
         number: 2,
         isBlack: false,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.SHEEP,
         number: 3,
         isBlack: false,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.SHEEP,
         number: 4,
         isBlack: false,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.PIG,
         number: 2,
         isBlack: false,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.PIG,
         number: 3,
         isBlack: false,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.PIG,
         number: 4,
         isBlack: false,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.COWS,
         number: 2,
         isBlack: false,
       }),
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.COWS,
         number: 3,
         isBlack: false,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.COWS,
         number: 4,
@@ -603,48 +639,56 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
       }),
       // 牲口-黑市
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.GOAT,
         number: 3,
         isBlack: true,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.GOAT,
         number: 4,
         isBlack: true,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.SHEEP,
         number: 3,
         isBlack: true,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.SHEEP,
         number: 4,
         isBlack: true,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.PIG,
         number: 3,
         isBlack: true,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.PIG,
         number: 4,
         isBlack: true,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.COWS,
         number: 3,
         isBlack: true,
       }),
       ...createBuildingsList(1, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREEN,
         greenType: BuildingsGreenTypeEnum.COWS,
         number: 4,
@@ -657,6 +701,7 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
           const yellowType = (index + 1) as BuildingsYellowType["yellowType"];
           const isBlack = [7, 12, 14, 15, 24, 25].includes(yellowType);
           return {
+            id: crypto.randomUUID(),
             color: BuildingsColorEnum.YELLOW,
             yellowType,
             isBlack,
@@ -664,31 +709,37 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
         }),
       // 城堡-普通
       ...createBuildingsList(14, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.DARK_GREEN,
         isBlack: false,
       }),
       // 城堡-黑市
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.DARK_GREEN,
         isBlack: true,
       }),
       // 矿坑-普通
       ...createBuildingsList(10, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREY,
         isBlack: false,
       }),
       // 矿坑-黑市
       ...createBuildingsList(2, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.GREY,
         isBlack: true,
       }),
       // 船只-普通
       ...createBuildingsList(20, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BLUE,
         isBlack: false,
       }),
       // 船只-黑市
       ...createBuildingsList(6, {
+        id: crypto.randomUUID(),
         color: BuildingsColorEnum.BLUE,
         isBlack: true,
       }),

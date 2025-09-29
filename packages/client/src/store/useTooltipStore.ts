@@ -1,7 +1,8 @@
-import type Konva from "konva";
-import _ from "lodash";
 import type { JSX } from "react";
 import React from "react";
+
+import type Konva from "konva";
+import _ from "lodash";
 import { create } from "zustand";
 
 export type TooltipStoreType = {
@@ -15,7 +16,7 @@ export type TooltipStoreType = {
   setTimer: (timer: NodeJS.Timeout | null) => void;
   targetEnter: (e: Konva.KonvaEventObject<MouseEvent>, content: JSX.Element) => void;
   targetMove: (e: Konva.KonvaEventObject<MouseEvent>) => void;
-  targetLeave: (e: Konva.KonvaEventObject<MouseEvent>) => void;
+  targetLeave: () => void;
 };
 
 export const useTooltipStore = create<TooltipStoreType>((set, get) => {

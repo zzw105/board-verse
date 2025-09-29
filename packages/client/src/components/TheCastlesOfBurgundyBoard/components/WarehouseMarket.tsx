@@ -48,13 +48,7 @@ export const WarehouseMarket = ({ x, y, number }: Props) => {
               type={item.background}
             />
             {item.building !== StateEnum.EMPTY && (
-              <Building
-                key={`Building-${item.x}-${item.y}`}
-                x={xPos}
-                y={yPos}
-                buildingInfo={item.building}
-                marketId={number}
-              />
+              <Building key={item.building.id} x={xPos} y={yPos} buildingInfo={item.building} marketId={number} />
             )}
           </React.Fragment>
         );

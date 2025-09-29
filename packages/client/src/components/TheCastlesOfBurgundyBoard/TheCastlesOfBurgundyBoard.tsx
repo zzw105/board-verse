@@ -217,8 +217,10 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
       <BoardContext.Provider
         value={{
           gameData,
-          clientPlayerID: +gameData.ctx.currentPlayer,
-          nowPlayingPlayerID: +(gameData.playerID ?? -1),
+          clientPlayerID: +(gameData.playerID ?? -1),
+          clientPlayerInfo: gameData.G.playersInfo[+(gameData.playerID ?? -1)],
+          nowPlayingPlayerID: +gameData.ctx.currentPlayer,
+          nowPlayingPlayerInfo: gameData.G.playersInfo[+gameData.ctx.currentPlayer],
         }}
       >
         <div ref={konvaRef} className={styles["konva"]}>

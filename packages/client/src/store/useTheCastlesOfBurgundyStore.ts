@@ -8,6 +8,7 @@ export type useTheCastlesOfBurgundyStoreType = {
     dicePoint: DicePointsEnum | StateEnum.EMPTY;
   };
   setChoiceDice: (newData: useTheCastlesOfBurgundyStoreType["choiceDice"]) => void;
+  cleanChoiceDice: () => void;
 };
 
 export const useTheCastlesOfBurgundyStore = create<useTheCastlesOfBurgundyStoreType>((set) => ({
@@ -17,4 +18,5 @@ export const useTheCastlesOfBurgundyStore = create<useTheCastlesOfBurgundyStoreT
     dicePoint: StateEnum.EMPTY,
   },
   setChoiceDice: (newData) => set({ choiceDice: newData }),
+  cleanChoiceDice: () => set({ choiceDice: { id: "", playerId: -1, dicePoint: StateEnum.EMPTY } }),
 }));

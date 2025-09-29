@@ -123,15 +123,24 @@ export const MainBoard = ({ x, y, draggable, onDragEnd }: Props) => {
         strokeWidth={3} // 描边宽度
         fill="" // 空心圆
       />
-      <Dice id="Dice-1" x={20} y={30} point={gameData.G.mainBoardInfo.dice} type={4}></Dice>
+      <Dice
+        id="Dice-1"
+        x={20}
+        y={30}
+        diceInfoType={{ point: gameData.G.mainBoardInfo.dice, isUse: true }}
+        type={4}
+      ></Dice>
       {warehousePos.map((item, index) => (
         <Warehouse key={"Warehouse" + index} x={item.x} y={item.y} number={index + 1} />
       ))}
-      {gameData.G.playOrder.map((item, index) => {
-        return item.reverse().map((info, i) => {
-          return <Disc key={`Disc-${index}-${i}`} x={460 + index * 36} y={47 - i * 9} type={info} center={true} />;
-        });
-      })}
+      {gameData.G.playOrder.map((item, index) =>
+        item
+          .slice()
+          .reverse()
+          .map((info, i) => (
+            <Disc key={`Disc-${index}-${i}`} x={460 + index * 36} y={47 - i * 9} type={info} center={true} />
+          )),
+      )}
     </Group>
   );
 };
