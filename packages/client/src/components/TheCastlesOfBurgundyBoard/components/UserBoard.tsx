@@ -187,6 +187,8 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
         {/* 货物 */}
         {boardPlayerInfo.cargos.map((cargoList, index) => {
           return cargoList.map((cargo, i) => {
+            const selectable =
+              isHighlight && nowPlayingPlayerID === clientPlayerID && choiceDice.dicePoint === cargo.point;
             return (
               <Cargo
                 key={`Cargo-${matchData.id}-${boardPlayerInfo.id}-${index}-${i}`}
@@ -194,6 +196,11 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                 y={9 - i * 7}
                 imageScale={0.55}
                 cargoInfo={cargo}
+                selectable={selectable}
+                onSelect={() => {
+                  gameData.moves.sellCargoMove(cargo.point);
+                  afterUseDice("成功出售货物");
+                }}
               />
             );
           });

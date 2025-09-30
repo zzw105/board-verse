@@ -89,6 +89,9 @@ const settingUpMainBoard = (gameData: TheCastlesOfBurgundyGameType) => {
 const settingUpPlayerCoins = (gameData: TheCastlesOfBurgundyGameType, playID: number, dCoins: number) => {
   gameData.playersInfo[playID].coins += dCoins;
 };
+const settingUpPlayerScore = (gameData: TheCastlesOfBurgundyGameType, playID: number, dScore: number) => {
+  gameData.playersInfo[playID].score += dScore;
+};
 const settingUpPlayerWorkers = (gameData: TheCastlesOfBurgundyGameType, playID: number, dWorkers: number) => {
   gameData.playersInfo[playID].workers += dWorkers;
 };
@@ -163,6 +166,21 @@ const getWorkers = (gameData: TheCastlesOfBurgundyGameType, playID: number, dice
     throw new Error("未找到骰子");
   }
   settingUpPlayerWorkers(gameData, playID, manipulatedDice.point);
+  manipulatedDice.isUse = true;
+};
+
+const sellCargo = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, playID: number, cargoPoint: DicePointsEnum) => {
+  const playerInfo = gameData.playersInfo[playID];
+  const cargo = takeMany(playerInfo.cargos, 1, (item) => item[0]?.point === cargoPoint)[0];
+  const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === cargoPoint);
+  if (!manipulatedDice) {
+    throw new Error("未找到骰子");
+  }
+  if (!cargo) {
+    throw new Error("玩家没有该货物");
+  }
+  settingUpPlayerScore(gameData, playID, cargo.length * (ctx.numPlayers - 1));
+  settingUpPlayerCoins(gameData, playID, 1);
   manipulatedDice.isUse = true;
 };
 
@@ -263,6 +281,9 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
         },
         getWorkerMove: (data, dicePoint) => {
           getWorkers(data.G, Number(data.ctx.currentPlayer), dicePoint);
+        },
+        sellCargoMove: (data, cargoPoint) => {
+          sellCargo(data.G, data.ctx, Number(data.ctx.currentPlayer), cargoPoint);
         },
         endPlayerTurn: ({ G, ctx, events }) => {
           // 这里可以做每个玩家回合结束的逻辑

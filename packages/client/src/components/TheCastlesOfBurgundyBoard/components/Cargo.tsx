@@ -6,7 +6,7 @@ import { Group, Image } from "react-konva";
 import useImage from "use-image";
 
 import spaceMbBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/goods2019.jpg";
-import { ShadowBlurEnum } from "../../../enum/game";
+import { ShadowBlurEnum, ShadowColorEnum } from "../../../enum/game";
 
 interface Props {
   x: number;
@@ -14,9 +14,11 @@ interface Props {
   cargoInfo: CargoType;
   center?: boolean;
   imageScale?: number;
+  selectable?: boolean;
+  onSelect?: () => void;
 }
 
-export const Cargo = ({ x, y, cargoInfo, center, imageScale = 0.62 }: Props) => {
+export const Cargo = ({ x, y, cargoInfo, center, imageScale = 0.62, selectable, onSelect }: Props) => {
   const { point, isBack } = cargoInfo;
   const imageWidth = 560 / 7;
   const imageHeight = 80;
@@ -63,10 +65,10 @@ export const Cargo = ({ x, y, cargoInfo, center, imageScale = 0.62 }: Props) => 
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
   useEffect(() => {
-    const g = groupRef.current;
-    if (g && spaceMbBgImage) {
-      g.cache();
-    }
+    // const g = groupRef.current;
+    // if (g && spaceMbBgImage) {
+    //   g.cache();
+    // }
   }, [spaceMbBgImage]);
 
   return (
@@ -76,6 +78,21 @@ export const Cargo = ({ x, y, cargoInfo, center, imageScale = 0.62 }: Props) => 
       y={y}
       offsetX={center ? (imageWidth / 2) * imageScale : 0}
       offsetY={center ? (imageHeight / 2) * imageScale : 0}
+      onMouseOver={() => {
+        if (selectable) {
+          document.body.style.cursor = "pointer";
+        }
+      }}
+      onMouseOut={() => {
+        if (selectable) {
+          document.body.style.cursor = "default";
+        }
+      }}
+      onClick={() => {
+        if (selectable) {
+          onSelect?.();
+        }
+      }}
       // onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
     >
       <Image
@@ -90,6 +107,8 @@ export const Cargo = ({ x, y, cargoInfo, center, imageScale = 0.62 }: Props) => 
           width: imageWidth,
           height: imageHeight,
         }}
+        stroke={selectable ? ShadowColorEnum.CAN_OPERATE : ""} // 描边颜色
+        strokeWidth={7} // 描边宽度
       />
     </Group>
   );
