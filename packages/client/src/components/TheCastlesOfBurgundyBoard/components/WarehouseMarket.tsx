@@ -10,8 +10,7 @@ import countersImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/count
 import { ShadowBlurEnum } from "../../../enum/game";
 import { BoardContext } from "../../../store/BoardContext";
 import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
-import { useTooltipStore } from "../../../store/useTooltipStore";
-import { canReach } from "../../../utils";
+import { afterUseDice, canReach } from "../../../utils";
 import { Building } from "./Building";
 import { BuildingBackground } from "./BuildingBackground";
 
@@ -22,8 +21,7 @@ interface Props {
 }
 
 export const WarehouseMarket = ({ x, y, marketNumber }: Props) => {
-  const { targetLeave } = useTooltipStore();
-  const { choiceDice, cleanChoiceDice } = useTheCastlesOfBurgundyStore();
+  const { choiceDice } = useTheCastlesOfBurgundyStore();
   const { gameData, nowPlayingPlayerID, clientPlayerID, clientPlayerInfo } = useContext(BoardContext);
 
   const warehouseMarketWidth = 109;
@@ -75,11 +73,11 @@ export const WarehouseMarket = ({ x, y, marketNumber }: Props) => {
             />
             {item.building !== StateEnum.EMPTY && (
               <Building
-                selectable={selectable}
                 key={item.building.id}
                 x={xPos}
                 y={yPos}
                 buildingInfo={item.building}
+                selectable={selectable}
                 onSelect={() => {
                   if (item.building === StateEnum.EMPTY) return;
                   if (clientPlayerInfo.buildings.length >= 3) {
@@ -87,10 +85,7 @@ export const WarehouseMarket = ({ x, y, marketNumber }: Props) => {
                     return;
                   }
                   gameData.moves.getBuildingMove(item.building.id, choiceDice.dicePoint, marketNumber, reachInfo.steps);
-                  document.body.style.cursor = "default";
-                  message.success(`成功获取 ${item.building.color}`);
-                  targetLeave();
-                  cleanChoiceDice();
+                  afterUseDice(`成功获取 ${item.building.color}`);
                 }}
               />
             )}

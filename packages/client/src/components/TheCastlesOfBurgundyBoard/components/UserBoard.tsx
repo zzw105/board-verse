@@ -10,9 +10,10 @@ import useImage from "use-image";
 
 import countersImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/counters.png";
 import plBoardImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/plBoard.jpg";
-import { ShadowBlurEnum } from "../../../enum/game";
+import { ShadowBlurEnum, ShadowColorEnum } from "../../../enum/game";
 import { BoardContext, UserBoardContext } from "../../../store/BoardContext";
 import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
+import { afterUseDice } from "../../../utils";
 import { Building } from "./Building";
 import { Cargo } from "./Cargo";
 import { Dice } from "./Dice";
@@ -45,6 +46,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
   const { choiceDice, setChoiceDice, cleanChoiceDice } = useTheCastlesOfBurgundyStore();
   const onBtnClick = () => {
     gameData.moves.endPlayerTurn();
+    afterUseDice();
   };
   return (
     <Group ref={groupRef} x={x} y={y} draggable={draggable} onDragEnd={onDragEnd}>
@@ -130,6 +132,29 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
           }}
         />
         <Text x={50} y={65} text={boardPlayerInfo.workers.toString()} fontSize={30} fill="black" />
+        {isHighlight && nowPlayingPlayerID === clientPlayerID && choiceDice.dicePoint !== StateEnum.EMPTY && (
+          <>
+            <Text x={70} y={68} text={"+2"} fontSize={25} fill="black" />
+            <Rect
+              x={70}
+              y={68}
+              width={30}
+              height={25}
+              stroke={ShadowColorEnum.CAN_OPERATE} // 描边颜色
+              strokeWidth={4} // 描边宽度
+              onMouseOver={() => {
+                document.body.style.cursor = "pointer";
+              }}
+              onMouseOut={() => {
+                document.body.style.cursor = "default";
+              }}
+              onClick={() => {
+                gameData.moves.getWorkerMove(choiceDice.dicePoint);
+                afterUseDice("成功获取2个工人");
+              }}
+            />
+          </>
+        )}
         {/* 银币 */}
         <Image
           x={20}

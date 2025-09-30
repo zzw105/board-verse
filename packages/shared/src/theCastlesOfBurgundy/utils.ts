@@ -59,7 +59,13 @@ export enum BuildingsGreenTypeEnum {
 }
 
 type BuildingBaseType = {
+  /**
+   * 建筑唯一id
+   */
   id: string;
+  /**
+   * 建筑是否为黑市
+   */
   isBlack: boolean;
 };
 
@@ -144,16 +150,50 @@ export type DiceInfoType = {
   isUse: boolean;
 };
 export type PlayersInfoType = {
+  /**
+   * 玩家id
+   */
   id: number;
+  /**
+   * 玩家领地
+   */
   territory: PlayerTerritoryType[];
+  /**
+   * 玩家骰子
+   */
   dices: DiceInfoType[];
+  /**
+   * 玩家金币
+   */
   coins: number;
+  /**
+   * 玩家工人数
+   */
   workers: number;
+  /**
+   * 玩家货物
+   */
   cargos: CargoType[][];
+  /**
+   * 玩家建筑
+   */
   buildings: BuildingsType[];
+  /**
+   * 玩家得分
+   */
   score: number;
+  /**
+   * 玩家能力
+   */
   ability: {
+    /**
+     * 玩家工人可修改点数
+     */
     workerPoints: number;
+    /**
+     * 玩家是否可以购买黑市建筑
+     */
+    canBuyBlackBuilding: boolean;
   };
 };
 export type WarehouseMarketListType = {

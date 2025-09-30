@@ -121,18 +121,49 @@ const getBuilding = (
     throw new Error("未使用的骰子中没有与市场点匹配的骰子");
   }
 
-  const building = takeMany(warehouseMarket.market, 1, (item) => {
-    if (item.building !== StateEnum.EMPTY && item.building.id === buildingId) {
-      return true;
-    }
-  })[0].building;
+  const buildingIndex = warehouseMarket.market.findIndex(
+    (item) => item.building !== StateEnum.EMPTY && item.building.id === buildingId
+  );
+  const building = warehouseMarket.market[buildingIndex].building;
+
   if (building !== StateEnum.EMPTY) {
     playerInfo.buildings.push(building);
     manipulatedDice.isUse = true;
+    warehouseMarket.market[buildingIndex].building = StateEnum.EMPTY;
     if (workerPoints > 0) settingUpPlayerWorkers(gameData, playID, -workerPoints);
   } else {
     throw new Error("建筑不存在");
   }
+};
+
+const getBlackBuilding = (gameData: TheCastlesOfBurgundyGameType, playID: number, buildingId: string) => {
+  const playerInfo = gameData.playersInfo[playID];
+  if (playerInfo.coins < 2) {
+    throw new Error("你需要2个银币才能购买");
+  }
+  const buildingIndex = gameData.mainBoardInfo.blackMarket.findIndex(
+    (item) => item.building !== StateEnum.EMPTY && item.building.id === buildingId
+  );
+  const building = gameData.mainBoardInfo.blackMarket[buildingIndex].building;
+
+  if (building === StateEnum.EMPTY) {
+    throw new Error("建筑不存在");
+  }
+  playerInfo.coins -= 2;
+  playerInfo.buildings.push(building);
+  gameData.mainBoardInfo.blackMarket[buildingIndex].building = StateEnum.EMPTY;
+  playerInfo.ability.canBuyBlackBuilding = false;
+  return building;
+};
+
+const getWorkers = (gameData: TheCastlesOfBurgundyGameType, playID: number, dicePoint: DicePointsEnum) => {
+  const playerInfo = gameData.playersInfo[playID];
+  const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === dicePoint);
+  if (!manipulatedDice) {
+    throw new Error("未找到骰子");
+  }
+  settingUpPlayerWorkers(gameData, playID, manipulatedDice.point);
+  manipulatedDice.isUse = true;
 };
 
 const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, random: RandomAPI) => {
@@ -148,10 +179,11 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
     score: 0,
     ability: {
       workerPoints: 1,
+      canBuyBlackBuilding: true,
     },
   }));
   gameData.playersInfo.forEach((player, index) => {
-    settingUpPlayerCoins(gameData, player.id, 1);
+    settingUpPlayerCoins(gameData, player.id, 10);
     settingUpPlayerWorkers(gameData, player.id, index + 1);
     const newCargos = takeMany(gameData.allTokens.cargos, 3, (cargo) => cargo.point !== StateEnum.EMPTY);
     settingUpPlayerCargos(gameData, player.id, newCargos);
@@ -225,6 +257,12 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
             marketNumber,
             workerPoints
           );
+        },
+        getBlackBuildingMove: (data, buildingId) => {
+          getBlackBuilding(data.G, Number(data.ctx.currentPlayer), buildingId);
+        },
+        getWorkerMove: (data, dicePoint) => {
+          getWorkers(data.G, Number(data.ctx.currentPlayer), dicePoint);
         },
         endPlayerTurn: ({ G, ctx, events }) => {
           // 这里可以做每个玩家回合结束的逻辑

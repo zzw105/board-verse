@@ -10,6 +10,7 @@ import {
   type TheCastlesOfBurgundyGameType,
   type TokensObjType,
 } from "@game/shared";
+import { message } from "antd";
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import { Circle, Group, Rect, Text } from "react-konva";
 
@@ -17,6 +18,8 @@ import { Card } from "../components/SplendorBoard/components/Card";
 import { Noble } from "../components/SplendorBoard/components/Noble";
 import { Token } from "../components/SplendorBoard/components/Token";
 import { OperationKeyEnum } from "../enum/game";
+import { useTheCastlesOfBurgundyStore } from "../store/useTheCastlesOfBurgundyStore";
+import { useTooltipStore } from "../store/useTooltipStore";
 import { useUserStore } from "../store/useUserStore";
 import { eventBus } from "./eventBus";
 
@@ -291,3 +294,12 @@ export function canReach(
 
   return { can: false, steps: -1 };
 }
+
+export const afterUseDice = (showMessage?: string) => {
+  document.body.style.cursor = "default";
+  if (showMessage) {
+    message.success(showMessage);
+  }
+  useTheCastlesOfBurgundyStore.getState().cleanChoiceDice();
+  useTooltipStore.getState().targetLeave();
+};
