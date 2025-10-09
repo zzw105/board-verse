@@ -13,11 +13,12 @@ import plBoardImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/plBoar
 import { ShadowBlurEnum, ShadowColorEnum } from "../../../enum/game";
 import { BoardContext, UserBoardContext } from "../../../store/BoardContext";
 import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
-import { afterUseDice } from "../../../utils";
+import { afterUseDice, canReach } from "../../../utils";
 import { Building } from "./Building";
 import { Cargo } from "./Cargo";
 import { Dice } from "./Dice";
 import { PointBuildingBackground } from "./PointBuildingBackground";
+import { WorkerUseNumber } from "./WorkerUseNumber";
 
 interface Props {
   x: number;
@@ -28,7 +29,7 @@ interface Props {
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
 }
 export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragEnd }: Props) => {
-  const { gameData, nowPlayingPlayerID, clientPlayerID } = useContext(BoardContext);
+  const { gameData, nowPlayingPlayerID, clientPlayerID, clientPlayerInfo } = useContext(BoardContext);
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
   const [plBoardImage] = useImage(plBoardImg);
@@ -105,7 +106,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
               selected={selected}
               selectable={selectable}
               onSelect={() => {
-                if (choiceDice.dicePoint === StateEnum.EMPTY) {
+                if (choiceDice.dicePoint === choiceDice.dicePoint) {
                   setChoiceDice({ playerId: clientPlayerID, dicePoint: item.point, id });
                   message.info(`选择了 ${item.point}点 骰子，请选择对应操作`);
                 } else {
@@ -187,21 +188,31 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
         {/* 货物 */}
         {boardPlayerInfo.cargos.map((cargoList, index) => {
           return cargoList.map((cargo, i) => {
-            const selectable =
-              isHighlight && nowPlayingPlayerID === clientPlayerID && choiceDice.dicePoint === cargo.point;
+            const selectable = isHighlight && nowPlayingPlayerID === clientPlayerID;
+            const reachInfo = canReach(
+              choiceDice.dicePoint,
+              cargo.point,
+              clientPlayerInfo.ability.workerPoints,
+              clientPlayerInfo.workers,
+            );
             return (
-              <Cargo
-                key={`Cargo-${matchData.id}-${boardPlayerInfo.id}-${index}-${i}`}
-                x={20 + index * 55}
-                y={9 - i * 7}
-                imageScale={0.55}
-                cargoInfo={cargo}
-                selectable={selectable}
-                onSelect={() => {
-                  gameData.moves.sellCargoMove(cargo.point);
-                  afterUseDice("成功出售货物");
-                }}
-              />
+              <>
+                <Cargo
+                  key={`Cargo-${matchData.id}-${boardPlayerInfo.id}-${index}-${i}`}
+                  x={20 + index * 55}
+                  y={9 - i * 7}
+                  imageScale={0.55}
+                  cargoInfo={cargo}
+                  selectable={selectable && reachInfo.can}
+                  onSelect={() => {
+                    gameData.moves.sellCargoMove(choiceDice.dicePoint, cargo.point, reachInfo.steps);
+                    afterUseDice("成功出售货物");
+                  }}
+                />
+                {selectable && reachInfo.steps > 0 && (
+                  <WorkerUseNumber x={20 + index * 55 + 20} y={9 - i * 7 - 40} scale={0.7} number={reachInfo.steps} />
+                )}
+              </>
             );
           });
         })}
@@ -210,6 +221,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
           <Building key={building.id} x={21 + index * 60.5} y={467} buildingInfo={building} />
         ))}
       </UserBoardContext.Provider>
+      {/* 回合结束按钮 */}
       {isHighlight && nowPlayingPlayerID === clientPlayerID && (
         <Group
           x={305}

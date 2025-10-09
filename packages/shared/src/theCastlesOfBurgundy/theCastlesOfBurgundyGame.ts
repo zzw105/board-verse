@@ -165,14 +165,21 @@ const getWorkers = (gameData: TheCastlesOfBurgundyGameType, playID: number, dice
   if (!manipulatedDice) {
     throw new Error("未找到骰子");
   }
-  settingUpPlayerWorkers(gameData, playID, manipulatedDice.point);
+  settingUpPlayerWorkers(gameData, playID, 2);
   manipulatedDice.isUse = true;
 };
 
-const sellCargo = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, playID: number, cargoPoint: DicePointsEnum) => {
+const sellCargo = (
+  gameData: TheCastlesOfBurgundyGameType,
+  ctx: Ctx,
+  playID: number,
+  dicePoint: DicePointsEnum,
+  cargoPoint: DicePointsEnum,
+  workerPoints: number
+) => {
   const playerInfo = gameData.playersInfo[playID];
   const cargo = takeMany(playerInfo.cargos, 1, (item) => item[0]?.point === cargoPoint)[0];
-  const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === cargoPoint);
+  const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === dicePoint);
   if (!manipulatedDice) {
     throw new Error("未找到骰子");
   }
@@ -181,6 +188,7 @@ const sellCargo = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, playID: num
   }
   settingUpPlayerScore(gameData, playID, cargo.length * (ctx.numPlayers - 1));
   settingUpPlayerCoins(gameData, playID, 1);
+  if (workerPoints > 0) settingUpPlayerWorkers(gameData, playID, -workerPoints);
   manipulatedDice.isUse = true;
 };
 
@@ -282,8 +290,8 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
         getWorkerMove: (data, dicePoint) => {
           getWorkers(data.G, Number(data.ctx.currentPlayer), dicePoint);
         },
-        sellCargoMove: (data, cargoPoint) => {
-          sellCargo(data.G, data.ctx, Number(data.ctx.currentPlayer), cargoPoint);
+        sellCargoMove: (data, dicePoint, cargoPoint, workerPoints) => {
+          sellCargo(data.G, data.ctx, Number(data.ctx.currentPlayer), dicePoint, cargoPoint, workerPoints);
         },
         endPlayerTurn: ({ G, ctx, events }) => {
           // 这里可以做每个玩家回合结束的逻辑
