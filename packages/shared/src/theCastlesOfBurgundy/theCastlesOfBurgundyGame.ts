@@ -1,9 +1,12 @@
 import type { Ctx, Game } from "boardgame.io";
 import {
   BuildingsColorEnum,
+  BuildingsType,
   CargoType,
   completeTheCastlesOfBurgundyGameInfo,
   DicePointsEnum,
+  moveToNext,
+  PlayersInfoType,
   PlayerTerritoryType,
   StateEnum,
   takeMany,
@@ -142,6 +145,7 @@ const getBuilding = (
 
 const buildBuilding = (
   gameData: TheCastlesOfBurgundyGameType,
+  events: EventsAPI,
   playID: number,
   buildingId: string,
   dicePoint: DicePointsEnum,
@@ -163,6 +167,7 @@ const buildBuilding = (
   manipulatedDice.isUse = true;
   if (workerPoints > 0) settingUpPlayerWorkers(gameData, playID, -workerPoints);
   updateCanBuildStatus(playerInfo.territory);
+  triggerBuildingEffects(gameData, events, playerInfo, building);
 };
 
 const getBlackBuilding = (gameData: TheCastlesOfBurgundyGameType, playID: number, buildingId: string) => {
@@ -236,7 +241,7 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
   }));
   gameData.playersInfo.forEach((player, index) => {
     settingUpPlayerCoins(gameData, player.id, 10);
-    settingUpPlayerWorkers(gameData, player.id, index + 1);
+    settingUpPlayerWorkers(gameData, player.id, index + 10);
     const newCargos = takeMany(gameData.allTokens.cargos, 3, (cargo) => cargo.point !== StateEnum.EMPTY);
     settingUpPlayerCargos(gameData, player.id, newCargos);
     const center = player.territory.find((item) => item.center);
@@ -295,6 +300,25 @@ const updateCanBuildStatus = (territoryList: PlayerTerritoryType[]) => {
   });
 };
 
+// 触发建筑效果
+const triggerBuildingEffects = (
+  gameData: TheCastlesOfBurgundyGameType,
+  events: EventsAPI,
+  playerInfo: PlayersInfoType,
+  building: BuildingsType
+) => {
+  switch (building.color) {
+    case BuildingsColorEnum.BLUE:
+      // 船只
+      moveToNext(gameData.playOrder, playerInfo.id);
+      events.setStage("choiceCargos");
+      break;
+
+    default:
+      break;
+  }
+};
+
 export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
   name: "theCastlesOfBurgundyMonorepo",
   setup: ({ ctx, random }) => {
@@ -339,6 +363,11 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
               },
             },
           },
+          choiceCargos: {
+            moves: {
+              choiceCargos: (data, buildingId) => {},
+            },
+          },
         },
       },
       moves: {
@@ -363,7 +392,15 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
           sellCargo(data.G, data.ctx, Number(data.ctx.currentPlayer), dicePoint, cargoPoint, workerPoints);
         },
         buildBuildingMove: (data, buildingId, dicePoint, playerTerritory, workerPoints) => {
-          buildBuilding(data.G, Number(data.ctx.currentPlayer), buildingId, dicePoint, playerTerritory, workerPoints);
+          buildBuilding(
+            data.G,
+            data.events,
+            Number(data.ctx.currentPlayer),
+            buildingId,
+            dicePoint,
+            playerTerritory,
+            workerPoints
+          );
         },
         endPlayerTurn: ({ G, ctx, events }) => {
           // 这里可以做每个玩家回合结束的逻辑

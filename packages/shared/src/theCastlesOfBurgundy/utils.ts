@@ -790,3 +790,17 @@ export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType 
     ],
   },
 };
+
+export function moveToNext<T>(list: T[][], value: T) {
+  const fromIndex = list.findIndex((sub) => sub.includes(value));
+  if (fromIndex === -1 || fromIndex >= list.length - 1) return;
+
+  const from = list[fromIndex];
+  const to = list[fromIndex + 1];
+
+  const valueIndex = from.indexOf(value);
+  if (valueIndex !== -1) {
+    from.splice(valueIndex, 1);
+    to.push(value);
+  }
+}

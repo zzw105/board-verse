@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { TheCastlesOfBurgundyGameType } from "@game/shared";
-import { Button, InputNumber, Slider } from "antd";
+import { Button, InputNumber, Slider, message } from "antd";
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import type Konva from "konva";
 import { cloneDeep } from "lodash";
@@ -12,6 +12,7 @@ import useImage from "use-image";
 import backMainImg from "../../assets/theCastlesOfBurgundyMonorepo/imgs/back-main.jpg";
 import { BoardContext } from "../../store/BoardContext";
 import { useDebugStore } from "../../store/useDebugStore";
+import { useTheCastlesOfBurgundyStore } from "../../store/useTheCastlesOfBurgundyStore";
 import { useUserStore } from "../../store/useUserStore";
 import styles from "./TheCastlesOfBurgundyBoard.module.less";
 import { MainBoard } from "./components/MainBoard";
@@ -23,6 +24,18 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
   /* hook */
   const navigate = useNavigate();
   const { name } = useUserStore();
+
+  const { stagesType, setStagesType } = useTheCastlesOfBurgundyStore();
+
+  const nowStagesType = (gameData.playerID !== null && gameData.ctx.activePlayers?.[gameData.playerID]) || undefined;
+  if (stagesType !== nowStagesType) {
+    setStagesType(nowStagesType);
+    switch (nowStagesType) {
+      case "choiceCargos":
+        message.warning("当前阶段为货物选择阶段，不能进行其他操作");
+        break;
+    }
+  }
 
   /* 全局需要保存的位置缩放相关数据 */
   /* stage画布 */
