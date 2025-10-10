@@ -144,6 +144,7 @@ export type PlayerTerritoryType = Omit<BlackMarketType, "playNum"> & {
   pointNum: DicePointsEnum;
   center?: boolean;
   group: number;
+  canBuild: boolean;
 };
 export type DiceInfoType = {
   point: DicePointsEnum;

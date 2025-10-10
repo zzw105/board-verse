@@ -4,6 +4,7 @@ import {
   CargoType,
   completeTheCastlesOfBurgundyGameInfo,
   DicePointsEnum,
+  PlayerTerritoryType,
   StateEnum,
   takeMany,
   TheCastlesOfBurgundyGameType,
@@ -139,6 +140,31 @@ const getBuilding = (
   }
 };
 
+const buildBuilding = (
+  gameData: TheCastlesOfBurgundyGameType,
+  playID: number,
+  buildingId: string,
+  dicePoint: DicePointsEnum,
+  playerTerritory: PlayerTerritoryType,
+  workerPoints: number
+) => {
+  const playerInfo = gameData.playersInfo[playID];
+  const building = takeMany(playerInfo.buildings, 1, (item) => item.id === buildingId)[0];
+  if (!building) throw new Error("玩家没有该建筑");
+  const territoryItem = playerInfo.territory.find(
+    (territoryItem) => territoryItem.x === playerTerritory.x && territoryItem.y === playerTerritory.y
+  );
+  if (!territoryItem) throw new Error("玩家没有该领土");
+  territoryItem.building = building;
+  const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === dicePoint);
+  if (!manipulatedDice) {
+    throw new Error("未使用的骰子中没有与市场点匹配的骰子");
+  }
+  manipulatedDice.isUse = true;
+  if (workerPoints > 0) settingUpPlayerWorkers(gameData, playID, -workerPoints);
+  updateCanBuildStatus(playerInfo.territory);
+};
+
 const getBlackBuilding = (gameData: TheCastlesOfBurgundyGameType, playID: number, buildingId: string) => {
   const playerInfo = gameData.playersInfo[playID];
   if (playerInfo.coins < 2) {
@@ -223,6 +249,49 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
     } else {
       throw new Error("玩家 Territory 中必须有一个中心");
     }
+    updateCanBuildStatus(player.territory);
+  });
+};
+
+// 更新可建状态
+const updateCanBuildStatus = (territoryList: PlayerTerritoryType[]) => {
+  // 建立坐标索引
+  const map = new Map<string, PlayerTerritoryType>();
+  territoryList.forEach((t) => {
+    t.canBuild = false; // 清空旧状态
+    map.set(`${t.x},${t.y}`, t);
+  });
+
+  // 方向偏移（odd-r 布局）
+  const neighborOffsets = (row: number) =>
+    row % 2 === 0
+      ? [
+          [0, -1],
+          [1, -1],
+          [-1, 0],
+          [1, 0],
+          [0, 1],
+          [1, 1],
+        ]
+      : [
+          [-1, -1],
+          [0, -1],
+          [-1, 0],
+          [1, 0],
+          [-1, 1],
+          [0, 1],
+        ];
+
+  // 标记可建位置
+  territoryList.forEach((t) => {
+    if (t.building !== StateEnum.EMPTY) {
+      for (const [dx, dy] of neighborOffsets(t.y)) {
+        const neighbor = map.get(`${t.x + dx},${t.y + dy}`);
+        if (neighbor && neighbor.building === StateEnum.EMPTY) {
+          neighbor.canBuild = true;
+        }
+      }
+    }
   });
 };
 
@@ -292,6 +361,9 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
         },
         sellCargoMove: (data, dicePoint, cargoPoint, workerPoints) => {
           sellCargo(data.G, data.ctx, Number(data.ctx.currentPlayer), dicePoint, cargoPoint, workerPoints);
+        },
+        buildBuildingMove: (data, buildingId, dicePoint, playerTerritory, workerPoints) => {
+          buildBuilding(data.G, Number(data.ctx.currentPlayer), buildingId, dicePoint, playerTerritory, workerPoints);
         },
         endPlayerTurn: ({ G, ctx, events }) => {
           // 这里可以做每个玩家回合结束的逻辑

@@ -301,5 +301,6 @@ export const afterUseDice = (showMessage?: string) => {
     message.success(showMessage);
   }
   useTheCastlesOfBurgundyStore.getState().cleanChoiceDice();
+  useTheCastlesOfBurgundyStore.getState().cleanChoiceBuilding();
   useTooltipStore.getState().targetLeave();
 };

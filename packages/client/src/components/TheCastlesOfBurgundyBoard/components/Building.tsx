@@ -15,9 +15,10 @@ interface Props {
   buildingInfo: BuildingsType;
   center?: boolean;
   selectable?: boolean;
+  selected?: boolean;
   onSelect?: (evt: Konva.KonvaEventObject<MouseEvent>) => void;
 }
-export const Building = ({ x, buildingInfo, y, center, selectable, onSelect }: Props) => {
+export const Building = ({ x, buildingInfo, y, center, selectable, selected, onSelect }: Props) => {
   const imageWidth = 800 / 8;
   const imageHeight = 1120 / 10;
   const imageScale = 0.53;
@@ -329,8 +330,10 @@ export const Building = ({ x, buildingInfo, y, center, selectable, onSelect }: P
           width: imageWidth,
           height: imageHeight,
         }}
-        shadowColor={selectable ? ShadowColorEnum.CAN_OPERATE : ShadowColorEnum.DEFAULT}
-        stroke={selectable ? ShadowColorEnum.CAN_OPERATE : ""} // 描边颜色
+        shadowColor={
+          selected ? ShadowColorEnum.SELECT : selectable ? ShadowColorEnum.CAN_OPERATE : ShadowColorEnum.DEFAULT
+        }
+        stroke={selected ? ShadowColorEnum.SELECT : selectable ? ShadowColorEnum.CAN_OPERATE : ""} // 描边颜色
         strokeWidth={4} // 描边宽度
       />
     </Group>

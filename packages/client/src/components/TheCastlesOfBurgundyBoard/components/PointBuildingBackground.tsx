@@ -7,7 +7,7 @@ import useImage from "use-image";
 
 import spaceBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/space_background.png";
 import spaceDieBgImg from "../../../assets/theCastlesOfBurgundyMonorepo/imgs/space_die_bg.png";
-import { ShadowBlurEnum } from "../../../enum/game";
+import { ShadowBlurEnum, ShadowColorEnum } from "../../../enum/game";
 
 interface Props {
   x: number;
@@ -16,8 +16,21 @@ interface Props {
   center?: boolean;
   point: DicePointsEnum;
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: (evt: Konva.KonvaEventObject<MouseEvent>) => void;
 }
-export const PointBuildingBackground = ({ x, type, y, point, center, onDragEnd }: Props) => {
+export const PointBuildingBackground = ({
+  x,
+  type,
+  y,
+  point,
+  center,
+  onDragEnd,
+  selectable,
+  selected,
+  onSelect,
+}: Props) => {
   const spaceBgImageWidth = 606 / 6;
   const spaceBgImageHeight = 115;
   const spaceBgImageScale = 0.53;
@@ -106,7 +119,7 @@ export const PointBuildingBackground = ({ x, type, y, point, center, onDragEnd }
     if (g && spaceDieBgImage && spaceBgImage) {
       g.cache();
     }
-  }, [spaceDieBgImage, spaceBgImage]);
+  }, [spaceDieBgImage, spaceBgImage, selected, selectable]);
 
   return (
     <Group
@@ -116,6 +129,22 @@ export const PointBuildingBackground = ({ x, type, y, point, center, onDragEnd }
       offsetX={center ? (spaceBgImageWidth / 2) * spaceBgImageScale : 0}
       offsetY={center ? (spaceBgImageHeight / 2) * spaceBgImageScale : 0}
       onDragEnd={onDragEnd}
+      onMouseOver={() => {
+        if (selectable) {
+          document.body.style.cursor = "pointer";
+        }
+      }}
+      onMouseOut={() => {
+        if (selectable) {
+          document.body.style.cursor = "default";
+        }
+      }}
+      onClick={(e) => {
+        if (selectable) {
+          onSelect?.(e);
+        }
+      }}
+
       // onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
     >
       <Image
@@ -130,6 +159,8 @@ export const PointBuildingBackground = ({ x, type, y, point, center, onDragEnd }
           width: spaceBgImageWidth,
           height: spaceBgImageHeight,
         }}
+        stroke={selected ? ShadowColorEnum.SELECT : selectable ? ShadowColorEnum.CAN_OPERATE : ""} // 描边颜色
+        strokeWidth={4} // 描边宽度
       />
       <Image
         image={spaceDieBgImage}

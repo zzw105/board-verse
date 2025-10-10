@@ -30,6 +30,9 @@ interface Props {
 }
 export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragEnd }: Props) => {
   const { gameData, nowPlayingPlayerID, clientPlayerID, clientPlayerInfo } = useContext(BoardContext);
+  const { choiceDice, setChoiceDice, choiceBuilding, setChoiceBuilding, cleanChoiceBuilding } =
+    useTheCastlesOfBurgundyStore();
+
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
   const [plBoardImage] = useImage(plBoardImg);
@@ -44,11 +47,13 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
 
   const isHighlight = boardPlayerInfo.id === nowPlayingPlayerID;
 
-  const { choiceDice, setChoiceDice, cleanChoiceDice } = useTheCastlesOfBurgundyStore();
   const onBtnClick = () => {
     gameData.moves.endPlayerTurn();
     afterUseDice();
   };
+
+  // 建筑相关
+  const buildingSelectable = nowPlayingPlayerID === clientPlayerID && choiceDice.dicePoint !== StateEnum.EMPTY;
   return (
     <Group ref={groupRef} x={x} y={y} draggable={draggable} onDragEnd={onDragEnd}>
       <UserBoardContext.Provider
@@ -64,12 +69,24 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
           image={plBoardImage}
           shadowBlur={ShadowBlurEnum.MAIN}
           shadowColor={isHighlight ? "red" : "black"}
-        />
+        ></Image>
         {/* 版图 */}
         {boardPlayerInfo.territory.map((item) => {
           if (item.background === StateEnum.EMPTY) {
             return null;
           }
+          const selectable =
+            item.canBuild &&
+            buildingSelectable &&
+            choiceBuilding !== StateEnum.EMPTY &&
+            choiceBuilding.color === item.background;
+
+          const reachInfo = canReach(
+            choiceDice.dicePoint,
+            item.pointNum,
+            clientPlayerInfo.ability.workerPoints,
+            clientPlayerInfo.workers,
+          );
           return (
             <React.Fragment key={`UserBoard-${boardPlayerInfo.id}-${item.x}-${item.y}`}>
               <PointBuildingBackground
@@ -77,8 +94,24 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                 y={129.8 + item.y * 48}
                 type={item.background}
                 point={item.pointNum}
+                selectable={selectable && reachInfo.can}
                 center
+                onSelect={() => {
+                  if (choiceBuilding !== StateEnum.EMPTY) {
+                    gameData.moves.buildBuildingMove(choiceBuilding.id, choiceDice.dicePoint, item, reachInfo.steps);
+                    afterUseDice("成功建造建筑");
+                  }
+                }}
               />
+              {selectable && reachInfo.steps > 0 && (
+                <WorkerUseNumber
+                  x={118.5 + item.x * 56.1 + (item.y % 2) * -28 - 40}
+                  y={129.8 + item.y * 48 - 18}
+                  number={reachInfo.steps}
+                  scale={0.55}
+                  center
+                />
+              )}
               {item.building !== StateEnum.EMPTY && (
                 <Building
                   x={118.5 + item.x * 56.1 + (item.y % 2) * -28}
@@ -106,11 +139,11 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
               selected={selected}
               selectable={selectable}
               onSelect={() => {
-                if (choiceDice.dicePoint === choiceDice.dicePoint) {
+                if (choiceDice.dicePoint === item.point) {
+                  afterUseDice();
+                } else {
                   setChoiceDice({ playerId: clientPlayerID, dicePoint: item.point, id });
                   message.info(`选择了 ${item.point}点 骰子，请选择对应操作`);
-                } else {
-                  cleanChoiceDice();
                 }
               }}
             />
@@ -131,7 +164,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
             width: countersImageWidth,
             height: countersImageHeight,
           }}
-        />
+        ></Image>
         <Text x={50} y={65} text={boardPlayerInfo.workers.toString()} fontSize={30} fill="black" />
         {isHighlight && nowPlayingPlayerID === clientPlayerID && choiceDice.dicePoint !== StateEnum.EMPTY && (
           <>
@@ -171,7 +204,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
             width: countersImageWidth,
             height: countersImageHeight,
           }}
-        />
+        ></Image>
         <Text x={50} y={110} text={boardPlayerInfo.coins.toString()} fontSize={30} fill="black" />
         {/* 分数 */}
         <Star
@@ -187,16 +220,20 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
         <Text x={355} y={119} text={boardPlayerInfo.score.toString()} fontSize={25} fill="black" />
         {/* 货物 */}
         {boardPlayerInfo.cargos.map((cargoList, index) => {
-          return cargoList.map((cargo, i) => {
-            const selectable = isHighlight && nowPlayingPlayerID === clientPlayerID;
-            const reachInfo = canReach(
-              choiceDice.dicePoint,
-              cargo.point,
-              clientPlayerInfo.ability.workerPoints,
-              clientPlayerInfo.workers,
-            );
-            return (
-              <>
+          if (cargoList.length === 0) return null;
+
+          const selectable = isHighlight && nowPlayingPlayerID === clientPlayerID;
+          const reachInfo = canReach(
+            choiceDice.dicePoint,
+            cargoList[0].point,
+            clientPlayerInfo.ability.workerPoints,
+            clientPlayerInfo.workers,
+          );
+
+          return (
+            <React.Fragment key={`CargoGroup-${matchData.id}-${boardPlayerInfo.id}-${index}`}>
+              {/* 货物 */}
+              {cargoList.map((cargo, i) => (
                 <Cargo
                   key={`Cargo-${matchData.id}-${boardPlayerInfo.id}-${index}-${i}`}
                   x={20 + index * 55}
@@ -209,17 +246,37 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                     afterUseDice("成功出售货物");
                   }}
                 />
-                {selectable && reachInfo.steps > 0 && (
-                  <WorkerUseNumber x={20 + index * 55 + 20} y={9 - i * 7 - 40} scale={0.7} number={reachInfo.steps} />
-                )}
-              </>
-            );
-          });
+              ))}
+
+              {/* 工人步数提示 */}
+              {selectable && reachInfo.steps > 0 && (
+                <WorkerUseNumber x={20 + index * 55 + 20} y={9 - 40} scale={0.7} number={reachInfo.steps} />
+              )}
+            </React.Fragment>
+          );
         })}
         {/* 建筑 */}
-        {boardPlayerInfo.buildings.map((building, index) => (
-          <Building key={building.id} x={21 + index * 60.5} y={467} buildingInfo={building} />
-        ))}
+        {boardPlayerInfo.buildings.map((building, index) => {
+          const buildingSelected = choiceBuilding !== StateEnum.EMPTY && choiceBuilding.id === building.id;
+          return (
+            <Building
+              key={building.id}
+              x={21 + index * 60.5}
+              y={467}
+              selectable={buildingSelectable}
+              selected={buildingSelected}
+              buildingInfo={building}
+              onSelect={() => {
+                if (choiceBuilding !== StateEnum.EMPTY && choiceBuilding.id === building.id) {
+                  cleanChoiceBuilding();
+                } else {
+                  setChoiceBuilding(building);
+                  message.info(`选择了 ${building.color} 建筑，请选择对应操作`);
+                }
+              }}
+            />
+          );
+        })}
       </UserBoardContext.Provider>
       {/* 回合结束按钮 */}
       {isHighlight && nowPlayingPlayerID === clientPlayerID && (
