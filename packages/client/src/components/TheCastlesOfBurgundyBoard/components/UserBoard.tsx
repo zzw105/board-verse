@@ -241,10 +241,15 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                   y={9 - i * 7}
                   imageScale={0.55}
                   cargoInfo={cargo}
-                  selectable={selectable && reachInfo.can}
+                  selectable={(selectable && reachInfo.can) || (isHighlight && stagesType === "removeCargos")}
                   onSelect={() => {
-                    gameData.moves.sellCargoMove(choiceDice.dicePoint, cargo.point, reachInfo.steps);
-                    afterUseDice("成功出售货物");
+                    if (isHighlight && stagesType === "removeCargos") {
+                      gameData.moves.removeCargosMove(cargo.point);
+                      afterUseDice("成功移除货物");
+                    } else {
+                      gameData.moves.sellCargoMove(choiceDice.dicePoint, cargo.point, reachInfo.steps);
+                      afterUseDice("成功出售货物");
+                    }
                   }}
                 />
               ))}

@@ -138,7 +138,8 @@ const getBuilding = (
 
   if (building !== StateEnum.EMPTY) {
     playerInfo.buildings.push(building);
-    manipulatedDice.isUse = true;
+    // ZZW_TODO:
+    // manipulatedDice.isUse = true;
     warehouseMarket.market[buildingIndex].building = StateEnum.EMPTY;
     if (workerPoints > 0) settingUpPlayerWorkers(gameData, playID, -workerPoints);
   } else {
@@ -352,7 +353,27 @@ const getWarehouseCargos = (
   settingUpPlayerCargos(gameData, playID, warehouseMarket.warehouse);
   warehouseMarket.warehouse = [];
   events.endStage();
-  console.log("end");
+
+  //
+  const playerInfo = gameData.playersInfo[playID];
+  if (playerInfo.cargos.length > 3) {
+    events.setStage("removeCargos");
+  }
+};
+
+// 移除玩家货物
+const removeCargos = (
+  gameData: TheCastlesOfBurgundyGameType,
+  events: EventsAPI,
+  playID: number,
+  cargoPoint: DicePointsEnum
+) => {
+  const playerInfo = gameData.playersInfo[playID];
+  const cargosIndex = playerInfo.cargos.findIndex((item) => item[0]?.point === cargoPoint);
+  playerInfo.cargos.splice(cargosIndex, 1);
+  if (playerInfo.cargos.length <= 3) {
+    events.setStage("choiceCargos");
+  }
 };
 
 export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
@@ -404,6 +425,13 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
             moves: {
               getWarehouseCargosMove: (data, warehouseNumber) => {
                 getWarehouseCargos(data.G, data.events, Number(data.ctx.currentPlayer), warehouseNumber);
+              },
+            },
+          },
+          removeCargos: {
+            moves: {
+              removeCargosMove: (data, cargoPoint) => {
+                removeCargos(data.G, data.events, Number(data.ctx.currentPlayer), cargoPoint);
               },
             },
           },

@@ -35,6 +35,8 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
       setStagesType(nowStagesType);
       if (nowStagesType === "choiceCargos") {
         message.warning("当前阶段为货物选择阶段，不能进行其他操作");
+      } else if (nowStagesType === "removeCargos") {
+        message.warning("当前阶段为货物移除阶段，不能进行其他操作");
       }
     }
   }, [nowStagesType, stagesType, setStagesType]);
