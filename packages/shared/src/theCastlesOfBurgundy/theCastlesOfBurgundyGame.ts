@@ -138,8 +138,7 @@ const getBuilding = (
 
   if (building !== StateEnum.EMPTY) {
     playerInfo.buildings.push(building);
-    // ZZW_TODO:
-    // manipulatedDice.isUse = true;
+    manipulatedDice.isUse = true;
     warehouseMarket.market[buildingIndex].building = StateEnum.EMPTY;
     if (workerPoints > 0) settingUpPlayerWorkers(gameData, playID, -workerPoints);
   } else {
