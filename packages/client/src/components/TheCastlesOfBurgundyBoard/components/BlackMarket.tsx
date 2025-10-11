@@ -6,6 +6,7 @@ import { message } from "antd";
 import { Group } from "react-konva";
 
 import { BoardContext } from "../../../store/BoardContext";
+import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
 import { useTooltipStore } from "../../../store/useTooltipStore";
 import { Building } from "./Building";
 import { BuildingBackground } from "./BuildingBackground";
@@ -17,6 +18,7 @@ interface Props {
 
 export const BlackMarket = ({ x, y }: Props) => {
   const { gameData, nowPlayingPlayerID, clientPlayerID, clientPlayerInfo } = useContext(BoardContext);
+  const { stagesType } = useTheCastlesOfBurgundyStore();
   const { targetLeave } = useTooltipStore();
 
   const blackMarketWidth = 165;
@@ -59,7 +61,7 @@ export const BlackMarket = ({ x, y }: Props) => {
                 y={yPos}
                 buildingInfo={item.building}
                 center
-                selectable={selectable}
+                selectable={selectable && stagesType === undefined}
                 onSelect={() => {
                   if (item.building === StateEnum.EMPTY) return;
                   if (clientPlayerInfo.buildings.length >= 3) {

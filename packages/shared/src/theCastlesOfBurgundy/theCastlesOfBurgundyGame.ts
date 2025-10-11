@@ -5,6 +5,7 @@ import {
   CargoType,
   completeTheCastlesOfBurgundyGameInfo,
   DicePointsEnum,
+  logs,
   moveToNext,
   PlayersInfoType,
   PlayerTerritoryType,
@@ -22,7 +23,7 @@ import { EventsAPI } from "boardgame.io/dist/types/src/plugins/events/events";
 const settingUpCargos = (gameData: TheCastlesOfBurgundyGameType) => {
   const cargos = gameData.allTokens.cargos.splice(0, 5);
   gameData.mainBoardInfo.nowCargos = cargos;
-  console.log("设置货物展示区完成");
+  logs.success(gameData, "设置货物展示区完成", false);
 };
 
 // 设置黑市和市场
@@ -35,7 +36,7 @@ const settingUpBuildings = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx) =>
         takeMany(gameData.allTokens.buildings, 1, (building) => building.isBlack === true)[0] ?? StateEnum.EMPTY;
     }
   });
-  console.log("设置黑市完成");
+  logs.success(gameData, "设置黑市完成", false);
   gameData.mainBoardInfo.warehouseMarketList.forEach((warehouseMarket) => {
     warehouseMarket.market.forEach((item) => {
       if (item.playNum > ctx.numPlayers) {
@@ -50,7 +51,7 @@ const settingUpBuildings = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx) =>
       }
     });
   });
-  console.log("设置仓库完成");
+  logs.success(gameData, "设置仓库完成", false);
 };
 
 // 设置玩家和主板图骰子
@@ -62,26 +63,27 @@ const settingUpDices = (gameData: TheCastlesOfBurgundyGameType, random: RandomAP
       isUse: false,
     }));
   });
-  console.log("设置玩家和主板图骰子完成");
+  logs.success(gameData, "设置玩家和主板图骰子完成", false);
 };
 
 // 设置每回合主板
-const settingUpMainBoard = (gameData: TheCastlesOfBurgundyGameType) => {
+const settingUpMainBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx) => {
   // 放置当前回合货物
   const index = gameData.mainBoardInfo.nowCargos.findIndex((item) => item.point !== StateEnum.EMPTY);
   if (index === -1) {
-    throw new Error("nowCargos 中必须有一个货物的 point 不是 StateEnum.EMPTY");
+    logs.error(gameData, "nowCargos 中必须有一个货物的 point 不是 StateEnum.EMPTY");
+    return;
   }
   const nowCargo = { ...gameData.mainBoardInfo.nowCargos[index] };
   gameData.mainBoardInfo.warehouseMarketList[gameData.mainBoardInfo.dice - 1].warehouse.push(nowCargo);
   gameData.mainBoardInfo.nowCargos[index].point = StateEnum.EMPTY;
-  console.log("设置当前回合货物完成");
+  logs.success(gameData, "设置当前回合货物完成", false);
 
   // 放置玩家次序token
   if (gameData.playOrder.length === 0) {
     gameData.playOrder = Array.from({ length: 7 }).map((item, index) => {
       if (index === 0) {
-        return [0, 1, 2, 3];
+        return Array.from({ length: ctx.numPlayers }, (_, i) => i);
       }
       return [];
     });
@@ -125,7 +127,8 @@ const getBuilding = (
 
   const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === dicePoint);
   if (!manipulatedDice) {
-    throw new Error("未使用的骰子中没有与市场点匹配的骰子");
+    logs.error(gameData, "未使用的骰子中没有与市场点匹配的骰子");
+    return;
   }
 
   const buildingIndex = warehouseMarket.market.findIndex(
@@ -139,7 +142,8 @@ const getBuilding = (
     warehouseMarket.market[buildingIndex].building = StateEnum.EMPTY;
     if (workerPoints > 0) settingUpPlayerWorkers(gameData, playID, -workerPoints);
   } else {
-    throw new Error("建筑不存在");
+    logs.error(gameData, "建筑不存在");
+    return;
   }
 };
 
@@ -154,15 +158,22 @@ const buildBuilding = (
 ) => {
   const playerInfo = gameData.playersInfo[playID];
   const building = takeMany(playerInfo.buildings, 1, (item) => item.id === buildingId)[0];
-  if (!building) throw new Error("玩家没有该建筑");
+  if (!building) {
+    logs.error(gameData, "玩家没有该建筑");
+    return;
+  }
   const territoryItem = playerInfo.territory.find(
     (territoryItem) => territoryItem.x === playerTerritory.x && territoryItem.y === playerTerritory.y
   );
-  if (!territoryItem) throw new Error("玩家没有该领土");
+  if (!territoryItem) {
+    logs.error(gameData, "玩家没有该领土");
+    return;
+  }
   territoryItem.building = building;
   const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === dicePoint);
   if (!manipulatedDice) {
-    throw new Error("未使用的骰子中没有与市场点匹配的骰子");
+    logs.error(gameData, "未使用的骰子中没有与市场点匹配的骰子");
+    return;
   }
   manipulatedDice.isUse = true;
   if (workerPoints > 0) settingUpPlayerWorkers(gameData, playID, -workerPoints);
@@ -173,7 +184,8 @@ const buildBuilding = (
 const getBlackBuilding = (gameData: TheCastlesOfBurgundyGameType, playID: number, buildingId: string) => {
   const playerInfo = gameData.playersInfo[playID];
   if (playerInfo.coins < 2) {
-    throw new Error("你需要2个银币才能购买");
+    logs.error(gameData, "你需要2个银币才能购买");
+    return;
   }
   const buildingIndex = gameData.mainBoardInfo.blackMarket.findIndex(
     (item) => item.building !== StateEnum.EMPTY && item.building.id === buildingId
@@ -181,7 +193,8 @@ const getBlackBuilding = (gameData: TheCastlesOfBurgundyGameType, playID: number
   const building = gameData.mainBoardInfo.blackMarket[buildingIndex].building;
 
   if (building === StateEnum.EMPTY) {
-    throw new Error("建筑不存在");
+    logs.error(gameData, "建筑不存在");
+    return;
   }
   playerInfo.coins -= 2;
   playerInfo.buildings.push(building);
@@ -194,7 +207,8 @@ const getWorkers = (gameData: TheCastlesOfBurgundyGameType, playID: number, dice
   const playerInfo = gameData.playersInfo[playID];
   const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === dicePoint);
   if (!manipulatedDice) {
-    throw new Error("未找到骰子");
+    logs.error(gameData, "未找到骰子");
+    return;
   }
   settingUpPlayerWorkers(gameData, playID, 2);
   manipulatedDice.isUse = true;
@@ -212,10 +226,12 @@ const sellCargo = (
   const cargo = takeMany(playerInfo.cargos, 1, (item) => item[0]?.point === cargoPoint)[0];
   const manipulatedDice = playerInfo.dices.find((item) => item.isUse === false && item.point === dicePoint);
   if (!manipulatedDice) {
-    throw new Error("未找到骰子");
+    logs.error(gameData, "未找到骰子");
+    return;
   }
   if (!cargo) {
-    throw new Error("玩家没有该货物");
+    logs.error(gameData, "玩家没有该货物");
+    return;
   }
   settingUpPlayerScore(gameData, playID, cargo.length * (ctx.numPlayers - 1));
   settingUpPlayerCoins(gameData, playID, 1);
@@ -227,7 +243,7 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
   // 初始化玩家起始资源
   gameData.playersInfo = Array.from({ length: ctx.numPlayers }, (_, i) => ({
     id: i,
-    territory: playersTerritoryList[random.Die(playersTerritoryList.length) - 1],
+    territory: cloneDeep(playersTerritoryList[random.Die(playersTerritoryList.length) - 1]),
     dices: [],
     coins: 0,
     workers: 0,
@@ -244,6 +260,8 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
     settingUpPlayerWorkers(gameData, player.id, index + 10);
     const newCargos = takeMany(gameData.allTokens.cargos, 3, (cargo) => cargo.point !== StateEnum.EMPTY);
     settingUpPlayerCargos(gameData, player.id, newCargos);
+    console.log(player.territory);
+
     const center = player.territory.find((item) => item.center);
     if (center) {
       center.building = takeMany(
@@ -252,7 +270,8 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
         (item) => item.color === BuildingsColorEnum.DARK_GREEN
       )[0];
     } else {
-      throw new Error("玩家 Territory 中必须有一个中心");
+      logs.error(gameData, "玩家 Territory 中必须有一个中心");
+      return;
     }
     updateCanBuildStatus(player.territory);
   });
@@ -319,6 +338,23 @@ const triggerBuildingEffects = (
   }
 };
 
+// 获取仓库的货物
+const getWarehouseCargos = (
+  gameData: TheCastlesOfBurgundyGameType,
+  events: EventsAPI,
+  playID: number,
+  warehouseNumber: number
+) => {
+  const warehouseMarket = gameData.mainBoardInfo.warehouseMarketList[warehouseNumber];
+  if (!warehouseMarket) {
+    throw new Error("仓库不存在");
+  }
+  settingUpPlayerCargos(gameData, playID, warehouseMarket.warehouse);
+  warehouseMarket.warehouse = [];
+  events.endStage();
+  console.log("end");
+};
+
 export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
   name: "theCastlesOfBurgundyMonorepo",
   setup: ({ ctx, random }) => {
@@ -338,7 +374,8 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
 
     settingUpDices(newData, random);
 
-    settingUpMainBoard(newData);
+    settingUpMainBoard(newData, ctx);
+    logs.info(newData, "游戏开始");
     return newData;
   },
   phases: {
@@ -349,7 +386,7 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
         onBegin: ({ G, ctx }) => {
           const player = G.playersInfo[Number(ctx.currentPlayer)];
           // 玩家回合开始时可以做一些初始化
-          console.log(`玩家 ${ctx.currentPlayer} 回合开始`);
+          logs.info(G, `玩家 ${ctx.currentPlayer}  回合开始`);
         },
         stages: {
           removeBuilding: {
@@ -365,9 +402,36 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
           },
           choiceCargos: {
             moves: {
-              choiceCargos: (data, buildingId) => {},
+              getWarehouseCargosMove: (data, warehouseNumber) => {
+                getWarehouseCargos(data.G, data.events, Number(data.ctx.currentPlayer), warehouseNumber);
+              },
             },
           },
+        },
+        onEnd: ({ G, ctx, random, events }) => {
+          logs.info(G, `玩家 ${ctx.currentPlayer} 回合结束`, false);
+
+          // 检查是否为最后一位玩家
+          const isLastPlayer = ctx.playOrderPos === ctx.playOrder.length - 1;
+
+          if (isLastPlayer && G.mainBoardInfo.nowCargos.every((item) => item.point === StateEnum.EMPTY)) {
+            settingUpCargos(G);
+            settingUpBuildings(G, ctx);
+            G.currentTurn++;
+          }
+
+          if (isLastPlayer) {
+            logs.info(G, "✨ 所有玩家完成一轮，执行回合结束逻辑", false);
+            const clonePlayOrder = cloneDeep(G.playOrder);
+            ctx.playOrder = clonePlayOrder
+              .reverse()
+              .flat()
+              .map((i) => i.toString());
+            // 重置玩家骰子
+            settingUpDices(G, random);
+            // 重置主板
+            settingUpMainBoard(G, ctx);
+          }
         },
       },
       moves: {
@@ -402,6 +466,7 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
             workerPoints
           );
         },
+
         endPlayerTurn: ({ G, ctx, events }) => {
           // 这里可以做每个玩家回合结束的逻辑
           events.endTurn(); // 自动切换到下一个玩家

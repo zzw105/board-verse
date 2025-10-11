@@ -30,7 +30,7 @@ interface Props {
 }
 export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragEnd }: Props) => {
   const { gameData, nowPlayingPlayerID, clientPlayerID, clientPlayerInfo } = useContext(BoardContext);
-  const { choiceDice, setChoiceDice, choiceBuilding, setChoiceBuilding, cleanChoiceBuilding } =
+  const { stagesType, choiceDice, setChoiceDice, choiceBuilding, setChoiceBuilding, cleanChoiceBuilding } =
     useTheCastlesOfBurgundyStore();
 
   // 锁定
@@ -53,7 +53,8 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
   };
 
   // 建筑相关
-  const buildingSelectable = nowPlayingPlayerID === clientPlayerID && choiceDice.dicePoint !== StateEnum.EMPTY;
+  const buildingSelectable =
+    isHighlight && nowPlayingPlayerID === clientPlayerID && choiceDice.dicePoint !== StateEnum.EMPTY;
   return (
     <Group ref={groupRef} x={x} y={y} draggable={draggable} onDragEnd={onDragEnd}>
       <UserBoardContext.Provider
@@ -137,7 +138,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
               diceInfoType={item}
               type={boardPlayerInfo.id}
               selected={selected}
-              selectable={selectable}
+              selectable={selectable && stagesType === undefined}
               onSelect={() => {
                 if (choiceDice.dicePoint === item.point) {
                   afterUseDice();

@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import useImage from "use-image";
 
 import backMainImg from "../../assets/theCastlesOfBurgundyMonorepo/imgs/back-main.jpg";
+import { useGameLogs } from "../../hooks/useWebLog";
 import { BoardContext } from "../../store/BoardContext";
 import { useDebugStore } from "../../store/useDebugStore";
 import { useTheCastlesOfBurgundyStore } from "../../store/useTheCastlesOfBurgundyStore";
@@ -24,18 +25,19 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
   /* hook */
   const navigate = useNavigate();
   const { name } = useUserStore();
+  useGameLogs(gameData.G.logs);
 
   const { stagesType, setStagesType } = useTheCastlesOfBurgundyStore();
 
   const nowStagesType = (gameData.playerID !== null && gameData.ctx.activePlayers?.[gameData.playerID]) || undefined;
-  if (stagesType !== nowStagesType) {
-    setStagesType(nowStagesType);
-    switch (nowStagesType) {
-      case "choiceCargos":
+  useEffect(() => {
+    if (stagesType !== nowStagesType) {
+      setStagesType(nowStagesType);
+      if (nowStagesType === "choiceCargos") {
         message.warning("当前阶段为货物选择阶段，不能进行其他操作");
-        break;
+      }
     }
-  }
+  }, [nowStagesType, stagesType, setStagesType]);
 
   /* 全局需要保存的位置缩放相关数据 */
   /* stage画布 */

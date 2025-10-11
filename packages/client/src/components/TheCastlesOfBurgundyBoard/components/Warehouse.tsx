@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { Group } from "react-konva";
 
 import { BoardContext } from "../../../store/BoardContext";
+import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
 import { Cargo } from "./Cargo";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 
 export const Warehouse = ({ x, y, number }: Props) => {
   const { gameData } = useContext(BoardContext);
+  const { stagesType } = useTheCastlesOfBurgundyStore();
   const warehouseWidth = 106;
   const warehouseHeight = 106;
   // const buildingBackgroundDist = 56;
@@ -35,7 +37,18 @@ export const Warehouse = ({ x, y, number }: Props) => {
 
         const x = (posInGroup % 2) * 55 + groupIndex * 20;
         const y = Math.floor(posInGroup / 2) * 55;
-        return <Cargo key={"Cargo" + index} x={x} y={y} cargoInfo={item} />;
+        return (
+          <Cargo
+            key={"Cargo" + index}
+            x={x}
+            y={y}
+            selectable={stagesType === "choiceCargos"}
+            onSelect={() => {
+              gameData.moves.getWarehouseCargosMove(number - 1);
+            }}
+            cargoInfo={item}
+          />
+        );
       })}
     </Group>
   );

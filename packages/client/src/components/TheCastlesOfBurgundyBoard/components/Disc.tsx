@@ -32,7 +32,7 @@ export const Disc = ({ x, y, type, center }: Props) => {
     if (g && image) {
       g.cache();
     }
-  }, [image]);
+  }, [image, type]);
 
   return (
     <Group

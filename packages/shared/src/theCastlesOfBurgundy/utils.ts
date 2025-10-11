@@ -202,7 +202,18 @@ export type WarehouseMarketListType = {
   market: BlackMarketType[];
 };
 
+export type LogsItemType = {
+  type: "success" | "error" | "info" | "warning";
+  webShow: boolean;
+  message: string;
+  time: string;
+};
+
 export type TheCastlesOfBurgundyGameType = {
+  /**
+   * 游戏日志
+   */
+  logs: LogsItemType[];
   // 当前回合
   currentTurn: number;
   // 主板图
@@ -228,6 +239,7 @@ const createBuildingsList = <T extends BuildingsType>(length: number, data: T): 
 };
 
 export const completeTheCastlesOfBurgundyGameInfo: TheCastlesOfBurgundyGameType = {
+  logs: [],
   currentTurn: 1,
   mainBoardInfo: {
     blackMarket: [
@@ -804,3 +816,33 @@ export function moveToNext<T>(list: T[][], value: T) {
     to.push(value);
   }
 }
+
+export const logs = {
+  push<T extends { logs: LogsItemType[] }>(G: T, type: LogsItemType["type"], message: string, webShow: boolean = true) {
+    if (!G.logs) G.logs = [];
+    const time = new Date().toISOString();
+    console.log(time, message);
+    G.logs.push({
+      type,
+      webShow,
+      message,
+      time,
+    });
+  },
+
+  success<T extends { logs: LogsItemType[] }>(G: T, message: string, webShow: boolean = true) {
+    logs.push(G, "success", message, webShow);
+  },
+
+  error<T extends { logs: LogsItemType[] }>(G: T, message: string, webShow: boolean = true) {
+    logs.push(G, "error", message, webShow);
+  },
+
+  info<T extends { logs: LogsItemType[] }>(G: T, message: string, webShow: boolean = true) {
+    logs.push(G, "info", message, webShow);
+  },
+
+  warning<T extends { logs: LogsItemType[] }>(G: T, message: string, webShow: boolean = true) {
+    logs.push(G, "warning", message, webShow);
+  },
+};
