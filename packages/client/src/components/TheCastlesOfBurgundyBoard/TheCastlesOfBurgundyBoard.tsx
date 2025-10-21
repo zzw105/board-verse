@@ -37,6 +37,8 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
         message.warning("当前阶段为货物选择阶段，不能进行其他操作");
       } else if (nowStagesType === "removeCargos") {
         message.warning("当前阶段为货物移除阶段，不能进行其他操作");
+      } else if (nowStagesType === "getNewDice") {
+        message.warning("当前阶段为自选骰子阶段，不能进行其他操作");
       }
     }
   }, [nowStagesType, stagesType, setStagesType]);
@@ -229,6 +231,16 @@ export function TheCastlesOfBurgundyBoard(gameData: BoardProps<TheCastlesOfBurgu
         <div>
           调试5
           <InputNumber step={0.01} value={debugNum5} onChange={(e) => setDebugNum5(e ?? 0)} />
+        </div>
+        <div>
+          <Button
+            size="large"
+            onClick={() => {
+              gameData.moves.testSetStage("getNewDice");
+            }}
+          >
+            test
+          </Button>
         </div>
       </div>
       <BoardContext.Provider

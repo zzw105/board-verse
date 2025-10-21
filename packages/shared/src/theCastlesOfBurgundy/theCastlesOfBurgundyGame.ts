@@ -260,8 +260,6 @@ const initPlayerBoard = (gameData: TheCastlesOfBurgundyGameType, ctx: Ctx, rando
     settingUpPlayerWorkers(gameData, player.id, index + 10);
     const newCargos = takeMany(gameData.allTokens.cargos, 3, (cargo) => cargo.point !== StateEnum.EMPTY);
     settingUpPlayerCargos(gameData, player.id, newCargos);
-    console.log(player.territory);
-
     const center = player.territory.find((item) => item.center);
     if (center) {
       center.building = takeMany(
@@ -330,9 +328,14 @@ const triggerBuildingEffects = (
     case BuildingsColorEnum.BLUE:
       // 船只
       moveToNext(gameData.playOrder, playerInfo.id);
-      events.setStage("choiceCargos");
+      if (gameData.mainBoardInfo.warehouseMarketList.some((item) => item.warehouse.length > 0)) {
+        events.setStage("choiceCargos");
+      }
       break;
-
+    case BuildingsColorEnum.DARK_GREEN:
+      // 城堡
+      events.setStage("getNewDice");
+      break;
     default:
       break;
   }
@@ -371,8 +374,23 @@ const removeCargos = (
   const cargosIndex = playerInfo.cargos.findIndex((item) => item[0]?.point === cargoPoint);
   playerInfo.cargos.splice(cargosIndex, 1);
   if (playerInfo.cargos.length <= 3) {
-    events.setStage("choiceCargos");
+    events.endStage();
   }
+};
+
+// 自选骰子
+const getNewDice = (
+  gameData: TheCastlesOfBurgundyGameType,
+  events: EventsAPI,
+  playID: number,
+  dicePoint: DicePointsEnum
+) => {
+  const playerInfo = gameData.playersInfo[playID];
+  playerInfo.dices.push({
+    point: dicePoint,
+    isUse: false,
+  });
+  events.endStage();
 };
 
 export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
@@ -420,6 +438,7 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
               },
             },
           },
+          // 从市场获取货物
           choiceCargos: {
             moves: {
               getWarehouseCargosMove: (data, warehouseNumber) => {
@@ -427,10 +446,19 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
               },
             },
           },
+          // 移出玩家货物
           removeCargos: {
             moves: {
               removeCargosMove: (data, cargoPoint) => {
                 removeCargos(data.G, data.events, Number(data.ctx.currentPlayer), cargoPoint);
+              },
+            },
+          },
+          // 自选骰子
+          getNewDice: {
+            moves: {
+              getNewDiceMove: (data, dicePoint) => {
+                getNewDice(data.G, data.events, Number(data.ctx.currentPlayer), dicePoint);
               },
             },
           },
@@ -493,10 +521,12 @@ export const theCastlesOfBurgundyGame: Game<TheCastlesOfBurgundyGameType> = {
             workerPoints
           );
         },
-
         endPlayerTurn: ({ G, ctx, events }) => {
           // 这里可以做每个玩家回合结束的逻辑
           events.endTurn(); // 自动切换到下一个玩家
+        },
+        testSetStage: (data, stage) => {
+          data.events.setStage(stage);
         },
       },
       endIf: ({ G, ctx }) => {

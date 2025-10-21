@@ -318,6 +318,29 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
           />
         </Group>
       )}
+      {stagesType === "getNewDice" && (
+        <Group x={305} y={480}>
+          <Rect
+            width={100}
+            height={40}
+            fill="green"
+            cornerRadius={8}
+            shadowColor="black"
+            shadowBlur={4}
+            shadowOffset={{ x: 2, y: 2 }}
+            shadowOpacity={0.3}
+          />
+          <Text
+            text={"自选骰子"}
+            fontSize={16}
+            fill="white"
+            width={100}
+            height={40}
+            align="center"
+            verticalAlign="middle"
+          />
+        </Group>
+      )}
     </Group>
   );
 };
