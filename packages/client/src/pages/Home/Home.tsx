@@ -1,14 +1,16 @@
-import styles from "./Home.module.less";
-import { useUserStore } from "../../store/useUserStore";
-import { Button, message, Space, Table, Tag, type TableProps } from "antd";
-import SetUserInfoModal, { type SetUserInfoModalType } from "../../components/SetUserInfoModal/SetUserInfoModal";
-import { useEffect, useState, type JSX } from "react";
-import CreateRoomModal, { type CreateRoomModalType } from "../../components/CreateRoomModal/CreateRoomModal";
-import { lobbyClient, useGameStore } from "../../store/useGameStore";
-import { GameTypeEnum, type GameTypeKeyType } from "../../enum/game";
+import { type JSX, useEffect, useState } from "react";
+
+import { Button, Space, Table, type TableProps, Tag, message } from "antd";
 import type { LobbyAPI } from "boardgame.io";
 import { useNavigate } from "react-router-dom";
+
+import CreateRoomModal, { type CreateRoomModalType } from "../../components/CreateRoomModal/CreateRoomModal";
+import SetUserInfoModal, { type SetUserInfoModalType } from "../../components/SetUserInfoModal/SetUserInfoModal";
+import { GameTypeEnum, type GameTypeKeyType } from "../../enum/game";
 import { UserEnumName } from "../../enum/user";
+import { lobbyClient, useGameStore } from "../../store/useGameStore";
+import { useUserStore } from "../../store/useUserStore";
+import styles from "./Home.module.less";
 
 export type roomType = LobbyAPI.Match;
 
@@ -104,12 +106,12 @@ export default function Home() {
             JsxList.push(
               <a key={record.matchID + "leave"} onClick={() => leaveRoom(record)}>
                 退出
-              </a>
+              </a>,
             );
             JsxList.push(
               <a key={record.matchID + "startGame"} onClick={() => startGame(record)}>
                 开始游戏
-              </a>
+              </a>,
             );
           }
         } else {
@@ -117,13 +119,13 @@ export default function Home() {
             JsxList.push(
               <a key={record.matchID + "leave"} onClick={() => leaveRoom(record)}>
                 退出
-              </a>
+              </a>,
             );
           } else {
             JsxList.push(
               <a key={record.matchID + "join"} onClick={() => joinRoom(record)}>
                 加入
-              </a>
+              </a>,
             );
           }
         }
@@ -170,6 +172,8 @@ export default function Home() {
         navigate("/the-castles-of-burgundy");
       } else if (record.gameName === "splendorMonorepo") {
         navigate("/splendor");
+      } else if (record.gameName === "splendorPokemonMonorepo") {
+        navigate("/splendor-pokemon");
       }
     } else {
       message.error("请先加入房间");

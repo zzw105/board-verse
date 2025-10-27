@@ -1,7 +1,7 @@
 const { Server, Origins } = require("boardgame.io/server");
-const { splendorGame, splendorGameTest, theCastlesOfBurgundyGame } = require("@game/shared");
+const { splendorGame, theCastlesOfBurgundyGame, splendorPokemonGame } = require("@game/shared");
 const server = Server({
-  games: [splendorGame, splendorGameTest, theCastlesOfBurgundyGame],
+  games: [splendorGame, theCastlesOfBurgundyGame, splendorPokemonGame],
   origins: ["*"],
 });
 // server.router.use("/api/create", async (ctx, next) => {

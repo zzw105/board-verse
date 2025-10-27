@@ -15,7 +15,7 @@ export type GameTypeKeyType = keyof typeof GameTypeEnum;
 export enum GameTypeEnum {
   splendorMonorepo = "璀璨宝石",
   theCastlesOfBurgundyMonorepo = "勃根地城堡-测试",
-  splendorMonorepoTest = "璀璨宝石测试",
+  splendorPokemonMonorepo = "璀璨宝石：宝可梦",
 }
 export enum MenuItemKeyEnum {
   BUY = "buy",
