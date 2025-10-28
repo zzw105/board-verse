@@ -6,7 +6,7 @@ import { Tween } from "konva/lib/Tween";
 import { Group, Image } from "react-konva";
 import useImage from "use-image";
 
-import backImg from "../../../assets/splendorPokemon/img/card/cardBack (1).png";
+import backImg from "../../../assets/splendorPokemon/img/card/card_back_1.png";
 import { ShadowBlurEnum } from "../../../enum/game";
 import { ImgMap } from "../imgMap";
 

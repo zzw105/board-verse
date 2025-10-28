@@ -67,7 +67,7 @@ type Enumerate<N extends number, Acc extends number[] = []> = Acc["length"] exte
 type Range<Start extends number, End extends number> = Exclude<Enumerate<End>, Enumerate<Start>> | Start;
 
 // 1~35 和 1~30 的数字
-type Numbers1_35 = Range<1, 15>; // 1~35
+type Numbers1_35 = Range<1, 36>; // 1~35
 // type Numbers1_30 = Range<1, 31>; // 1~30
 
 /** 卡片ID类型 */
@@ -325,6 +325,203 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     evolvesTo: [],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Pink]: 3,
+    }),
+    point: 0,
+    level: 1,
+  },
+  card_1_15: {
+    id: "card_1_15",
+    name: "凯西",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Black]: 3,
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Red]: 3,
+    }),
+    point: 1,
+    level: 1,
+  },
+  card_1_16: {
+    id: "card_1_16",
+    name: "凯西",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Pink]: 4,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Red]: 3,
+    }),
+    point: 1,
+    level: 1,
+  },
+  card_1_17: {
+    id: "card_1_17",
+    name: "绿毛虫",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Blue]: 1,
+      [SP_ColorEnum.Yellow]: 1,
+      [SP_ColorEnum.Red]: 1,
+      [SP_ColorEnum.Black]: 1,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Blue]: 3,
+    }),
+    point: 0,
+    level: 1,
+  },
+  card_1_18: {
+    id: "card_1_18",
+    name: "绿毛虫",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Black]: 2,
+      [SP_ColorEnum.Blue]: 1,
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Blue]: 3,
+    }),
+    point: 0,
+    level: 1,
+  },
+  card_1_19: {
+    id: "card_1_19",
+    name: "蚊香蝌蚪",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Blue]: 2,
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Black]: 2,
+    }),
+    point: 0,
+    level: 1,
+  },
+  card_1_20: {
+    id: "card_1_20",
+    name: "蚊香蝌蚪",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
+      [SP_ColorEnum.Black]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Black]: 2,
+    }),
+    point: 0,
+    level: 1,
+  },
+  card_1_21: {
+    id: "card_1_21",
+    name: "蚊香蝌蚪",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Red]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Black]: 2,
+    }),
+    point: 0,
+    level: 1,
+  },
+  card_1_22: {
+    id: "card_1_22",
+    name: "喇叭芽",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Black]: 2,
+      [SP_ColorEnum.Blue]: 1,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    point: 0,
+    level: 1,
+  },
+  card_1_23: {
+    id: "card_1_23",
+    name: "喇叭芽",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
+      [SP_ColorEnum.Red]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    point: 0,
+    level: 1,
+  },
+  card_1_24: {
+    id: "card_1_24",
+    name: "喇叭芽",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Yellow]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    point: 0,
+    level: 1,
+  },
+  card_1_25: {
+    id: "card_1_25",
+    name: "腕力",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Yellow]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
     }),
     point: 0,
     level: 1,
