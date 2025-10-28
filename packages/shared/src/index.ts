@@ -5,4 +5,4 @@ export * from "./theCastlesOfBurgundy/theCastlesOfBurgundyGame";
 export * from "./theCastlesOfBurgundy/utils";
 //
 export * from "./splendorPokemon/splendorPokemonGame";
-// export * from "./splendorPokemon/utils";
+export * from "./splendorPokemon/utils";

@@ -1,49 +1,139 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import type { SplendorGameTokenNameType, SplendorGameType, TokensObjType } from "@game/shared";
-import { Button, message } from "antd";
+import { SP_CardIdList, type SP_CardIdType, type SP_GameType } from "@game/shared";
+import { Button, InputNumber, Slider, message } from "antd";
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
+import type Konva from "konva";
+import { cloneDeep } from "lodash";
 import { Layer, Rect, Stage } from "react-konva";
 import { useNavigate } from "react-router-dom";
+import useImage from "use-image";
 
-import { MenuItemKeyEnum, OperationKeyEnum } from "../../enum/game";
-import { useContextMenuStore } from "../../store/useContextMenuStore";
+import backMainImg from "../../assets/theCastlesOfBurgundyMonorepo/imgs/back-main.jpg";
+import { SP_GameContext } from "../../store/SplendorPokemonContext";
+import { useDebugStore } from "../../store/useDebugStore";
+import { use_SP_Store } from "../../store/useSplendorPokemonStore";
 import { useUserStore } from "../../store/useUserStore";
-import {
-  generateCardJSX,
-  generateNobleJSX,
-  generateTokenJSX,
-  isTokenSelect2,
-  isTokenSelectHasThreeOnes,
-} from "../../utils";
-import { type Events, eventBus } from "../../utils/eventBus";
 import styles from "./SplendorPokemonBoard.module.less";
-import { CurrentPlayerDashboard } from "./components/CurrentPlayerDashboard";
-import { OtherPlayerDashboard } from "./components/OtherPlayerDashboard";
+import { MainBoard } from "./components/MainBoard";
+import { PokemonCard } from "./components/PokemonCard";
+import { Tooltip } from "./components/Tooltip";
+import { UserBoard } from "./components/UserBoard";
 
-export function SplendorPokemonBoard(data: BoardProps<SplendorGameType>) {
-  console.log(123, data);
+export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
+  console.log({ gameData });
+  /* hook */
+  const navigate = useNavigate();
+  const { name } = useUserStore();
+  // useGameLogs(gameData.G.logs);
 
-  if (data.ctx.gameover) {
-    const index = +data.ctx.gameover;
-    message.info(`游戏已结束，${data.matchData?.[index]?.name} 玩家胜利`);
-  }
+  const { stagesType, setStagesType } = use_SP_Store();
 
-  const { name, setIsCurrent, isCurrent, setStagesType, stagesType } = useUserStore();
-
-  if (isCurrent !== (data.playerID === data.ctx.currentPlayer)) {
-    setIsCurrent(data.playerID === data.ctx.currentPlayer);
-  }
-
-  const nowStagesType = (data.playerID !== null && data.ctx.activePlayers?.[data.playerID]) || "";
-  if (stagesType !== nowStagesType) {
-    setStagesType(nowStagesType);
-    switch (nowStagesType) {
-      case "discard":
-        message.warning("当前阶段为丢弃宝石阶段，不能进行其他操作");
-        break;
+  const nowStagesType = (gameData.playerID !== null && gameData.ctx.activePlayers?.[gameData.playerID]) || undefined;
+  useEffect(() => {
+    if (stagesType !== nowStagesType) {
+      setStagesType(nowStagesType);
+      if (nowStagesType === "choiceCargos") {
+        message.warning("当前阶段为货物选择阶段，不能进行其他操作");
+      } else if (nowStagesType === "removeCargos") {
+        message.warning("当前阶段为货物移除阶段，不能进行其他操作");
+      } else if (nowStagesType === "getNewDice") {
+        message.warning("当前阶段为自选骰子阶段，不能进行其他操作");
+      }
     }
-  }
+  }, [nowStagesType, stagesType, setStagesType]);
+
+  /* 全局需要保存的位置缩放相关数据 */
+  /* stage画布 */
+  const stageRef = useRef<Konva.Stage>(null);
+  const [stagePosition, setStagePosition] = useState({ x: 0, y: 0 });
+  const [stageScale, setStageScale] = useState(1);
+  const setStagePositionLocal = (pos: { x: number; y: number }) => {
+    localStorage.setItem("stagePosition", JSON.stringify(pos));
+    setStagePosition(pos);
+  };
+  const setStageScaleLocal = (scale: number) => {
+    localStorage.setItem("stageScale", JSON.stringify(scale));
+    setStageScale(scale);
+  };
+  // stage滚轮
+  const handleStageWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
+    e.evt.preventDefault();
+    const stage = stageRef.current;
+    if (!stage) {
+      return;
+    }
+    const oldScale = stage.scaleX();
+    const pointer = stage.getPointerPosition();
+    if (pointer?.x === undefined || pointer?.y === undefined) {
+      return;
+    }
+    const mousePointTo = {
+      x: (pointer.x - stage.x()) / oldScale,
+      y: (pointer.y - stage.y()) / oldScale,
+    };
+    let direction = e.evt.deltaY > 0 ? 1 : -1;
+    if (e.evt.ctrlKey) {
+      direction = -direction;
+    }
+    const scaleBy = 1.04;
+    const newScale = +(direction > 0 ? oldScale * scaleBy : oldScale / scaleBy).toFixed(2);
+    setStageScaleLocal(newScale);
+    const newPos = {
+      x: pointer.x - mousePointTo.x * newScale,
+      y: pointer.y - mousePointTo.y * newScale,
+    };
+    setStagePositionLocal(newPos);
+  };
+  // stage拖动结束
+  const handleStageDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+    console.log(222);
+
+    const { x, y } = e.target.position();
+    setStagePositionLocal({ x, y });
+  };
+  /* 可拖动图形组件 */
+  const initShapes = [
+    { id: "MainBoard", x: 590, y: 10 },
+    { id: "UserBoard0", x: 10, y: 10 },
+    { id: "UserBoard1", x: 1210, y: 10 },
+    { id: "UserBoard2", x: 200, y: 470 },
+    { id: "UserBoard3", x: 1000, y: 470 },
+  ];
+  const [shapes, setShapes] = useState(cloneDeep(initShapes));
+  const setShapesLocal = (newShapes: typeof shapes) => {
+    localStorage.setItem("shapes", JSON.stringify(newShapes));
+    setShapes(newShapes);
+  };
+  // 可拖动图形组件拖动结束
+  const handleShapesDragEnd = (e: Konva.KonvaEventObject<DragEvent>, id: string) => {
+    e.cancelBubble = true;
+    const { x, y } = e.target.position();
+    const newShapes = shapes.map((shape) => (shape.id === id ? { ...shape, x, y } : shape));
+    setShapesLocal(newShapes);
+  };
+  // 可拖动图形组件缩放
+  const handleSliderChange = (value: number | null) => {
+    if (Number.isNaN(value)) {
+      return;
+    }
+    setStageScaleLocal(value ?? 0);
+  };
+  // 恢复数据
+  useEffect(() => {
+    const savedShapes = localStorage.getItem("shapes");
+    const savedStageScale = localStorage.getItem("stageScale");
+    const savedStagePosition = localStorage.getItem("stagePosition");
+    if (savedStagePosition) {
+      setStagePosition(JSON.parse(savedStagePosition));
+    }
+    if (savedStageScale) {
+      setStageScale(JSON.parse(savedStageScale));
+    }
+    if (savedShapes) {
+      setShapes(JSON.parse(savedShapes));
+    }
+  }, []);
 
   // konva外部容器
   const konvaRef = useRef<HTMLDivElement>(null);
@@ -63,164 +153,71 @@ export function SplendorPokemonBoard(data: BoardProps<SplendorGameType>) {
     window.addEventListener("resize", updateSize);
     return () => window.removeEventListener("resize", updateSize);
   }, []);
-  // 原始舞台设计尺寸
-  const originalStageSize = { width: 1770 * 2, height: 911 * 2 };
-  // 缩放比例
-  const scale = Math.min(stageSize.width / originalStageSize.width, stageSize.height / originalStageSize.height);
 
-  // 处理显示卡片的信息
-  const cardPositionX: Record<number, number> = {
-    1: 30 * 2,
-    2: 300 * 2,
-    3: 430 * 2,
-    4: 560 * 2,
-    5: 690 * 2,
+  type TokensPositionType = {
+    cards: Record<SP_CardIdType, { x: number; y: number; isFaceUp: boolean; isHorizontal: boolean }>;
   };
-  const cardPositionY: Record<number, number> = {
-    0: 30 * 2,
-    1: 210 * 2,
-    2: 390 * 2,
+  const initialTokensPosition: TokensPositionType = {
+    cards: SP_CardIdList.reduce(
+      (acc, key, index) => {
+        acc[key] = { x: 0, y: index * 30, isFaceUp: true, isHorizontal: false };
+        return acc;
+      },
+      {} as TokensPositionType["cards"],
+    ),
   };
-  const level1Card = data.G.cards.filter((item) => item.level === 1);
-  const level2Card = data.G.cards.filter((item) => item.level === 2);
-  const level3Card = data.G.cards.filter((item) => item.level === 3);
-  const level1CardJSX = generateCardJSX(level1Card, cardPositionX, cardPositionY, 1, 2);
-  const level2CardJSX = generateCardJSX(level2Card, cardPositionX, cardPositionY, 1, 1);
-  const level3CardJSX = generateCardJSX(level3Card, cardPositionX, cardPositionY, 1, 0);
-  const nobleJSX = generateNobleJSX(data.G.nobles);
-
-  // 宝石筹码信息
-  const tokenPosition: Record<SplendorGameTokenNameType, { x: number; y: number }> = {
-    red: {
-      x: 830 * 2,
-      y: 110 * 2,
-    },
-    blue: {
-      x: 830 * 2,
-      y: 290 * 2,
-    },
-    white: {
-      x: 830 * 2,
-      y: 470 * 2,
-    },
-    black: {
-      x: 950 * 2,
-      y: 110 * 2,
-    },
-    green: {
-      x: 950 * 2,
-      y: 290 * 2,
-    },
-    gold: {
-      x: 950 * 2,
-      y: 470 * 2,
-    },
-  };
-  const [nowSelectTokens, setNowSelectTokens] = useState<TokensObjType>({
-    red: 0,
-    blue: 0,
-    white: 0,
-    black: 0,
-    green: 0,
-    gold: 0,
-  });
-  const tokenJSX = generateTokenJSX(data.G.tokens, nowSelectTokens, tokenPosition);
-
-  // 右键事件
-  const { nowGroupName, nowSelectTokenName } = useContextMenuStore();
-  const menuItemOnClickHandler = useCallback(
-    (e: Events["menuItemOnClick"]) => {
-      const { type } = e;
-      switch (type) {
-        case MenuItemKeyEnum.BUY:
-          data.moves.buyCard(nowGroupName);
-          break;
-        case MenuItemKeyEnum.LOCKING:
-          data.moves.lockCard(nowGroupName);
-          break;
-        case MenuItemKeyEnum.SELECT_TOKEN:
-          if (!nowSelectTokenName) return;
-          if (nowSelectTokens[nowSelectTokenName] === 1 && data.G.tokens[nowSelectTokenName] < 4) {
-            message.warning("当前宝石小于4个，不可同时选择2个");
-            return;
-          }
-          if (isTokenSelect2(nowSelectTokens)) {
-            message.warning("已有宝石同时选择2个");
-            return;
-          }
-          if (isTokenSelectHasThreeOnes(nowSelectTokens)) {
-            message.warning("已有3个宝石同时选择1个");
-            return;
-          }
-          setNowSelectTokens((d) => ({
-            ...d,
-            [nowSelectTokenName]: d[nowSelectTokenName] + 1,
-          }));
-          break;
-        case MenuItemKeyEnum.CANCEL_TOKEN:
-          if (!nowSelectTokenName) return;
-          setNowSelectTokens((d) => ({
-            ...d,
-            [nowSelectTokenName]: 0,
-          }));
-          break;
-        case MenuItemKeyEnum.CONFIRM_TOKEN:
-          if (!Object.values(nowSelectTokens).some((v) => v > 0)) {
-            message.warning("请选择至少一个宝石");
-            return;
-          }
-          data.moves.selectToken(nowSelectTokens);
-          setNowSelectTokens({
-            red: 0,
-            blue: 0,
-            white: 0,
-            black: 0,
-            green: 0,
-            gold: 0,
-          });
-          break;
-      }
-    },
-    [data.moves, data.G.tokens, nowGroupName, nowSelectTokenName, nowSelectTokens],
-  );
-  const operationOnClickHandler = useCallback(
-    (e: Events["operationOnClick"]) => {
-      const { type, name } = e;
-      switch (type) {
-        case OperationKeyEnum.RETURN_TOKEN:
-          data.moves.discardToken(name);
-          break;
-      }
-    },
-    [data.moves],
-  );
-
-  // 绑定事件
+  const [tokensPosition, setTokensPosition] = useState<TokensPositionType>(initialTokensPosition);
   useEffect(() => {
-    eventBus.on("menuItemOnClick", menuItemOnClickHandler);
-    return () => eventBus.off("menuItemOnClick", menuItemOnClickHandler);
-  }, [menuItemOnClickHandler]);
-  useEffect(() => {
-    eventBus.on("operationOnClick", operationOnClickHandler);
-    return () => eventBus.off("operationOnClick", operationOnClickHandler);
-  }, [operationOnClickHandler]);
+    gameData.G.playersInfo.forEach((player, playId) => {
+      const playerBoard = shapes.find((shape) => shape.id === `UserBoard${playId}`);
+      if (!playerBoard) {
+        console.error(`UserBoard${playId} not found`);
+        return;
+      }
+      player.cards.forEach((card) => {
+        tokensPosition.cards[card].x = playerBoard.x;
+        tokensPosition.cards[card].y = playerBoard.y;
+      });
+    });
+    setTokensPosition({ ...tokensPosition });
+  }, [gameData, shapes]);
 
-  const navigate = useNavigate();
+  const [backMainImage] = useImage(backMainImg);
 
-  if (data.playerID === null) {
-    return <div>playerID为空</div>;
-  }
+  const {
+    debugNum1,
+    debugNum2,
+    debugNum3,
+    debugNum4,
+    debugNum5,
+    setDebugNum1,
+    setDebugNum2,
+    setDebugNum3,
+    setDebugNum4,
+    setDebugNum5,
+  } = useDebugStore();
+
   return (
-    <div className={styles["splendor-board"]}>
+    <div className={styles.board}>
       <div className={styles.title}>
         {name}
         <Button
           size="large"
           onClick={() => {
-            data.moves.gameReset();
+            gameData.moves.gameReset();
           }}
         >
-          重置
+          重置游戏
+        </Button>
+        <Button
+          size="large"
+          onClick={() => {
+            setStagePositionLocal({ x: 0, y: 0 });
+            setStageScaleLocal(1);
+            setShapesLocal(cloneDeep(initShapes));
+          }}
+        >
+          重置画布
         </Button>
         <Button
           size="large"
@@ -232,60 +229,139 @@ export function SplendorPokemonBoard(data: BoardProps<SplendorGameType>) {
         </Button>
         <div>
           当前玩家
-          {data.matchData?.find((item) => item.id === +data.ctx.currentPlayer)?.name}
+          {gameData.matchData?.find((item) => item.id === +gameData.ctx.currentPlayer)?.name}
+        </div>
+        <Slider min={0} max={3} onChange={handleSliderChange} value={stageScale} step={0.01} />
+        <InputNumber
+          min={0}
+          max={3}
+          style={{ margin: "0 16px" }}
+          step={0.01}
+          value={stageScale}
+          onChange={handleSliderChange}
+        />
+        <div>
+          调试1
+          <InputNumber step={0.01} value={debugNum1} onChange={(e) => setDebugNum1(e ?? 0)} />
+        </div>
+        <div>
+          调试2
+          <InputNumber step={0.01} value={debugNum2} onChange={(e) => setDebugNum2(e ?? 0)} />
+        </div>
+        <div>
+          调试3
+          <InputNumber step={0.01} value={debugNum3} onChange={(e) => setDebugNum3(e ?? 0)} />
+        </div>
+        <div>
+          调试4
+          <InputNumber step={0.01} value={debugNum4} onChange={(e) => setDebugNum4(e ?? 0)} />
+        </div>
+        <div>
+          调试5
+          <InputNumber step={0.01} value={debugNum5} onChange={(e) => setDebugNum5(e ?? 0)} />
+        </div>
+        <div>
+          <Button
+            size="large"
+            onClick={() => {
+              gameData.moves.testSetStage("getNewDice");
+            }}
+          >
+            test
+          </Button>
         </div>
       </div>
-      <div ref={konvaRef} className={styles["konva"]}>
-        <Stage
-          width={stageSize.width}
-          height={stageSize.height}
-          scaleX={scale}
-          scaleY={scale}
-          pixelRatio={window.devicePixelRatio}
-          onContextMenu={(e) => e.evt.preventDefault()}
-        >
-          <Layer imageSmoothingEnabled={true}>
-            <Rect
-              stroke="#555"
-              strokeWidth={3}
-              fill="rgba(208, 232, 240, 0.5)" // 半透明淡蓝色 (浅蓝+透明度0.5)
-              x={10 * 2}
-              y={10 * 2}
-              width={2440}
-              height={560 * 2} // 近似高度
-              shadowColor="black"
-              shadowBlur={10}
-              shadowOpacity={0.2}
-              cornerRadius={10}
-            />
-            {level3CardJSX}
-            {level2CardJSX}
-            {level1CardJSX}
-            {tokenJSX}
-            <CurrentPlayerDashboard playerInfo={data.G.players[data.playerID]}></CurrentPlayerDashboard>
-            {nobleJSX}
-          </Layer>
-          <Layer imageSmoothingEnabled={true}>
-            {data.matchData
-              ?.filter((item) => item.id !== (data.playerID && +data.playerID))
-              .map((item, index) => {
-                const playerInfo = data.G.players[item.id];
-                if (item.id === (data.playerID && +data.playerID)) {
-                  return null;
+      <SP_GameContext.Provider
+        value={{
+          gameData,
+          clientPlayerID: +(gameData.playerID ?? -1),
+          clientPlayerInfo: gameData.G.playersInfo[+(gameData.playerID ?? -1)],
+          nowPlayingPlayerID: +gameData.ctx.currentPlayer,
+          nowPlayingPlayerInfo: gameData.G.playersInfo[+gameData.ctx.currentPlayer],
+        }}
+      >
+        <div ref={konvaRef} className={styles["konva"]}>
+          <Stage
+            ref={stageRef}
+            x={stagePosition.x}
+            y={stagePosition.y}
+            width={stageSize.width}
+            height={stageSize.height}
+            onContextMenu={(e) => e.evt.preventDefault()}
+            scale={{ x: stageScale, y: stageScale }}
+            onWheel={handleStageWheel}
+            draggable
+            onDragEnd={handleStageDragEnd}
+          >
+            <Layer listening={false}>
+              <Rect
+                x={-stageSize.width * 2}
+                y={-stageSize.height * 2}
+                width={stageSize.width * 10} // 注意这里用缩放后的尺寸
+                height={stageSize.height * 10}
+                fillPatternImage={backMainImage}
+                fillPatternRepeat="repeat" // 平铺
+              />
+            </Layer>
+            <Layer>
+              {shapes.map((shape) => {
+                if (shape.id === "MainBoard") {
+                  return (
+                    <MainBoard
+                      key={shape.id}
+                      draggable
+                      x={shape.x}
+                      y={shape.y}
+                      onDragEnd={(e) => handleShapesDragEnd(e, shape.id)}
+                    />
+                  );
                 }
+              })}
+
+              {gameData.matchData?.map((item) => {
+                const playerInfo = gameData.G.playersInfo[item.id];
+                const key = "UserBoard" + item.id;
                 return (
-                  <OtherPlayerDashboard
-                    key={"OtherPlayerDashboard" + item.id}
-                    x={2480}
-                    y={20 + index * 615}
-                    playerInfo={playerInfo}
-                    name={data.matchData?.[item.id].name || ""}
-                  ></OtherPlayerDashboard>
+                  <UserBoard
+                    key={key}
+                    x={shapes.find((item) => item.id === key)?.x || 0}
+                    y={shapes.find((item) => item.id === key)?.y || 0}
+                    draggable
+                    boardPlayerInfo={playerInfo}
+                    matchData={gameData.matchData?.[item.id] || { id: 0 }}
+                    onDragEnd={(e) => handleShapesDragEnd(e, key)}
+                  />
                 );
               })}
-          </Layer>
-        </Stage>
-      </div>
+            </Layer>
+            <Layer>
+              {SP_CardIdList.map((cardId) => {
+                const cardInfo = tokensPosition.cards[cardId];
+                console.log(cardInfo);
+
+                return (
+                  <PokemonCard
+                    key={cardId}
+                    x={cardInfo.x}
+                    y={cardInfo.y}
+                    id={cardId}
+                    isFaceUp={cardInfo.isFaceUp}
+                    isHorizontal={cardInfo.isHorizontal}
+                    center
+                    onClick={() => {
+                      tokensPosition.cards[cardId].isFaceUp = !tokensPosition.cards[cardId].isFaceUp;
+                      tokensPosition.cards[cardId].x = tokensPosition.cards[cardId].x + 100;
+                      tokensPosition.cards[cardId].y = tokensPosition.cards[cardId].y + 100;
+                      setTokensPosition({ ...tokensPosition });
+                    }}
+                  />
+                );
+              })}
+            </Layer>
+          </Stage>
+          <Tooltip />
+        </div>
+      </SP_GameContext.Provider>
     </div>
   );
 }
