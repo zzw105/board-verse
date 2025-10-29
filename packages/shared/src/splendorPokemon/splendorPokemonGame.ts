@@ -6,7 +6,8 @@ import { cloneDeep } from "lodash";
 const initPlayerInfo = (gameData: SP_GameType, ctx: Ctx) => {
   gameData.playersInfo = Array.from({ length: ctx.numPlayers }, (_, i) => ({
     id: i,
-    cards: [SP_CardIdList[i]],
+    // cards: [SP_CardIdList[i]],
+    cards: [],
   }));
 };
 

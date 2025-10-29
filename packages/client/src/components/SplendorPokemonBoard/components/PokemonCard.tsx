@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
-import type { SP_CardIdType } from "@game/shared";
+import { type SP_CardIdType, SP_CardObj } from "@game/shared";
 import Konva from "konva";
 import { Tween } from "konva/lib/Tween";
-import { Group, Image } from "react-konva";
+import { Group, Image, Text } from "react-konva";
 import useImage from "use-image";
 
 import backImg from "../../../assets/splendorPokemon/img/card/card_back_1.png";
@@ -21,9 +21,12 @@ interface Props {
 }
 
 export const PokemonCard = ({ x, y, id, center, isFaceUp, isHorizontal, onClick }: Props) => {
-  const imageWidth = 900;
-  const imageHeight = 1200;
-  const imageScale = 0.08;
+  const a = 5;
+  const imageWidth = 900 / a;
+  const imageHeight = 1200 / a;
+  const imageScale = 0.08 * a;
+
+  const cardInfo = SP_CardObj[id];
 
   const [image] = useImage(ImgMap[id]);
   const [backImage] = useImage(backImg);
@@ -59,7 +62,9 @@ export const PokemonCard = ({ x, y, id, center, isFaceUp, isHorizontal, onClick 
       easing: Konva.Easings.EaseInOut,
       onFinish: () => {
         tweenRef.current = null;
-        g.cache();
+        if (g.width() > 0 && g.height() > 0) {
+          g.cache();
+        }
       },
     });
     g.clearCache();
@@ -110,7 +115,192 @@ export const PokemonCard = ({ x, y, id, center, isFaceUp, isHorizontal, onClick 
       // onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
     >
       {image && nowIsFaceUp && (
-        <Image image={image} shadowBlur={ShadowBlurEnum.BACKGROUND_TOKEN} width={imageWidth} height={imageHeight} />
+        <>
+          <Image image={image} shadowBlur={ShadowBlurEnum.BACKGROUND_TOKEN} width={imageWidth} height={imageHeight} />
+          {/* // 花费 */}
+          <>
+            <Text
+              x={60}
+              y={210}
+              text={cardInfo.cost.black + ""}
+              fontSize={25}
+              fill="black"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={60}
+              y={170}
+              text={cardInfo.cost.blue + ""}
+              fontSize={25}
+              fill="blue"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={60}
+              y={130}
+              text={cardInfo.cost.pink + ""}
+              fontSize={25}
+              fill="pink"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={60}
+              y={90}
+              text={cardInfo.cost.red + ""}
+              fontSize={25}
+              fill="red"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={60}
+              y={50}
+              text={cardInfo.cost.yellow + ""}
+              fontSize={25}
+              fill="yellow"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={60}
+              y={10}
+              text={cardInfo.cost.purple + ""}
+              fontSize={25}
+              fill="purple"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+          </>
+          {/* 升级 */}
+          <>
+            <Text
+              x={110}
+              y={210}
+              text={cardInfo.evolvesCost.black + ""}
+              fontSize={25}
+              fill="black"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={110}
+              y={170}
+              text={cardInfo.evolvesCost.blue + ""}
+              fontSize={25}
+              fill="blue"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={110}
+              y={130}
+              text={cardInfo.evolvesCost.pink + ""}
+              fontSize={25}
+              fill="pink"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={110}
+              y={90}
+              text={cardInfo.evolvesCost.red + ""}
+              fontSize={25}
+              fill="red"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={110}
+              y={50}
+              text={cardInfo.evolvesCost.yellow + ""}
+              fontSize={25}
+              fill="yellow"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={110}
+              y={10}
+              text={cardInfo.evolvesCost.purple + ""}
+              fontSize={25}
+              fill="purple"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+          </>
+
+          {/* 抵用 */}
+          <>
+            <Text
+              x={200}
+              y={210}
+              text={cardInfo.offset.black + ""}
+              fontSize={25}
+              fill="black"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={200}
+              y={170}
+              text={cardInfo.offset.blue + ""}
+              fontSize={25}
+              fill="blue"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={200}
+              y={130}
+              text={cardInfo.offset.pink + ""}
+              fontSize={25}
+              fill="pink"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={200}
+              y={90}
+              text={cardInfo.offset.red + ""}
+              fontSize={25}
+              fill="red"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={200}
+              y={50}
+              text={cardInfo.offset.yellow + ""}
+              fontSize={25}
+              fill="yellow"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+            <Text
+              x={200}
+              y={10}
+              text={cardInfo.offset.purple + ""}
+              fontSize={25}
+              fill="purple"
+              stroke="#fff"
+              strokeWidth={0.2}
+            />
+          </>
+
+          {/* 分数 */}
+          <Text
+            x={-20}
+            y={0}
+            text={cardInfo.point + ""}
+            fontSize={25}
+            fill="purple"
+            stroke="#080808ff"
+            strokeWidth={0.2}
+          />
+        </>
       )}
       {backImage && !nowIsFaceUp && (
         <Image image={backImage} shadowBlur={ShadowBlurEnum.BACKGROUND_TOKEN} width={imageWidth} height={imageHeight} />

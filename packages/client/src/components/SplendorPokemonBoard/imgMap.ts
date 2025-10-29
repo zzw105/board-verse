@@ -14,6 +14,27 @@ import card_1_11 from "../../assets/splendorPokemon/img/card/card_1_11.png";
 import card_1_12 from "../../assets/splendorPokemon/img/card/card_1_12.png";
 import card_1_13 from "../../assets/splendorPokemon/img/card/card_1_13.png";
 import card_1_14 from "../../assets/splendorPokemon/img/card/card_1_14.png";
+import card_1_15 from "../../assets/splendorPokemon/img/card/card_1_15.png";
+import card_1_16 from "../../assets/splendorPokemon/img/card/card_1_16.png";
+import card_1_17 from "../../assets/splendorPokemon/img/card/card_1_17.png";
+import card_1_18 from "../../assets/splendorPokemon/img/card/card_1_18.png";
+import card_1_19 from "../../assets/splendorPokemon/img/card/card_1_19.png";
+import card_1_20 from "../../assets/splendorPokemon/img/card/card_1_20.png";
+import card_1_21 from "../../assets/splendorPokemon/img/card/card_1_21.png";
+import card_1_22 from "../../assets/splendorPokemon/img/card/card_1_22.png";
+import card_1_23 from "../../assets/splendorPokemon/img/card/card_1_23.png";
+import card_1_24 from "../../assets/splendorPokemon/img/card/card_1_24.png";
+import card_1_25 from "../../assets/splendorPokemon/img/card/card_1_25.png";
+import card_1_26 from "../../assets/splendorPokemon/img/card/card_1_26.png";
+import card_1_27 from "../../assets/splendorPokemon/img/card/card_1_27.png";
+import card_1_28 from "../../assets/splendorPokemon/img/card/card_1_28.png";
+import card_1_29 from "../../assets/splendorPokemon/img/card/card_1_29.png";
+import card_1_30 from "../../assets/splendorPokemon/img/card/card_1_30.png";
+import card_1_31 from "../../assets/splendorPokemon/img/card/card_1_31.png";
+import card_1_32 from "../../assets/splendorPokemon/img/card/card_1_32.png";
+import card_1_33 from "../../assets/splendorPokemon/img/card/card_1_33.png";
+import card_1_34 from "../../assets/splendorPokemon/img/card/card_1_34.png";
+import card_1_35 from "../../assets/splendorPokemon/img/card/card_1_35.png";
 
 export const ImgMap = {
   card_1_1,
@@ -30,6 +51,27 @@ export const ImgMap = {
   card_1_12,
   card_1_13,
   card_1_14,
+  card_1_15,
+  card_1_16,
+  card_1_17,
+  card_1_18,
+  card_1_19,
+  card_1_20,
+  card_1_21,
+  card_1_22,
+  card_1_23,
+  card_1_24,
+  card_1_25,
+  card_1_26,
+  card_1_27,
+  card_1_28,
+  card_1_29,
+  card_1_30,
+  card_1_31,
+  card_1_32,
+  card_1_33,
+  card_1_34,
+  card_1_35,
 };
 
 // let str = "";

@@ -157,10 +157,11 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
   type TokensPositionType = {
     cards: Record<SP_CardIdType, { x: number; y: number; isFaceUp: boolean; isHorizontal: boolean }>;
   };
+
   const initialTokensPosition: TokensPositionType = {
     cards: SP_CardIdList.reduce(
       (acc, key, index) => {
-        acc[key] = { x: 0, y: index * 30, isFaceUp: true, isHorizontal: false };
+        acc[key] = { x: 0, y: index * 100, isFaceUp: true, isHorizontal: false };
         return acc;
       },
       {} as TokensPositionType["cards"],
@@ -350,8 +351,8 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
                     center
                     onClick={() => {
                       tokensPosition.cards[cardId].isFaceUp = !tokensPosition.cards[cardId].isFaceUp;
-                      tokensPosition.cards[cardId].x = tokensPosition.cards[cardId].x + 100;
-                      tokensPosition.cards[cardId].y = tokensPosition.cards[cardId].y + 100;
+                      // tokensPosition.cards[cardId].x = tokensPosition.cards[cardId].x + 100;
+                      // tokensPosition.cards[cardId].y = tokensPosition.cards[cardId].y + 100;
                       setTokensPosition({ ...tokensPosition });
                     }}
                   />
