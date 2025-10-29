@@ -203,8 +203,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_29: {
-    id: "card_1_29",
+  card_1_8: {
+    id: "card_1_8",
     name: "妙蛙种子",
     color: SP_ColorEnum.Yellow,
     offset: mergeColors({
@@ -221,8 +221,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 1,
     level: 1,
   },
-  card_1_30: {
-    id: "card_1_30",
+  card_1_9: {
+    id: "card_1_9",
     name: "妙蛙种子",
     color: SP_ColorEnum.Yellow,
     offset: mergeColors({
@@ -238,8 +238,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 1,
     level: 1,
   },
-  card_1_31: {
-    id: "card_1_31",
+  card_1_10: {
+    id: "card_1_10",
     name: "鬼斯",
     color: SP_ColorEnum.Yellow,
     offset: mergeColors({
@@ -258,8 +258,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_32: {
-    id: "card_1_32",
+  card_1_11: {
+    id: "card_1_11",
     name: "鬼斯",
     color: SP_ColorEnum.Yellow,
     offset: mergeColors({
@@ -277,8 +277,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_34: {
-    id: "card_1_34",
+  card_1_12: {
+    id: "card_1_12",
     name: "尼多兰",
     color: SP_ColorEnum.Yellow,
     offset: mergeColors({
@@ -295,8 +295,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_33: {
-    id: "card_1_33",
+  card_1_13: {
+    id: "card_1_13",
     name: "尼多兰",
     color: SP_ColorEnum.Yellow,
     offset: mergeColors({
@@ -313,8 +313,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_35: {
-    id: "card_1_35",
+  card_1_14: {
+    id: "card_1_14",
     name: "尼多兰",
     color: SP_ColorEnum.Yellow,
     offset: mergeColors({
@@ -330,8 +330,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_8: {
-    id: "card_1_8",
+  card_1_15: {
+    id: "card_1_15",
     name: "小火龙",
     color: SP_ColorEnum.Blue,
     offset: mergeColors({
@@ -348,8 +348,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 1,
     level: 1,
   },
-  card_1_9: {
-    id: "card_1_9",
+  card_1_16: {
+    id: "card_1_16",
     name: "小火龙",
     color: SP_ColorEnum.Blue,
     offset: mergeColors({
@@ -365,8 +365,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 1,
     level: 1,
   },
-  card_1_13: {
-    id: "card_1_13",
+  card_1_17: {
+    id: "card_1_17",
     name: "小拳石",
     color: SP_ColorEnum.Blue,
     offset: mergeColors({
@@ -385,8 +385,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_14: {
-    id: "card_1_14",
+  card_1_18: {
+    id: "card_1_18",
     name: "小拳石",
     color: SP_ColorEnum.Blue,
     offset: mergeColors({
@@ -404,8 +404,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_11: {
-    id: "card_1_11",
+  card_1_19: {
+    id: "card_1_19",
     name: "波波",
     color: SP_ColorEnum.Blue,
     offset: mergeColors({
@@ -422,8 +422,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_10: {
-    id: "card_1_10",
+  card_1_20: {
+    id: "card_1_20",
     name: "波波",
     color: SP_ColorEnum.Blue,
     offset: mergeColors({
@@ -440,9 +440,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-
-  card_1_12: {
-    id: "card_1_12",
+  card_1_21: {
+    id: "card_1_21",
     name: "波波",
     color: SP_ColorEnum.Blue,
     offset: mergeColors({
@@ -458,9 +457,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-
-  card_1_15: {
-    id: "card_1_15",
+  card_1_22: {
+    id: "card_1_22",
     name: "凯西",
     color: SP_ColorEnum.Pink,
     offset: mergeColors({
@@ -477,8 +475,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 1,
     level: 1,
   },
-  card_1_16: {
-    id: "card_1_16",
+  card_1_23: {
+    id: "card_1_23",
     name: "凯西",
     color: SP_ColorEnum.Pink,
     offset: mergeColors({
@@ -494,8 +492,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 1,
     level: 1,
   },
-  card_1_17: {
-    id: "card_1_17",
+  card_1_24: {
+    id: "card_1_24",
     name: "绿毛虫",
     color: SP_ColorEnum.Pink,
     offset: mergeColors({
@@ -514,8 +512,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_18: {
-    id: "card_1_18",
+  card_1_25: {
+    id: "card_1_25",
     name: "绿毛虫",
     color: SP_ColorEnum.Pink,
     offset: mergeColors({
@@ -533,8 +531,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_20: {
-    id: "card_1_20",
+  card_1_26: {
+    id: "card_1_26",
     name: "蚊香蝌蚪",
     color: SP_ColorEnum.Pink,
     offset: mergeColors({
@@ -551,8 +549,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_19: {
-    id: "card_1_19",
+  card_1_27: {
+    id: "card_1_27",
     name: "蚊香蝌蚪",
     color: SP_ColorEnum.Pink,
     offset: mergeColors({
@@ -569,8 +567,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_21: {
-    id: "card_1_21",
+  card_1_28: {
+    id: "card_1_28",
     name: "蚊香蝌蚪",
     color: SP_ColorEnum.Pink,
     offset: mergeColors({
@@ -586,8 +584,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_27: {
-    id: "card_1_27",
+  card_1_29: {
+    id: "card_1_29",
     name: "杰尼龟",
     color: SP_ColorEnum.Red,
     offset: mergeColors({
@@ -604,8 +602,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 1,
     level: 1,
   },
-  card_1_28: {
-    id: "card_1_28",
+  card_1_30: {
+    id: "card_1_30",
     name: "杰尼龟",
     color: SP_ColorEnum.Red,
     offset: mergeColors({
@@ -621,9 +619,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 1,
     level: 1,
   },
-
-  card_1_25: {
-    id: "card_1_25",
+  card_1_31: {
+    id: "card_1_31",
     name: "腕力",
     color: SP_ColorEnum.Red,
     offset: mergeColors({
@@ -642,8 +639,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_26: {
-    id: "card_1_26",
+  card_1_32: {
+    id: "card_1_32",
     name: "腕力",
     color: SP_ColorEnum.Red,
     offset: mergeColors({
@@ -661,8 +658,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_23: {
-    id: "card_1_23",
+  card_1_33: {
+    id: "card_1_33",
     name: "喇叭芽",
     color: SP_ColorEnum.Red,
     offset: mergeColors({
@@ -679,8 +676,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_22: {
-    id: "card_1_22",
+  card_1_34: {
+    id: "card_1_34",
     name: "喇叭芽",
     color: SP_ColorEnum.Red,
     offset: mergeColors({
@@ -697,8 +694,8 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     point: 0,
     level: 1,
   },
-  card_1_24: {
-    id: "card_1_24",
+  card_1_35: {
+    id: "card_1_35",
     name: "喇叭芽",
     color: SP_ColorEnum.Red,
     offset: mergeColors({
