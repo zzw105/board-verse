@@ -161,7 +161,7 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
   const initialTokensPosition: TokensPositionType = {
     cards: SP_CardIdList.reduce(
       (acc, key, index) => {
-        acc[key] = { x: 0, y: index * 100, isFaceUp: true, isHorizontal: false };
+        acc[key] = { x: 0, y: index * 110, isFaceUp: true, isHorizontal: false };
         return acc;
       },
       {} as TokensPositionType["cards"],

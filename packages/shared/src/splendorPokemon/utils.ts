@@ -68,11 +68,19 @@ type Range<Start extends number, End extends number> = Exclude<Enumerate<End>, E
 
 // 1~35 和 1~30 的数字
 type Numbers1_35 = Range<1, 36>; // 1~35
-// type Numbers1_30 = Range<1, 31>; // 1~30
+type Numbers1_30 = Range<1, 31>; // 1~30
 type Numbers1_15 = Range<1, 16>; // 1~30
+type Numbers1_5 = Range<1, 6>; // 1~30
 
 /** 卡片ID类型 */
-export type SP_CardIdType = `card_1_${Numbers1_35}` | `card_3_${Numbers1_15}`;
+export type SP_CardIdType =
+  | `card_1_${Numbers1_35}`
+  | `card_2_${Numbers1_30}`
+  | `card_3_${Numbers1_15}`
+  | `card_4_${Numbers1_5}`
+  | `card_5_${Numbers1_5}`
+  | `card_8_${Numbers1_5}`
+  | `card_9_${Numbers1_5}`;
 
 /** 卡片对象 */
 export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
@@ -87,7 +95,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Yellow]: 3,
       [SP_ColorEnum.Red]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_1", "card_2_2"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Blue]: 3,
     }),
@@ -104,7 +112,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Black]: 4,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_1", "card_2_2"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Blue]: 3,
     }),
@@ -124,7 +132,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 1,
       [SP_ColorEnum.Blue]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_3", "card_2_4"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Red]: 3,
     }),
@@ -143,7 +151,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Red]: 1,
       [SP_ColorEnum.Pink]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_3", "card_2_4"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Red]: 3,
     }),
@@ -161,7 +169,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Yellow]: 2,
       [SP_ColorEnum.Black]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_5", "card_2_6"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Yellow]: 2,
     }),
@@ -179,7 +187,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 2,
       [SP_ColorEnum.Red]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_5", "card_2_6"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Yellow]: 2,
     }),
@@ -196,7 +204,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Blue]: 3,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_5", "card_2_6"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Yellow]: 2,
     }),
@@ -214,7 +222,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Red]: 3,
       [SP_ColorEnum.Black]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_7", "card_2_8"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Pink]: 3,
     }),
@@ -231,7 +239,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Yellow]: 4,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_7", "card_2_8"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Pink]: 3,
     }),
@@ -251,7 +259,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 1,
       [SP_ColorEnum.Black]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_9", "card_2_10"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Black]: 3,
     }),
@@ -270,7 +278,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Black]: 1,
       [SP_ColorEnum.Red]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_9", "card_2_10"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Black]: 3,
     }),
@@ -288,7 +296,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Blue]: 2,
       [SP_ColorEnum.Yellow]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_11", "card_2_12"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Blue]: 2,
     }),
@@ -306,7 +314,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Red]: 2,
       [SP_ColorEnum.Pink]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_11", "card_2_12"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Blue]: 2,
     }),
@@ -323,7 +331,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Black]: 3,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_11", "card_2_12"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Blue]: 2,
     }),
@@ -341,7 +349,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Black]: 3,
       [SP_ColorEnum.Pink]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_13", "card_2_14"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Yellow]: 3,
     }),
@@ -358,7 +366,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Blue]: 4,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_13", "card_2_14"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Yellow]: 3,
     }),
@@ -378,7 +386,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 1,
       [SP_ColorEnum.Red]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_15", "card_2_16"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Pink]: 3,
     }),
@@ -397,7 +405,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Yellow]: 1,
       [SP_ColorEnum.Black]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_15", "card_2_16"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Pink]: 3,
     }),
@@ -415,7 +423,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Blue]: 2,
       [SP_ColorEnum.Red]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_17", "card_2_18"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Red]: 2,
     }),
@@ -433,7 +441,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Yellow]: 2,
       [SP_ColorEnum.Black]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_17", "card_2_18"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Red]: 2,
     }),
@@ -450,7 +458,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Pink]: 3,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_17", "card_2_18"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Red]: 2,
     }),
@@ -465,10 +473,10 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 1,
     }),
     cost: mergeColors({
-      [SP_ColorEnum.Black]: 3,
+      [SP_ColorEnum.Blue]: 3,
       [SP_ColorEnum.Yellow]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_19", "card_2_20"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Red]: 3,
     }),
@@ -485,7 +493,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Pink]: 4,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_19", "card_2_20"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Red]: 3,
     }),
@@ -505,7 +513,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Red]: 1,
       [SP_ColorEnum.Black]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_21", "card_2_22"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Blue]: 3,
     }),
@@ -524,7 +532,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Blue]: 1,
       [SP_ColorEnum.Yellow]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_21", "card_2_22"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Blue]: 3,
     }),
@@ -542,7 +550,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 2,
       [SP_ColorEnum.Black]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_23", "card_2_24"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Black]: 2,
     }),
@@ -560,7 +568,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Blue]: 2,
       [SP_ColorEnum.Yellow]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_23", "card_2_24"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Black]: 2,
     }),
@@ -577,7 +585,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Red]: 3,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_23", "card_2_24"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Black]: 2,
     }),
@@ -595,7 +603,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 3,
       [SP_ColorEnum.Blue]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_25", "card_2_26"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Black]: 3,
     }),
@@ -612,7 +620,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Red]: 4,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_25", "card_2_26"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Black]: 3,
     }),
@@ -632,7 +640,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 1,
       [SP_ColorEnum.Black]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_27", "card_2_28"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Yellow]: 3,
     }),
@@ -651,7 +659,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 1,
       [SP_ColorEnum.Black]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_27", "card_2_28"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Yellow]: 3,
     }),
@@ -669,7 +677,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Pink]: 2,
       [SP_ColorEnum.Red]: 2,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_29", "card_2_30"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Pink]: 2,
     }),
@@ -687,7 +695,7 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
       [SP_ColorEnum.Black]: 2,
       [SP_ColorEnum.Blue]: 1,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_29", "card_2_30"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Pink]: 2,
     }),
@@ -704,12 +712,567 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     cost: mergeColors({
       [SP_ColorEnum.Yellow]: 3,
     }),
-    evolvesTo: [],
+    evolvesTo: ["card_2_29", "card_2_30"],
     evolvesCost: mergeColors({
       [SP_ColorEnum.Pink]: 2,
     }),
     point: 0,
     level: 1,
+  },
+  card_2_1: {
+    id: "card_2_1",
+    name: "哈克龙",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Blue]: 4,
+      [SP_ColorEnum.Pink]: 4,
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    evolvesTo: ["card_3_1"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Yellow]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_2: {
+    id: "card_2_2",
+    name: "哈克龙",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Black]: 6,
+    }),
+    evolvesTo: ["card_3_1"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Yellow]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_3: {
+    id: "card_2_3",
+    name: "铁壳蛹",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Red]: 4,
+      [SP_ColorEnum.Blue]: 2,
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    evolvesTo: ["card_3_2"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_4: {
+    id: "card_2_4",
+    name: "铁壳蛹",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Black]: 5,
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    evolvesTo: ["card_3_2"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_5: {
+    id: "card_2_5",
+    name: "臭臭花",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Yellow]: 3,
+      [SP_ColorEnum.Blue]: 2,
+      [SP_ColorEnum.Red]: 2,
+    }),
+    evolvesTo: ["card_3_3"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Yellow]: 4,
+    }),
+    point: 1,
+    level: 2,
+  },
+  card_2_6: {
+    id: "card_2_6",
+    name: "臭臭花",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Black]: 3,
+      [SP_ColorEnum.Blue]: 2,
+      [SP_ColorEnum.Red]: 2,
+    }),
+    evolvesTo: ["card_3_3"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Yellow]: 4,
+    }),
+    point: 1,
+    level: 2,
+  },
+  card_2_7: {
+    id: "card_2_7",
+    name: "妙蛙草",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Red]: 4,
+      [SP_ColorEnum.Pink]: 4,
+      [SP_ColorEnum.Blue]: 1,
+    }),
+    evolvesTo: ["card_3_4"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Blue]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_8: {
+    id: "card_2_8",
+    name: "妙蛙草",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Yellow]: 6,
+    }),
+    evolvesTo: ["card_3_4"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Blue]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_9: {
+    id: "card_2_9",
+    name: "鬼斯通",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Black]: 4,
+      [SP_ColorEnum.Pink]: 2,
+      [SP_ColorEnum.Red]: 1,
+    }),
+    evolvesTo: ["card_3_5"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Red]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_10: {
+    id: "card_2_10",
+    name: "鬼斯通",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Yellow]: 5,
+      [SP_ColorEnum.Blue]: 2,
+    }),
+    evolvesTo: ["card_3_5"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Red]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_11: {
+    id: "card_2_11",
+    name: "尼多娜",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Blue]: 3,
+      [SP_ColorEnum.Pink]: 2,
+      [SP_ColorEnum.Black]: 2,
+    }),
+    evolvesTo: ["card_3_6"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Blue]: 4,
+    }),
+    point: 1,
+    level: 2,
+  },
+  card_2_12: {
+    id: "card_2_12",
+    name: "尼多娜",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Yellow]: 3,
+      [SP_ColorEnum.Pink]: 2,
+      [SP_ColorEnum.Red]: 2,
+    }),
+    evolvesTo: ["card_3_6"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Blue]: 4,
+    }),
+    point: 1,
+    level: 2,
+  },
+  card_2_13: {
+    id: "card_2_13",
+    name: "火恐龙",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Yellow]: 4,
+      [SP_ColorEnum.Black]: 4,
+      [SP_ColorEnum.Red]: 1,
+    }),
+    evolvesTo: ["card_3_7"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Red]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_14: {
+    id: "card_2_14",
+    name: "火恐龙",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Blue]: 6,
+    }),
+    evolvesTo: ["card_3_7"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Red]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_15: {
+    id: "card_2_15",
+    name: "隆隆岩",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Pink]: 4,
+      [SP_ColorEnum.Yellow]: 2,
+      [SP_ColorEnum.Black]: 1,
+    }),
+    evolvesTo: ["card_3_8"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Black]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_16: {
+    id: "card_2_16",
+    name: "隆隆岩",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Blue]: 5,
+      [SP_ColorEnum.Red]: 2,
+    }),
+    evolvesTo: ["card_3_8"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Black]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_17: {
+    id: "card_2_17",
+    name: "比比鸟",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Red]: 3,
+      [SP_ColorEnum.Yellow]: 2,
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    evolvesTo: ["card_3_9"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Red]: 4,
+    }),
+    point: 1,
+    level: 2,
+  },
+  card_2_18: {
+    id: "card_2_18",
+    name: "比比鸟",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Blue]: 3,
+      [SP_ColorEnum.Pink]: 2,
+      [SP_ColorEnum.Black]: 2,
+    }),
+    evolvesTo: ["card_3_9"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Red]: 4,
+    }),
+    point: 1,
+    level: 2,
+  },
+  card_2_19: {
+    id: "card_2_19",
+    name: "勇吉拉",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Red]: 4,
+      [SP_ColorEnum.Yellow]: 4,
+      [SP_ColorEnum.Black]: 1,
+    }),
+    evolvesTo: ["card_3_10"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Black]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_20: {
+    id: "card_2_20",
+    name: "勇吉拉",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Pink]: 6,
+    }),
+    evolvesTo: ["card_3_10"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Black]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_21: {
+    id: "card_2_21",
+    name: "铁甲蛹",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Blue]: 4,
+      [SP_ColorEnum.Red]: 2,
+      [SP_ColorEnum.Yellow]: 1,
+    }),
+    evolvesTo: ["card_3_11"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Yellow]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_22: {
+    id: "card_2_22",
+    name: "铁甲蛹",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Pink]: 5,
+      [SP_ColorEnum.Black]: 2,
+    }),
+    evolvesTo: ["card_3_11"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Yellow]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_23: {
+    id: "card_2_23",
+    name: "蚊香君",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Black]: 3,
+      [SP_ColorEnum.Blue]: 2,
+      [SP_ColorEnum.Red]: 2,
+    }),
+    evolvesTo: ["card_3_12"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Black]: 4,
+    }),
+    point: 1,
+    level: 2,
+  },
+  card_2_24: {
+    id: "card_2_24",
+    name: "蚊香君",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Blue]: 2,
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    evolvesTo: ["card_3_12"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Black]: 4,
+    }),
+    point: 1,
+    level: 2,
+  },
+  card_2_25: {
+    id: "card_2_25",
+    name: "卡咪龟",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Blue]: 4,
+      [SP_ColorEnum.Black]: 4,
+      [SP_ColorEnum.Pink]: 1,
+    }),
+    evolvesTo: ["card_3_13"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_26: {
+    id: "card_2_26",
+    name: "卡咪龟",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Red]: 6,
+    }),
+    evolvesTo: ["card_3_13"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 4,
+    }),
+    point: 3,
+    level: 2,
+  },
+  card_2_27: {
+    id: "card_2_27",
+    name: "豪力",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Yellow]: 4,
+      [SP_ColorEnum.Black]: 2,
+      [SP_ColorEnum.Blue]: 1,
+    }),
+    evolvesTo: ["card_3_14"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Blue]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_28: {
+    id: "card_2_28",
+    name: "豪力",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Red]: 5,
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    evolvesTo: ["card_3_14"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Blue]: 3,
+    }),
+    point: 2,
+    level: 2,
+  },
+  card_2_29: {
+    id: "card_2_29",
+    name: "口呆花",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Yellow]: 2,
+      [SP_ColorEnum.Black]: 2,
+    }),
+    evolvesTo: ["card_3_15"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 4,
+    }),
+    point: 1,
+    level: 2,
+  },
+  card_2_30: {
+    id: "card_2_30",
+    name: "口呆花",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 1,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Red]: 3,
+      [SP_ColorEnum.Black]: 2,
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    evolvesTo: ["card_3_15"],
+    evolvesCost: mergeColors({
+      [SP_ColorEnum.Pink]: 4,
+    }),
+    point: 1,
+    level: 2,
   },
   card_3_1: {
     id: "card_3_1",
@@ -955,6 +1518,356 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     evolvesCost: mergeColors(),
     point: 3,
     level: 3,
+  },
+  card_4_1: {
+    id: "card_4_1",
+    name: "伊布",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Yellow]: 3,
+      [SP_ColorEnum.Red]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_4_2: {
+    id: "card_4_2",
+    name: "化石翼龙",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Blue]: 3,
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_4_3: {
+    id: "card_4_3",
+    name: "百变怪",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_4_4: {
+    id: "card_4_4",
+    name: "卡比兽",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Red]: 3,
+      [SP_ColorEnum.Black]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_4_5: {
+    id: "card_4_5",
+    name: "拉普拉斯",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Black]: 3,
+      [SP_ColorEnum.Blue]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_5_1: {
+    id: "card_5_1",
+    name: "超梦",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Red]: 3,
+      [SP_ColorEnum.Blue]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
+  },
+  card_5_2: {
+    id: "card_5_2",
+    name: "急冻鸟",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Red]: 3,
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Black]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
+  },
+  card_5_3: {
+    id: "card_5_3",
+    name: "梦幻",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Black]: 3,
+      [SP_ColorEnum.Yellow]: 3,
+      [SP_ColorEnum.Red]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
+  },
+  card_5_4: {
+    id: "card_5_4",
+    name: "火焰鸟",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Blue]: 3,
+      [SP_ColorEnum.Yellow]: 3,
+      [SP_ColorEnum.Black]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
+  },
+  card_5_5: {
+    id: "card_5_5",
+    name: "闪电鸟",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Blue]: 3,
+      [SP_ColorEnum.Yellow]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
+  },
+  card_8_1: {
+    id: "card_8_1",
+    name: "小刚的大岩蛇",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Yellow]: 3,
+      [SP_ColorEnum.Red]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_8_2: {
+    id: "card_8_2",
+    name: "小智的皮卡丘",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Blue]: 3,
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_8_3: {
+    id: "card_8_3",
+    name: "火箭队的果然翁",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_8_4: {
+    id: "card_8_4",
+    name: "小霞的可达鸭",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Red]: 3,
+      [SP_ColorEnum.Black]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_8_5: {
+    id: "card_8_5",
+    name: "火箭队的喵喵",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Black]: 3,
+      [SP_ColorEnum.Blue]: 2,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 0,
+    level: 4,
+  },
+  card_9_1: {
+    id: "card_9_1",
+    name: "美洛耶塔",
+    color: SP_ColorEnum.Black,
+    offset: mergeColors({
+      [SP_ColorEnum.Black]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Red]: 3,
+      [SP_ColorEnum.Blue]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
+  },
+  card_9_2: {
+    id: "card_9_2",
+    name: "捷拉奥拉",
+    color: SP_ColorEnum.Yellow,
+    offset: mergeColors({
+      [SP_ColorEnum.Yellow]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Red]: 3,
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Black]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
+  },
+  card_9_3: {
+    id: "card_9_3",
+    name: "凯路迪欧",
+    color: SP_ColorEnum.Blue,
+    offset: mergeColors({
+      [SP_ColorEnum.Blue]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Black]: 3,
+      [SP_ColorEnum.Yellow]: 3,
+      [SP_ColorEnum.Red]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
+  },
+  card_9_4: {
+    id: "card_9_4",
+    name: "蒂安希",
+    color: SP_ColorEnum.Pink,
+    offset: mergeColors({
+      [SP_ColorEnum.Pink]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Blue]: 3,
+      [SP_ColorEnum.Yellow]: 3,
+      [SP_ColorEnum.Black]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
+  },
+  card_9_5: {
+    id: "card_9_5",
+    name: "比克提尼",
+    color: SP_ColorEnum.Red,
+    offset: mergeColors({
+      [SP_ColorEnum.Red]: 2,
+    }),
+    cost: mergeColors({
+      [SP_ColorEnum.Purple]: 1,
+      [SP_ColorEnum.Pink]: 3,
+      [SP_ColorEnum.Blue]: 3,
+      [SP_ColorEnum.Yellow]: 3,
+    }),
+    evolvesTo: [],
+    evolvesCost: mergeColors(),
+    point: 2,
+    level: 5,
   },
 };
 

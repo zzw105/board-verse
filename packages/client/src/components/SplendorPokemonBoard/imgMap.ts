@@ -35,6 +35,71 @@ import card_1_32 from "../../assets/splendorPokemon/img/card/card_1_32.png";
 import card_1_33 from "../../assets/splendorPokemon/img/card/card_1_33.png";
 import card_1_34 from "../../assets/splendorPokemon/img/card/card_1_34.png";
 import card_1_35 from "../../assets/splendorPokemon/img/card/card_1_35.png";
+import card_2_1 from "../../assets/splendorPokemon/img/card/card_2_1.png";
+import card_2_2 from "../../assets/splendorPokemon/img/card/card_2_2.png";
+import card_2_3 from "../../assets/splendorPokemon/img/card/card_2_3.png";
+import card_2_4 from "../../assets/splendorPokemon/img/card/card_2_4.png";
+import card_2_5 from "../../assets/splendorPokemon/img/card/card_2_5.png";
+import card_2_6 from "../../assets/splendorPokemon/img/card/card_2_6.png";
+import card_2_7 from "../../assets/splendorPokemon/img/card/card_2_7.png";
+import card_2_8 from "../../assets/splendorPokemon/img/card/card_2_8.png";
+import card_2_9 from "../../assets/splendorPokemon/img/card/card_2_9.png";
+import card_2_10 from "../../assets/splendorPokemon/img/card/card_2_10.png";
+import card_2_11 from "../../assets/splendorPokemon/img/card/card_2_11.png";
+import card_2_12 from "../../assets/splendorPokemon/img/card/card_2_12.png";
+import card_2_13 from "../../assets/splendorPokemon/img/card/card_2_13.png";
+import card_2_14 from "../../assets/splendorPokemon/img/card/card_2_14.png";
+import card_2_15 from "../../assets/splendorPokemon/img/card/card_2_15.png";
+import card_2_16 from "../../assets/splendorPokemon/img/card/card_2_16.png";
+import card_2_17 from "../../assets/splendorPokemon/img/card/card_2_17.png";
+import card_2_18 from "../../assets/splendorPokemon/img/card/card_2_18.png";
+import card_2_19 from "../../assets/splendorPokemon/img/card/card_2_19.png";
+import card_2_20 from "../../assets/splendorPokemon/img/card/card_2_20.png";
+import card_2_21 from "../../assets/splendorPokemon/img/card/card_2_21.png";
+import card_2_22 from "../../assets/splendorPokemon/img/card/card_2_22.png";
+import card_2_23 from "../../assets/splendorPokemon/img/card/card_2_23.png";
+import card_2_24 from "../../assets/splendorPokemon/img/card/card_2_24.png";
+import card_2_25 from "../../assets/splendorPokemon/img/card/card_2_25.png";
+import card_2_26 from "../../assets/splendorPokemon/img/card/card_2_26.png";
+import card_2_27 from "../../assets/splendorPokemon/img/card/card_2_27.png";
+import card_2_28 from "../../assets/splendorPokemon/img/card/card_2_28.png";
+import card_2_29 from "../../assets/splendorPokemon/img/card/card_2_29.png";
+import card_2_30 from "../../assets/splendorPokemon/img/card/card_2_30.png";
+import card_3_1 from "../../assets/splendorPokemon/img/card/card_3_1.png";
+import card_3_2 from "../../assets/splendorPokemon/img/card/card_3_2.png";
+import card_3_3 from "../../assets/splendorPokemon/img/card/card_3_3.png";
+import card_3_4 from "../../assets/splendorPokemon/img/card/card_3_4.png";
+import card_3_5 from "../../assets/splendorPokemon/img/card/card_3_5.png";
+import card_3_6 from "../../assets/splendorPokemon/img/card/card_3_6.png";
+import card_3_7 from "../../assets/splendorPokemon/img/card/card_3_7.png";
+import card_3_8 from "../../assets/splendorPokemon/img/card/card_3_8.png";
+import card_3_9 from "../../assets/splendorPokemon/img/card/card_3_9.png";
+import card_3_10 from "../../assets/splendorPokemon/img/card/card_3_10.png";
+import card_3_11 from "../../assets/splendorPokemon/img/card/card_3_11.png";
+import card_3_12 from "../../assets/splendorPokemon/img/card/card_3_12.png";
+import card_3_13 from "../../assets/splendorPokemon/img/card/card_3_13.png";
+import card_3_14 from "../../assets/splendorPokemon/img/card/card_3_14.png";
+import card_3_15 from "../../assets/splendorPokemon/img/card/card_3_15.png";
+import card_4_1 from "../../assets/splendorPokemon/img/card/card_4_1.png";
+import card_4_2 from "../../assets/splendorPokemon/img/card/card_4_2.png";
+import card_4_3 from "../../assets/splendorPokemon/img/card/card_4_3.png";
+import card_4_4 from "../../assets/splendorPokemon/img/card/card_4_4.png";
+import card_4_5 from "../../assets/splendorPokemon/img/card/card_4_5.png";
+import card_5_1 from "../../assets/splendorPokemon/img/card/card_5_1.png";
+import card_5_2 from "../../assets/splendorPokemon/img/card/card_5_2.png";
+import card_5_3 from "../../assets/splendorPokemon/img/card/card_5_3.png";
+import card_5_4 from "../../assets/splendorPokemon/img/card/card_5_4.png";
+import card_5_5 from "../../assets/splendorPokemon/img/card/card_5_5.png";
+import card_8_1 from "../../assets/splendorPokemon/img/card/card_8_1.png";
+import card_8_2 from "../../assets/splendorPokemon/img/card/card_8_2.png";
+import card_8_3 from "../../assets/splendorPokemon/img/card/card_8_3.png";
+import card_8_4 from "../../assets/splendorPokemon/img/card/card_8_4.png";
+import card_8_5 from "../../assets/splendorPokemon/img/card/card_8_5.png";
+import card_9_1 from "../../assets/splendorPokemon/img/card/card_9_1.png";
+import card_9_2 from "../../assets/splendorPokemon/img/card/card_9_2.png";
+import card_9_3 from "../../assets/splendorPokemon/img/card/card_9_3.png";
+import card_9_4 from "../../assets/splendorPokemon/img/card/card_9_4.png";
+import card_9_5 from "../../assets/splendorPokemon/img/card/card_9_5.png";
 
 export const ImgMap = {
   card_1_1,
@@ -72,6 +137,71 @@ export const ImgMap = {
   card_1_33,
   card_1_34,
   card_1_35,
+  card_2_1,
+  card_2_2,
+  card_2_3,
+  card_2_4,
+  card_2_5,
+  card_2_6,
+  card_2_7,
+  card_2_8,
+  card_2_9,
+  card_2_10,
+  card_2_11,
+  card_2_12,
+  card_2_13,
+  card_2_14,
+  card_2_15,
+  card_2_16,
+  card_2_17,
+  card_2_18,
+  card_2_19,
+  card_2_20,
+  card_2_21,
+  card_2_22,
+  card_2_23,
+  card_2_24,
+  card_2_25,
+  card_2_26,
+  card_2_27,
+  card_2_28,
+  card_2_29,
+  card_2_30,
+  card_3_1,
+  card_3_2,
+  card_3_3,
+  card_3_4,
+  card_3_5,
+  card_3_6,
+  card_3_7,
+  card_3_8,
+  card_3_9,
+  card_3_10,
+  card_3_11,
+  card_3_12,
+  card_3_13,
+  card_3_14,
+  card_3_15,
+  card_4_1,
+  card_4_2,
+  card_4_3,
+  card_4_4,
+  card_4_5,
+  card_5_1,
+  card_5_2,
+  card_5_3,
+  card_5_4,
+  card_5_5,
+  card_8_1,
+  card_8_2,
+  card_8_3,
+  card_8_4,
+  card_8_5,
+  card_9_1,
+  card_9_2,
+  card_9_3,
+  card_9_4,
+  card_9_5,
 };
 
 // let str = "";
