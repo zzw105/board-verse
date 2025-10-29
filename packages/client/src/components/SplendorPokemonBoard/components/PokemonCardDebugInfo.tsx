@@ -161,7 +161,7 @@ export const PokemonCardDebugInfo = ({ cardInfo }: Props) => {
       <>
         {cardInfo.evolvesTo.map((evolvesTo, index) => (
           <Text
-            key={SP_CardObj[evolvesTo].name}
+            key={SP_CardObj[evolvesTo].id}
             x={-20 + index * 130}
             y={-20}
             text={SP_CardObj[evolvesTo].name}
@@ -173,7 +173,7 @@ export const PokemonCardDebugInfo = ({ cardInfo }: Props) => {
         ))}
       </>
       <Text
-        key={cardInfo.name}
+        key={cardInfo.id}
         x={220}
         y={200}
         text={cardInfo.name + cardInfo.id}

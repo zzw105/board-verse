@@ -348,7 +348,6 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
                     id={cardId}
                     isFaceUp={cardInfo.isFaceUp}
                     isHorizontal={cardInfo.isHorizontal}
-                    center
                     onClick={() => {
                       tokensPosition.cards[cardId].isFaceUp = !tokensPosition.cards[cardId].isFaceUp;
                       // tokensPosition.cards[cardId].x = tokensPosition.cards[cardId].x + 100;

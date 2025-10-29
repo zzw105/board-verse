@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
+
 import { Button, Form, Input, Modal, Radio, Select } from "antd";
+
 import { useGameStore } from "../../store/useGameStore";
 
 export type CreateRoomModalType = {
@@ -12,6 +14,7 @@ export type FieldType = {
   roomName: string;
   gameType: string;
   numPlayers: number;
+  isDifferentPictures?: boolean;
 };
 
 const CreateRoomModal: React.FC<CreateRoomModalType> = (props) => {
@@ -55,7 +58,7 @@ const CreateRoomModal: React.FC<CreateRoomModalType> = (props) => {
       <Form<FieldType>
         name="createRoomForm"
         preserve={false}
-        initialValues={{ numPlayers: 1, roomName: "房间" }}
+        initialValues={{ numPlayers: 1, roomName: "房间", isDifferentPictures: false }}
         form={form}
         autoComplete="off"
       >
@@ -74,6 +77,27 @@ const CreateRoomModal: React.FC<CreateRoomModalType> = (props) => {
             <Radio.Button value={3}>3</Radio.Button>
             <Radio.Button value={4}>4</Radio.Button>
           </Radio.Group>
+        </Form.Item>
+
+        <Form.Item shouldUpdate={(prev, cur) => prev.gameType !== cur.gameType}>
+          {({ getFieldValue }) => {
+            const gameType = getFieldValue("gameType");
+            if (gameType === "splendorPokemonMonorepo") {
+              return (
+                <Form.Item
+                  label="开启异画"
+                  name="isDifferentPictures"
+                  rules={[{ required: true, message: "请选择开启异画!" }]}
+                >
+                  <Radio.Group>
+                    <Radio.Button value={true}>开启</Radio.Button>
+                    <Radio.Button value={false}>关闭</Radio.Button>
+                  </Radio.Group>
+                </Form.Item>
+              );
+            }
+            return null;
+          }}
         </Form.Item>
       </Form>
     </Modal>

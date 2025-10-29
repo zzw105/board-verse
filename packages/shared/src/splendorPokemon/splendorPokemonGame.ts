@@ -13,7 +13,9 @@ const initPlayerInfo = (gameData: SP_GameType, ctx: Ctx) => {
 
 export const splendorPokemonGame: Game<SP_GameType> = {
   name: "splendorPokemonMonorepo",
-  setup: ({ ctx, random }) => {
+  setup: ({ ctx, random }, setupData) => {
+    console.log(setupData);
+
     const newGameData = cloneDeep(SP_InitGameData);
 
     initPlayerInfo(newGameData, ctx);

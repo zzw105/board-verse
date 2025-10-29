@@ -32,6 +32,7 @@ export default function Home() {
         numPlayers: values.numPlayers,
         setupData: {
           roomName: values.roomName,
+          isDifferentPictures: values.isDifferentPictures,
         },
       })
       .then((res) => {

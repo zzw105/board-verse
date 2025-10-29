@@ -1,5 +1,3 @@
-import { SP_CardIdList } from "@game/shared";
-
 import card_1_1 from "../../assets/splendorPokemon/img/card/card_1_1.png";
 import card_1_2 from "../../assets/splendorPokemon/img/card/card_1_2.png";
 import card_1_3 from "../../assets/splendorPokemon/img/card/card_1_3.png";
@@ -100,6 +98,11 @@ import card_9_2 from "../../assets/splendorPokemon/img/card/card_9_2.png";
 import card_9_3 from "../../assets/splendorPokemon/img/card/card_9_3.png";
 import card_9_4 from "../../assets/splendorPokemon/img/card/card_9_4.png";
 import card_9_5 from "../../assets/splendorPokemon/img/card/card_9_5.png";
+import card_back_1 from "../../assets/splendorPokemon/img/card/card_back_1.png";
+import card_back_2 from "../../assets/splendorPokemon/img/card/card_back_2.png";
+import card_back_3 from "../../assets/splendorPokemon/img/card/card_back_3.png";
+import card_back_4 from "../../assets/splendorPokemon/img/card/card_back_4.png";
+import card_back_5 from "../../assets/splendorPokemon/img/card/card_back_5.png";
 
 export const ImgMap = {
   card_1_1,
@@ -202,6 +205,14 @@ export const ImgMap = {
   card_9_3,
   card_9_4,
   card_9_5,
+};
+
+export const BackImgMap: Record<number, string> = {
+  1: card_back_1,
+  2: card_back_2,
+  3: card_back_3,
+  4: card_back_4,
+  5: card_back_5,
 };
 
 // let str = "";

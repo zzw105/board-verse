@@ -3,25 +3,23 @@ import { useEffect, useRef, useState } from "react";
 import { type SP_CardIdType, SP_CardObj } from "@game/shared";
 import Konva from "konva";
 import { Tween } from "konva/lib/Tween";
-import { Group, Image, Text } from "react-konva";
+import { Group, Image } from "react-konva";
 import useImage from "use-image";
 
-import backImg from "../../../assets/splendorPokemon/img/card/card_back_1.png";
 import { ShadowBlurEnum } from "../../../enum/game";
-import { ImgMap } from "../imgMap";
-import { PokemonCardDebugInfo } from "./PokemonCard copy";
+import { BackImgMap, ImgMap } from "../imgMap";
+import { PokemonCardDebugInfo } from "./PokemonCardDebugInfo";
 
 interface Props {
   x: number;
   y: number;
   isFaceUp: boolean;
   id: SP_CardIdType;
-  center?: boolean;
   isHorizontal?: boolean;
   onClick?: () => void;
 }
 
-export const PokemonCard = ({ x, y, id, center, isFaceUp, isHorizontal, onClick }: Props) => {
+export const PokemonCard = ({ x, y, id, isFaceUp, isHorizontal, onClick }: Props) => {
   const a = 5;
   const imageWidth = 900 / a;
   const imageHeight = 1200 / a;
@@ -29,8 +27,8 @@ export const PokemonCard = ({ x, y, id, center, isFaceUp, isHorizontal, onClick 
 
   const cardInfo = SP_CardObj[id];
 
-  const [image] = useImage(ImgMap[id]);
-  const [backImage] = useImage(backImg);
+  const [image] = useImage(ImgMap[cardInfo.id]);
+  const [backImage] = useImage(BackImgMap[cardInfo.level]);
   // 锁定
   // useEffect(() => {
   //   const g = groupRef.current;
