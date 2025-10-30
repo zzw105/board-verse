@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import React from "react";
 
 import { type SP_CardIdType, SP_CardObj } from "@game/shared";
 import Konva from "konva";
-import { Tween } from "konva/lib/Tween";
-import { Group, Image } from "react-konva";
+import { Group, Image, Rect } from "react-konva";
 import useImage from "use-image";
 
-import { ShadowBlurEnum } from "../../../enum/game";
 import { BackImgMap, ImgMap } from "../imgMap";
 import { PokemonCardDebugInfo } from "./PokemonCardDebugInfo";
 
@@ -19,8 +18,8 @@ interface Props {
   onClick?: () => void;
 }
 
-export const PokemonCard = ({ x, y, id, isFaceUp, isHorizontal, onClick }: Props) => {
-  const a = 5;
+export const PokemonCard = React.memo(({ x, y, id, isFaceUp, isHorizontal, onClick }: Props) => {
+  const a = 12.5;
   const imageWidth = 900 / a;
   const imageHeight = 1200 / a;
   const imageScale = 0.08 * a;
@@ -29,79 +28,52 @@ export const PokemonCard = ({ x, y, id, isFaceUp, isHorizontal, onClick }: Props
 
   const [image] = useImage(ImgMap[cardInfo.id]);
   const [backImage] = useImage(BackImgMap[cardInfo.level]);
-  // 锁定
-  // useEffect(() => {
-  //   const g = groupRef.current;
-  //   if (g && image) {
-  //     g.cache();
-  //   }
-  // }, [image, id]);
 
-  // 卡片组
   const groupRef = useRef<Konva.Group>(null);
-  // 卡片移动动画
-  const tweenRef = useRef<Tween | null>(null);
-  // 卡片翻牌动画
-  const flipTweenRef = useRef<Tween | null>(null);
-  // 卡片翻牌动画
-  const horizontalTweenRef = useRef<Tween | null>(null);
-  // 当前翻转状态
   const [nowIsFaceUp, setNowIsFaceUp] = useState(isFaceUp);
 
-  // 平滑移动动画
+  /* ✅ 平滑移动动画 */
   useEffect(() => {
-    if (!groupRef.current) return;
-    if (tweenRef.current) tweenRef.current.finish();
     const g = groupRef.current;
-    tweenRef.current = new Tween({
-      node: groupRef.current,
-      duration: 0.4,
+    if (!g) return;
+    g.to({
       x: x + (imageWidth * imageScale) / 2,
       y: y + (imageHeight * imageScale) / 2,
+      duration: 0.8,
       easing: Konva.Easings.EaseInOut,
-      onFinish: () => {
-        tweenRef.current = null;
-        if (g.width() > 0 && g.height() > 0) {
-          g.cache();
-        }
-      },
     });
-    g.clearCache();
-    tweenRef.current.play();
   }, [x, y]);
 
-  // 翻牌动画
+  /* ✅ 翻牌动画 */
   useEffect(() => {
-    if (!groupRef.current) return;
     const g = groupRef.current;
+    if (!g) return;
+    if (nowIsFaceUp === isFaceUp) return;
 
-    if (nowIsFaceUp !== isFaceUp) {
-      if (flipTweenRef.current) flipTweenRef.current.finish();
-      flipTweenRef.current = new Tween({ node: g, duration: 0.1, scaleX: 0 });
-      flipTweenRef.current.onFinish = () => {
+    g.to({
+      scaleX: 0,
+      duration: 0.2,
+      onFinish: () => {
         setNowIsFaceUp(isFaceUp);
-        // g.scaleX(isFaceUp ? scale : -scale); // 根据外部状态直接翻牌
-        flipTweenRef.current = new Tween({ node: g, duration: 0.1, scaleX: imageScale });
-        flipTweenRef.current.onFinish = () => {
-          g.cache();
-        };
-        flipTweenRef.current.play();
-      };
-      g.clearCache();
-      flipTweenRef.current.play();
-    }
+        g.to({
+          scaleX: imageScale,
+          duration: 0.2,
+        });
+      },
+    });
   }, [isFaceUp, nowIsFaceUp]);
 
-  // 横置动画
+  /* ✅ 横置动画 */
   useEffect(() => {
-    if (!groupRef.current) return;
     const g = groupRef.current;
-
-    if (horizontalTweenRef.current) horizontalTweenRef.current.finish();
-    horizontalTweenRef.current = new Tween({ node: g, duration: 0.1, rotation: isHorizontal ? -90 : 0 });
-    horizontalTweenRef.current.onFinish = () => {};
-    horizontalTweenRef.current.play();
+    if (!g) return;
+    g.to({
+      rotation: isHorizontal ? -90 : 0,
+      duration: 0.1,
+    });
   }, [isHorizontal]);
+
+  const cardImage = nowIsFaceUp ? image : backImage;
 
   return (
     <Group
@@ -111,15 +83,49 @@ export const PokemonCard = ({ x, y, id, isFaceUp, isHorizontal, onClick }: Props
       offsetX={imageWidth / 2}
       offsetY={imageHeight / 2}
       onClick={() => onClick?.()}
-      // onContextMenu={(e) => isCurrent && canOperations && handleContextMenu({ e, type: "token", name: type })}
     >
-      {image && nowIsFaceUp && (
-        <Image image={image} shadowBlur={ShadowBlurEnum.BACKGROUND_TOKEN} width={imageWidth} height={imageHeight} />
+      {/* ✅ 阴影层（替代 shadowBlur） */}
+      {cardImage && (
+        <Group>
+          {/* 🧱 立体感方块层 - 模拟卡牌厚度 */}
+          <Rect
+            x={2}
+            y={2}
+            width={imageWidth}
+            height={imageHeight}
+            cornerRadius={6}
+            fill="#000"
+            opacity={0.25}
+            listening={false}
+          />
+          <Rect
+            x={1}
+            y={1}
+            width={imageWidth}
+            height={imageHeight}
+            cornerRadius={6}
+            fill="#000"
+            opacity={0.15}
+            listening={false}
+          />
+          {/* 🎴 主卡牌 */}
+          <Image image={cardImage} width={imageWidth} height={imageHeight} cornerRadius={6} />
+          <Rect
+            width={imageWidth}
+            height={imageHeight / 3}
+            cornerRadius={6}
+            fillLinearGradientStartPoint={{ x: 0, y: 0 }}
+            fillLinearGradientEndPoint={{ x: 0, y: imageHeight / 3 }}
+            fillLinearGradientColorStops={[0, "rgba(255,255,255,0.15)", 1, "rgba(255,255,255,0)"]}
+            listening={false}
+          />
+        </Group>
       )}
-      {backImage && !nowIsFaceUp && (
-        <Image image={backImage} shadowBlur={ShadowBlurEnum.BACKGROUND_TOKEN} width={imageWidth} height={imageHeight} />
-      )}
+
+      {/* ✅ 主卡牌层 */}
+      {/* {cardImage && <Image image={cardImage} width={imageWidth} height={imageHeight} cornerRadius={6} />} */}
+
       <PokemonCardDebugInfo cardInfo={cardInfo} />
     </Group>
   );
-};
+});

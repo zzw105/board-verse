@@ -1,16 +1,59 @@
 /** 游戏状态 */
 export type SP_GameType = {
+  /** 所有卡牌资源 */
+  // allCards: SP_CardIdType[];
+  /** 所有令牌资源 */
+  // allTokens: SP_TokenIdType[];
+  /** 玩家信息 */
   playersInfo: SP_PlayerInfoType[];
+  /** 游戏板信息 */
+  boardInfo: SP_BoardInfoType;
 };
-
+/** 游戏板信息 */
+export type SP_BoardInfoType = {
+  /** 卡牌信息 */
+  card: {
+    /** 一级卡牌堆 */
+    level_1_pile: SP_CardIdType[];
+    /** 一级卡牌展示 */
+    level_1_show: (SP_CardIdType | undefined)[];
+    /** 二级卡牌堆 */
+    level_2_pile: SP_CardIdType[];
+    /** 二级卡牌展示 */
+    level_2_show: (SP_CardIdType | undefined)[];
+    /** 三级卡牌堆 */
+    level_3_pile: SP_CardIdType[];
+    /** 三级卡牌展示 */
+    level_3_show: (SP_CardIdType | undefined)[];
+    /** 四级卡牌堆 */
+    level_4_pile: SP_CardIdType[];
+    /** 四级卡牌展示 */
+    level_4_show: (SP_CardIdType | undefined)[];
+    /** 五级卡牌堆 */
+    level_5_pile: SP_CardIdType[];
+    /** 五级卡牌展示 */
+    level_5_show: (SP_CardIdType | undefined)[];
+  };
+  /** 令牌信息 */
+  token: Record<SP_ColorEnum, SP_TokenIdType[]>;
+};
+/** 玩家信息 */
 export type SP_PlayerInfoType = {
   /** 玩家ID */
   id: number;
-  /** 玩家资源 */
+  /** 玩家卡牌资源 */
   cards: SP_CardIdType[];
+  /** 玩家令牌 */
+  tokens: SP_TokenIdType[];
+  /** 玩家卡牌颜色资源 */
+  cardColor: Record<SP_ColorEnum, number>;
+  /** 玩家令牌颜色资源 */
+  tokenColor: Record<SP_ColorEnum, number>;
+  /** 玩家积分 */
+  point: number;
 };
 /** 合并颜色资源 */
-const mergeColors = (item?: Partial<Record<SP_ColorEnum, number>>) => {
+export const mergeColors = (item?: Partial<Record<SP_ColorEnum, number>>) => {
   const result: Record<SP_ColorEnum, number> = {
     [SP_ColorEnum.Black]: item?.[SP_ColorEnum.Black] || 0,
     [SP_ColorEnum.Blue]: item?.[SP_ColorEnum.Blue] || 0,
@@ -51,7 +94,7 @@ export type SP_CardType = {
   /** 卡片获得积分 */
   point: number;
   /** 卡片等级 */
-  level: number;
+  level: 1 | 2 | 3 | 4 | 5;
   /** 卡片进化到的卡片名称 */
   evolvesTo: SP_CardIdType[];
   /** 卡片进化到的卡片花费资源 */
@@ -69,8 +112,9 @@ type Range<Start extends number, End extends number> = Exclude<Enumerate<End>, E
 // 1~35 和 1~30 的数字
 type Numbers1_35 = Range<1, 36>; // 1~35
 type Numbers1_30 = Range<1, 31>; // 1~30
-type Numbers1_15 = Range<1, 16>; // 1~30
-type Numbers1_5 = Range<1, 6>; // 1~30
+type Numbers1_15 = Range<1, 16>; // 1~15
+type Numbers1_5 = Range<1, 6>; // 1~5
+type Numbers1_7 = Range<1, 8>; // 1~7
 
 /** 卡片ID类型 */
 export type SP_CardIdType =
@@ -1870,12 +1914,275 @@ export const SP_CardObj: Record<SP_CardIdType, SP_CardType> = {
     level: 5,
   },
 };
-
 export const SP_CardIdList = Object.keys(SP_CardObj) as SP_CardIdType[];
+
+/** tokenID类型 */
+export type SP_TokenIdType =
+  | `token_purple_${Numbers1_5}`
+  | `token_black_${Numbers1_7}`
+  | `token_pink_${Numbers1_7}`
+  | `token_yellow_${Numbers1_7}`
+  | `token_red_${Numbers1_7}`
+  | `token_blue_${Numbers1_7}`;
+
+/** token信息 */
+export type SP_TokenType = {
+  /** tokenID */
+  id: SP_TokenIdType;
+  /** token名称 */
+  name: string;
+  /** token颜色 */
+  color: SP_ColorEnum;
+};
+
+/** token对象 */
+export const SP_TokenObj: Record<SP_TokenIdType, SP_TokenType> = {
+  token_purple_1: {
+    id: "token_purple_1",
+    name: "大师球",
+    color: SP_ColorEnum.Purple,
+  },
+  token_purple_2: {
+    id: "token_purple_2",
+    name: "大师球",
+    color: SP_ColorEnum.Purple,
+  },
+  token_purple_3: {
+    id: "token_purple_3",
+    name: "大师球",
+    color: SP_ColorEnum.Purple,
+  },
+  token_purple_4: {
+    id: "token_purple_4",
+    name: "大师球",
+    color: SP_ColorEnum.Purple,
+  },
+  token_purple_5: {
+    id: "token_purple_5",
+    name: "大师球",
+    color: SP_ColorEnum.Purple,
+  },
+  token_black_1: {
+    id: "token_black_1",
+    name: "高级球",
+    color: SP_ColorEnum.Black,
+  },
+  token_black_2: {
+    id: "token_black_2",
+    name: "高级球",
+    color: SP_ColorEnum.Black,
+  },
+  token_black_3: {
+    id: "token_black_3",
+    name: "高级球",
+    color: SP_ColorEnum.Black,
+  },
+  token_black_4: {
+    id: "token_black_4",
+    name: "高级球",
+    color: SP_ColorEnum.Black,
+  },
+  token_black_5: {
+    id: "token_black_5",
+    name: "高级球",
+    color: SP_ColorEnum.Black,
+  },
+  token_black_6: {
+    id: "token_black_6",
+    name: "高级球",
+    color: SP_ColorEnum.Black,
+  },
+  token_black_7: {
+    id: "token_black_7",
+    name: "高级球",
+    color: SP_ColorEnum.Black,
+  },
+  token_pink_1: {
+    id: "token_pink_1",
+    name: "治愈球",
+    color: SP_ColorEnum.Pink,
+  },
+  token_pink_2: {
+    id: "token_pink_2",
+    name: "治愈球",
+    color: SP_ColorEnum.Pink,
+  },
+  token_pink_3: {
+    id: "token_pink_3",
+    name: "治愈球",
+    color: SP_ColorEnum.Pink,
+  },
+  token_pink_4: {
+    id: "token_pink_4",
+    name: "治愈球",
+    color: SP_ColorEnum.Pink,
+  },
+  token_pink_5: {
+    id: "token_pink_5",
+    name: "治愈球",
+    color: SP_ColorEnum.Pink,
+  },
+  token_pink_6: {
+    id: "token_pink_6",
+    name: "治愈球",
+    color: SP_ColorEnum.Pink,
+  },
+  token_pink_7: {
+    id: "token_pink_7",
+    name: "治愈球",
+    color: SP_ColorEnum.Pink,
+  },
+  token_yellow_1: {
+    id: "token_yellow_1",
+    name: "先机球",
+    color: SP_ColorEnum.Yellow,
+  },
+  token_yellow_2: {
+    id: "token_yellow_2",
+    name: "先机球",
+    color: SP_ColorEnum.Yellow,
+  },
+  token_yellow_3: {
+    id: "token_yellow_3",
+    name: "先机球",
+    color: SP_ColorEnum.Yellow,
+  },
+  token_yellow_4: {
+    id: "token_yellow_4",
+    name: "先机球",
+    color: SP_ColorEnum.Yellow,
+  },
+  token_yellow_5: {
+    id: "token_yellow_5",
+    name: "先机球",
+    color: SP_ColorEnum.Yellow,
+  },
+  token_yellow_6: {
+    id: "token_yellow_6",
+    name: "先机球",
+    color: SP_ColorEnum.Yellow,
+  },
+  token_yellow_7: {
+    id: "token_yellow_7",
+    name: "先机球",
+    color: SP_ColorEnum.Yellow,
+  },
+  token_red_1: {
+    id: "token_red_1",
+    name: "精灵球",
+    color: SP_ColorEnum.Red,
+  },
+  token_red_2: {
+    id: "token_red_2",
+    name: "精灵球",
+    color: SP_ColorEnum.Red,
+  },
+  token_red_3: {
+    id: "token_red_3",
+    name: "精灵球",
+    color: SP_ColorEnum.Red,
+  },
+  token_red_4: {
+    id: "token_red_4",
+    name: "精灵球",
+    color: SP_ColorEnum.Red,
+  },
+  token_red_5: {
+    id: "token_red_5",
+    name: "精灵球",
+    color: SP_ColorEnum.Red,
+  },
+  token_red_6: {
+    id: "token_red_6",
+    name: "精灵球",
+    color: SP_ColorEnum.Red,
+  },
+  token_red_7: {
+    id: "token_red_7",
+    name: "精灵球",
+    color: SP_ColorEnum.Red,
+  },
+  token_blue_1: {
+    id: "token_blue_1",
+    name: "超级球",
+    color: SP_ColorEnum.Blue,
+  },
+  token_blue_2: {
+    id: "token_blue_2",
+    name: "超级球",
+    color: SP_ColorEnum.Blue,
+  },
+  token_blue_3: {
+    id: "token_blue_3",
+    name: "超级球",
+    color: SP_ColorEnum.Blue,
+  },
+  token_blue_4: {
+    id: "token_blue_4",
+    name: "超级球",
+    color: SP_ColorEnum.Blue,
+  },
+  token_blue_5: {
+    id: "token_blue_5",
+    name: "超级球",
+    color: SP_ColorEnum.Blue,
+  },
+  token_blue_6: {
+    id: "token_blue_6",
+    name: "超级球",
+    color: SP_ColorEnum.Blue,
+  },
+  token_blue_7: {
+    id: "token_blue_7",
+    name: "超级球",
+    color: SP_ColorEnum.Blue,
+  },
+};
+export const SP_TokenIdList = Object.keys(SP_TokenObj) as SP_TokenIdType[];
 
 /** 初始化信息 */
 export const SP_InitGameData: SP_GameType = {
+  /** 所有卡牌资源 */
+  // allCards: [],
+  /** 所有令牌资源 */
+  // allTokens: [],
+  /** 玩家信息 */
   playersInfo: [],
+  /** 游戏板信息 */
+  boardInfo: {
+    /** 卡牌信息 */
+    card: {
+      /** 一级卡牌堆 */
+      level_1_pile: [],
+      /** 一级卡牌展示 */
+      level_1_show: [],
+      /** 二级卡牌堆 */
+      level_2_pile: [],
+      /** 二级卡牌展示 */
+      level_2_show: [],
+      /** 三级卡牌堆 */
+      level_3_pile: [],
+      /** 三级卡牌展示 */
+      level_3_show: [],
+      /** 四级卡牌堆 */
+      level_4_pile: [],
+      /** 四级卡牌展示 */
+      level_4_show: [],
+      /** 五级卡牌堆 */
+      level_5_pile: [],
+      /** 五级卡牌展示 */
+      level_5_show: [],
+    },
+    /** 令牌信息 */
+    token: {
+      [SP_ColorEnum.Purple]: [],
+      [SP_ColorEnum.Black]: [],
+      [SP_ColorEnum.Pink]: [],
+      [SP_ColorEnum.Yellow]: [],
+      [SP_ColorEnum.Red]: [],
+      [SP_ColorEnum.Blue]: [],
+    },
+  },
 };
 
 // // 宝石信息

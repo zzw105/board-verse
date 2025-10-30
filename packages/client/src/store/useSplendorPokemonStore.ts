@@ -9,7 +9,7 @@ export type use_SP_StoreType = {
 
 export const use_SP_Store = create<use_SP_StoreType>((set) => ({
   stagesType: undefined,
-  isDebug: true,
+  isDebug: false,
   setStagesType: (newData) => set({ stagesType: newData }),
   setIsDebug: (newData) => set({ isDebug: newData }),
 }));

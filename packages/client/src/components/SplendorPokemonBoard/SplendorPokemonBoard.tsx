@@ -21,7 +21,20 @@ import { Tooltip } from "./components/Tooltip";
 import { UserBoard } from "./components/UserBoard";
 
 export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
-  console.log({ gameData });
+  const {
+    debugNum1,
+    debugNum2,
+    debugNum3,
+    debugNum4,
+    debugNum5,
+    setDebugNum1,
+    setDebugNum2,
+    setDebugNum3,
+    setDebugNum4,
+    setDebugNum5,
+  } = useDebugStore();
+
+  // console.log({ gameData });
   /* hook */
   const navigate = useNavigate();
   const { name } = useUserStore();
@@ -87,8 +100,7 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
   };
   // stage拖动结束
   const handleStageDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
-    console.log(222);
-
+    // console.log(222);
     const { x, y } = e.target.position();
     setStagePositionLocal({ x, y });
   };
@@ -154,49 +166,94 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  type TokensPositionType = {
-    cards: Record<SP_CardIdType, { x: number; y: number; isFaceUp: boolean; isHorizontal: boolean }>;
+  type cardsItemPositionType = {
+    x: number;
+    y: number;
+    isShow: boolean;
+    isFaceUp: boolean;
+    isHorizontal: boolean;
   };
 
-  const initialTokensPosition: TokensPositionType = {
+  type AllItemPositionType = {
+    cards: Record<SP_CardIdType, cardsItemPositionType>;
+  };
+  const initialTokensPosition: AllItemPositionType = {
     cards: SP_CardIdList.reduce(
-      (acc, key, index) => {
-        acc[key] = { x: 0, y: index * 110, isFaceUp: true, isHorizontal: false };
+      (acc, key) => {
+        acc[key] = { x: 0, y: 0, isFaceUp: true, isHorizontal: false, isShow: false };
         return acc;
       },
-      {} as TokensPositionType["cards"],
+      {} as AllItemPositionType["cards"],
     ),
   };
-  const [tokensPosition, setTokensPosition] = useState<TokensPositionType>(initialTokensPosition);
+  const [allItemPosition, setAllItemPosition] = useState<AllItemPositionType>(initialTokensPosition);
+
   useEffect(() => {
-    gameData.G.playersInfo.forEach((player, playId) => {
-      const playerBoard = shapes.find((shape) => shape.id === `UserBoard${playId}`);
-      if (!playerBoard) {
-        console.error(`UserBoard${playId} not found`);
-        return;
-      }
-      player.cards.forEach((card) => {
-        tokensPosition.cards[card].x = playerBoard.x;
-        tokensPosition.cards[card].y = playerBoard.y;
+    const mainBoard = shapes.find((shape) => shape.id === `MainBoard`)!;
+    [
+      gameData.G.boardInfo.card.level_1_pile,
+      gameData.G.boardInfo.card.level_2_pile,
+      gameData.G.boardInfo.card.level_3_pile,
+    ].forEach((pile, level) => {
+      pile.forEach((card) => {
+        const cardPosInfo = allItemPosition.cards[card];
+        cardPosInfo.x = mainBoard.x + 20;
+        cardPosInfo.y = mainBoard.y + 16 + level * 112;
+        cardPosInfo.isShow = true;
+        cardPosInfo.isFaceUp = false;
       });
     });
-    setTokensPosition({ ...tokensPosition });
+    [
+      gameData.G.boardInfo.card.level_1_show,
+      gameData.G.boardInfo.card.level_2_show,
+      gameData.G.boardInfo.card.level_3_show,
+    ].forEach((pile, level) => {
+      pile.forEach((card, num) => {
+        if (card !== undefined) {
+          const cardPosInfo = allItemPosition.cards[card];
+          cardPosInfo.x = mainBoard.x + 20 + 113 + num * 88;
+          cardPosInfo.y = mainBoard.y + 16 + level * 112;
+          cardPosInfo.isShow = true;
+          cardPosInfo.isFaceUp = true;
+        }
+      });
+    });
+    [gameData.G.boardInfo.card.level_4_pile, gameData.G.boardInfo.card.level_5_pile].forEach((pile, level) => {
+      pile.forEach((card) => {
+        const cardPosInfo = allItemPosition.cards[card];
+        cardPosInfo.x = mainBoard.x + 507;
+        cardPosInfo.y = mainBoard.y + 63 + level * 130;
+        cardPosInfo.isShow = true;
+        cardPosInfo.isFaceUp = false;
+      });
+    });
+    [gameData.G.boardInfo.card.level_4_show, gameData.G.boardInfo.card.level_5_show].forEach((pile, level) => {
+      pile.forEach((card) => {
+        if (card !== undefined) {
+          const cardPosInfo = allItemPosition.cards[card];
+          cardPosInfo.x = mainBoard.x + 507;
+          cardPosInfo.y = mainBoard.y + 63 + level * 130;
+          cardPosInfo.isShow = true;
+          cardPosInfo.isFaceUp = true;
+        }
+      });
+    });
+
+    // gameData.G.playersInfo.forEach((player, playId) => {
+    //   const playerBoard = shapes.find((shape) => shape.id === `UserBoard${playId}`);
+    //   if (!playerBoard) {
+    //     console.error(`UserBoard${playId} not found`);
+    //     return;
+    //   }
+    //   player.cards.forEach((card) => {
+    //     allItemPosition.cards[card].x = playerBoard.x;
+    //     allItemPosition.cards[card].y = playerBoard.y;
+    //   });
+    // });
+    setAllItemPosition({ ...allItemPosition });
   }, [gameData, shapes]);
 
   const [backMainImage] = useImage(backMainImg);
-
-  const {
-    debugNum1,
-    debugNum2,
-    debugNum3,
-    debugNum4,
-    debugNum5,
-    setDebugNum1,
-    setDebugNum2,
-    setDebugNum3,
-    setDebugNum4,
-    setDebugNum5,
-  } = useDebugStore();
 
   return (
     <div className={styles.board}>
@@ -335,24 +392,83 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
                 );
               })}
             </Layer>
-            <Layer>
-              {SP_CardIdList.map((cardId) => {
-                const cardInfo = tokensPosition.cards[cardId];
-                console.log(cardInfo);
+            {/* {[
+              gameData.G.boardInfo.card.level_1_pile,
+              gameData.G.boardInfo.card.level_2_pile,
+              gameData.G.boardInfo.card.level_3_pile,
+              gameData.G.boardInfo.card.level_4_pile,
+              gameData.G.boardInfo.card.level_5_pile,
+              gameData.G.boardInfo.card.level_1_show,
+              gameData.G.boardInfo.card.level_2_show,
+              gameData.G.boardInfo.card.level_3_show,
+              gameData.G.boardInfo.card.level_4_show,
+              gameData.G.boardInfo.card.level_5_show,
+            ].map((pile) => {
+              return (
+                <Layer>
+                  {pile.map((cardId) => {
+                    const cardInfo = allItemPosition.cards[cardId];
+                    // console.log(cardInfo);
 
+                    if (!cardInfo.isShow) {
+                      return null;
+                    }
+                    return (
+                      <PokemonCard
+                        key={cardId}
+                        x={cardInfo.x}
+                        y={cardInfo.y}
+                        id={cardId}
+                        isFaceUp={cardInfo.isFaceUp}
+                        isHorizontal={cardInfo.isHorizontal}
+                        onClick={() => {
+                          allItemPosition.cards[cardId].isFaceUp = !allItemPosition.cards[cardId].isFaceUp;
+                          // allItemPosition.cards[cardId].x = allItemPosition.cards[cardId].x + 100;
+                          // allItemPosition.cards[cardId].y = allItemPosition.cards[cardId].y + 100;
+                          setAllItemPosition({ ...allItemPosition });
+                        }}
+                      />
+                    );
+                  })}
+                </Layer>
+              );
+            })} */}
+            <Layer>
+              {[
+                ...gameData.G.boardInfo.card.level_1_pile,
+                ...gameData.G.boardInfo.card.level_2_pile,
+                ...gameData.G.boardInfo.card.level_3_pile,
+                ...gameData.G.boardInfo.card.level_4_pile,
+                ...gameData.G.boardInfo.card.level_5_pile,
+                ...gameData.G.boardInfo.card.level_1_show,
+                ...gameData.G.boardInfo.card.level_2_show,
+                ...gameData.G.boardInfo.card.level_3_show,
+                ...gameData.G.boardInfo.card.level_4_show,
+                ...gameData.G.boardInfo.card.level_5_show,
+              ].map((cardId) => {
+                if (cardId === undefined) {
+                  return null;
+                }
+                const cardPosInfo = allItemPosition.cards[cardId];
+                // console.log(cardInfo);
+
+                if (!cardPosInfo.isShow) {
+                  return null;
+                }
                 return (
                   <PokemonCard
                     key={cardId}
-                    x={cardInfo.x}
-                    y={cardInfo.y}
+                    x={cardPosInfo.x}
+                    y={cardPosInfo.y}
                     id={cardId}
-                    isFaceUp={cardInfo.isFaceUp}
-                    isHorizontal={cardInfo.isHorizontal}
+                    isFaceUp={cardPosInfo.isFaceUp}
+                    isHorizontal={cardPosInfo.isHorizontal}
                     onClick={() => {
-                      tokensPosition.cards[cardId].isFaceUp = !tokensPosition.cards[cardId].isFaceUp;
-                      // tokensPosition.cards[cardId].x = tokensPosition.cards[cardId].x + 100;
-                      // tokensPosition.cards[cardId].y = tokensPosition.cards[cardId].y + 100;
-                      setTokensPosition({ ...tokensPosition });
+                      // allItemPosition.cards[cardId].isFaceUp = !allItemPosition.cards[cardId].isFaceUp;
+                      // allItemPosition.cards[cardId].x = allItemPosition.cards[cardId].x + 100;
+                      // allItemPosition.cards[cardId].y = allItemPosition.cards[cardId].y + 100;
+                      // setAllItemPosition({ ...allItemPosition });
+                      gameData.moves.getCardMove(cardId);
                     }}
                   />
                 );
