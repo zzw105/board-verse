@@ -1,3 +1,5 @@
+import { SP_ColorEnum } from "@game/shared";
+
 import card_1_1 from "../../assets/splendorPokemon/img/card/card_1_1.png";
 import card_1_2 from "../../assets/splendorPokemon/img/card/card_1_2.png";
 import card_1_3 from "../../assets/splendorPokemon/img/card/card_1_3.png";
@@ -103,6 +105,19 @@ import card_back_2 from "../../assets/splendorPokemon/img/card/card_back_2.png";
 import card_back_3 from "../../assets/splendorPokemon/img/card/card_back_3.png";
 import card_back_4 from "../../assets/splendorPokemon/img/card/card_back_4.png";
 import card_back_5 from "../../assets/splendorPokemon/img/card/card_back_5.png";
+import token_1 from "../../assets/splendorPokemon/img/token/token_1.png";
+import token_2 from "../../assets/splendorPokemon/img/token/token_2.png";
+import token_3 from "../../assets/splendorPokemon/img/token/token_3.png";
+import token_4 from "../../assets/splendorPokemon/img/token/token_4.png";
+import token_5 from "../../assets/splendorPokemon/img/token/token_5.png";
+import token_6 from "../../assets/splendorPokemon/img/token/token_6.png";
+
+// import token_7 from "../../assets/splendorPokemon/img/token/token_7.png";
+// import token_8 from "../../assets/splendorPokemon/img/token/token_8.png";
+// import token_9 from "../../assets/splendorPokemon/img/token/token_9.png";
+// import token_10 from "../../assets/splendorPokemon/img/token/token_10.png";
+// import token_11 from "../../assets/splendorPokemon/img/token/token_11.png";
+// import token_12 from "../../assets/splendorPokemon/img/token/token_12.png";
 
 export const ImgMap = {
   card_1_1,
@@ -213,6 +228,15 @@ export const BackImgMap: Record<number, string> = {
   3: card_back_3,
   4: card_back_4,
   5: card_back_5,
+};
+
+export const TokenImgMap: Record<SP_ColorEnum, string> = {
+  [SP_ColorEnum.Red]: token_1,
+  [SP_ColorEnum.Blue]: token_2,
+  [SP_ColorEnum.Black]: token_3,
+  [SP_ColorEnum.Pink]: token_4,
+  [SP_ColorEnum.Yellow]: token_5,
+  [SP_ColorEnum.Purple]: token_6,
 };
 
 // let str = "";

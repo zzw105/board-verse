@@ -4,6 +4,7 @@ import {
   SP_CardIdList,
   SP_CardIdType,
   SP_CardObj,
+  SP_ColorEnum,
   SP_GameType,
   SP_InitGameData,
   SP_TokenIdList,
@@ -85,7 +86,7 @@ const initBoardInfo = (
   });
 };
 
-// 设置每回合主板
+/** 从牌组中获取卡牌 */
 const getCard = (gameData: SP_GameType, playerId: number, cardId: SP_CardIdType) => {
   const level = SP_CardObj[cardId].level;
   const playerInfo = gameData.playersInfo[playerId];
@@ -96,6 +97,22 @@ const getCard = (gameData: SP_GameType, playerId: number, cardId: SP_CardIdType)
       playerInfo.cards.push(card);
       cardShowList[index] = cardPileList.pop();
     }
+  });
+};
+const colorOrder = ["red", "blue", "black", "pink", "yellow", "purple"];
+/** 从牌组中获取令牌 */
+const getToken = (gameData: SP_GameType, playerId: number, tokenId: SP_TokenIdType) => {
+  const tokenInfo = SP_TokenObj[tokenId];
+  const index = gameData.boardInfo.token[tokenInfo.color].findIndex((token) => token === tokenId);
+  if (index === -1) {
+    throw new Error("令牌不存在");
+  }
+  gameData.boardInfo.token[tokenInfo.color].splice(index, 1);
+  gameData.playersInfo[playerId].tokens.push(tokenId);
+  gameData.playersInfo[playerId].tokens.sort((a, b) => {
+    const colorA = a.split("_")[1];
+    const colorB = b.split("_")[1];
+    return colorOrder.indexOf(colorA) - colorOrder.indexOf(colorB);
   });
 };
 
@@ -118,6 +135,9 @@ export const splendorPokemonGame: Game<SP_GameType> = {
   moves: {
     getCardMove: (data, cardId) => {
       getCard(data.G, Number(data.ctx.currentPlayer), cardId);
+    },
+    getTokenMove: (data, tokenId) => {
+      getToken(data.G, Number(data.ctx.currentPlayer), tokenId);
     },
   },
   turn: {},

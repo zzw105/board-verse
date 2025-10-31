@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
-import { SP_CardIdList, type SP_CardIdType, SP_CardObj, SP_ColorEnum, type SP_GameType } from "@game/shared";
+import {
+  SP_CardIdList,
+  type SP_CardIdType,
+  SP_CardObj,
+  SP_ColorEnum,
+  type SP_GameType,
+  SP_TokenIdList,
+  type SP_TokenIdType,
+  SP_TokenObj,
+} from "@game/shared";
 import { Button, InputNumber, Slider, message } from "antd";
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import type Konva from "konva";
@@ -16,6 +25,7 @@ import { use_SP_Store } from "../../store/useSplendorPokemonStore";
 import { useUserStore } from "../../store/useUserStore";
 import styles from "./SplendorPokemonBoard.module.less";
 import { MainBoard } from "./components/MainBoard";
+import { PokemonBall } from "./components/PokemonBall";
 import { PokemonCard } from "./components/PokemonCard";
 import { Tooltip } from "./components/Tooltip";
 import { UserBoard } from "./components/UserBoard";
@@ -176,6 +186,7 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
 
   type AllItemPositionType = {
     cards: Record<SP_CardIdType, cardsItemPositionType>;
+    tokens: Record<SP_TokenIdType, { x: number; y: number; isShow: boolean }>;
   };
   const initialTokensPosition: AllItemPositionType = {
     cards: SP_CardIdList.reduce(
@@ -185,9 +196,15 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
       },
       {} as AllItemPositionType["cards"],
     ),
+    tokens: SP_TokenIdList.reduce(
+      (acc, key) => {
+        acc[key] = { x: 0, y: 0, isShow: false };
+        return acc;
+      },
+      {} as AllItemPositionType["tokens"],
+    ),
   };
   const [allItemPosition, setAllItemPosition] = useState<AllItemPositionType>(initialTokensPosition);
-
   useEffect(() => {
     const mainBoard = shapes.find((shape) => shape.id === `MainBoard`)!;
     [
@@ -242,7 +259,14 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
         }
       });
     });
-
+    const colorList: Record<SP_ColorEnum, number> = {
+      [SP_ColorEnum.Red]: 1,
+      [SP_ColorEnum.Blue]: 2,
+      [SP_ColorEnum.Black]: 3,
+      [SP_ColorEnum.Pink]: 4,
+      [SP_ColorEnum.Yellow]: 5,
+      [SP_ColorEnum.Purple]: 6,
+    };
     gameData.G.playersInfo.forEach((player, playId) => {
       const playerBoard = shapes.find((shape) => shape.id === `UserBoard${playId}`);
       if (!playerBoard) {
@@ -257,25 +281,39 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
         [SP_ColorEnum.Pink]: 0,
         [SP_ColorEnum.Yellow]: 0,
       };
-      const colorList: Record<SP_ColorEnum, number> = {
-        [SP_ColorEnum.Red]: 1,
-        [SP_ColorEnum.Blue]: 2,
-        [SP_ColorEnum.Black]: 3,
-        [SP_ColorEnum.Pink]: 4,
-        [SP_ColorEnum.Yellow]: 5,
-        [SP_ColorEnum.Purple]: 6,
-      };
+
       player.cards.forEach((card) => {
-        console.log(card);
         const cardInfo = SP_CardObj[card];
         const cardPosInfo = allItemPosition.cards[card];
         cardPosInfo.x = playerBoard.x + 72 + colorList[cardInfo.color] * 80;
         pos[cardInfo.color]++;
-        cardPosInfo.y = playerBoard.y + debugNum1 + (pos[cardInfo.color] - 1) * debugNum2;
+        cardPosInfo.y = playerBoard.y + 45 + (pos[cardInfo.color] - 1) * 23.2;
         cardPosInfo.isShow = true;
         cardPosInfo.isFaceUp = true;
       });
+      player.tokens.forEach((token, index) => {
+        const tokenPosInfo = allItemPosition.tokens[token];
+        tokenPosInfo.x = playerBoard.x + 9 + (index % 2) * 62;
+        tokenPosInfo.y = playerBoard.y + 40 + Math.floor(index / 2) * 59;
+        tokenPosInfo.isShow = true;
+      });
     });
+
+    //
+    for (const key in gameData.G.boardInfo.token) {
+      const tokenColor = key as SP_ColorEnum;
+      if (!Object.hasOwn(gameData.G.boardInfo.token, tokenColor)) continue;
+      const tokenColorList = gameData.G.boardInfo.token[tokenColor];
+      tokenColorList.forEach((token) => {
+        const tokenPosInfo = allItemPosition.tokens[token];
+        tokenPosInfo.x = mainBoard.x + 36 + (colorList[tokenColor] - 1) * 88;
+        if (tokenColor === SP_ColorEnum.Purple) {
+          tokenPosInfo.x += 30;
+        }
+        tokenPosInfo.y = mainBoard.y + 16 + 340;
+        tokenPosInfo.isShow = true;
+      });
+    }
     setAllItemPosition({ ...allItemPosition });
   }, [gameData, shapes]);
 
@@ -499,6 +537,36 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
                       // allItemPosition.cards[cardId].y = allItemPosition.cards[cardId].y + 100;
                       // setAllItemPosition({ ...allItemPosition });
                       gameData.moves.getCardMove(cardId);
+                    }}
+                  />
+                );
+              })}
+            </Layer>
+            <Layer>
+              {[
+                ...gameData.G.boardInfo.token.black,
+                ...gameData.G.boardInfo.token.blue,
+                ...gameData.G.boardInfo.token.pink,
+                ...gameData.G.boardInfo.token.purple,
+                ...gameData.G.boardInfo.token.red,
+                ...gameData.G.boardInfo.token.yellow,
+                ...gameData.G.playersInfo[0].tokens,
+                ...gameData.G.playersInfo[1].tokens,
+                ...gameData.G.playersInfo[2].tokens,
+                ...gameData.G.playersInfo[3].tokens,
+              ].map((tokenId) => {
+                const tokenPosInfo = allItemPosition.tokens[tokenId];
+                if (!tokenPosInfo?.isShow) {
+                  return null;
+                }
+                return (
+                  <PokemonBall
+                    key={tokenId}
+                    x={tokenPosInfo.x}
+                    y={tokenPosInfo.y}
+                    id={tokenId}
+                    onClick={() => {
+                      gameData.moves.getTokenMove(tokenId);
                     }}
                   />
                 );
