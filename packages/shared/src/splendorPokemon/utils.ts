@@ -51,6 +51,10 @@ export type SP_PlayerInfoType = {
   tokenColor: Record<SP_ColorEnum, number>;
   /** 玩家积分 */
   point: number;
+  /** 玩家临时选择tokens */
+  provisionalTokens: SP_TokenIdType[];
+  /** 玩家临时选择卡牌 */
+  provisionalCards: SP_CardIdType[];
 };
 /** 合并颜色资源 */
 export const mergeColors = (item?: Partial<Record<SP_ColorEnum, number>>) => {

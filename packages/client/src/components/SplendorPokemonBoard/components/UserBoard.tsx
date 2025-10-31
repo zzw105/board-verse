@@ -1,18 +1,14 @@
 import { useContext, useRef } from "react";
-import React from "react";
 
-import { type PlayersInfoType, type SP_PlayerInfoType, StateEnum } from "@game/shared";
-import { message } from "antd";
+import { type SP_PlayerInfoType } from "@game/shared";
 import type { FilteredMetadata } from "boardgame.io";
 import Konva from "konva";
-import { Group, Image, Rect, Star, Text } from "react-konva";
+import { Group, Image, Rect, Text } from "react-konva";
 import useImage from "use-image";
 
 import plBoardImg from "../../../assets/splendorPokemon/img/table/table_2.png";
-import { ShadowBlurEnum, ShadowColorEnum } from "../../../enum/game";
-import { BoardContext, UserBoardContext } from "../../../store/BoardContext";
-import { SP_UserContextType } from "../../../store/SplendorPokemonContext";
-import { useTheCastlesOfBurgundyStore } from "../../../store/useTheCastlesOfBurgundyStore";
+import { ShadowBlurEnum } from "../../../enum/game";
+import { SP_GameContext, SP_UserContextType } from "../../../store/SplendorPokemonContext";
 
 interface Props {
   x: number;
@@ -23,16 +19,18 @@ interface Props {
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
 }
 export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragEnd }: Props) => {
-  const { nowPlayingPlayerID } = useContext(BoardContext);
+  const { nowPlayingPlayerID, clientPlayerID, gameData } = useContext(SP_GameContext);
+  console.log({ clientPlayerID, id: boardPlayerInfo.id });
 
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
   const [plBoardImage] = useImage(plBoardImg);
-  const plBoardImageWidth = 6900; // 从文件中获取写死
-  const plBoardImageHeight = 4260; // 从文件中获取写死
-  const plBoardImageScale = 0.08;
+  const s = 12.5;
+  const plBoardImageWidth = 6900 / s; // 从文件中获取写死
+  const plBoardImageHeight = 4260 / s; // 从文件中获取写死
+  const plBoardImageScale = 0.08 * s;
 
-  const isHighlight = boardPlayerInfo.id === nowPlayingPlayerID;
+  // const isHighlight = boardPlayerInfo.id === nowPlayingPlayerID;
 
   return (
     <Group ref={groupRef} x={x} y={y} draggable={draggable} onDragEnd={onDragEnd}>
@@ -48,44 +46,252 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
           scale={{ x: plBoardImageScale, y: plBoardImageScale }}
           image={plBoardImage}
           shadowBlur={ShadowBlurEnum.MAIN}
-          shadowColor={isHighlight ? "red" : "black"}
         ></Image>
       </SP_UserContextType.Provider>
-      {/* 回合结束按钮 */}
-      {/* {isHighlight && nowPlayingPlayerID === clientPlayerID && (
-        <Group
-          x={305}
-          y={530}
-          onClick={onBtnClick}
-          onMouseOver={() => {
-            document.body.style.cursor = "pointer";
-          }}
-          onMouseOut={() => {
-            document.body.style.cursor = "default";
-          }}
-        >
-          <Rect
-            width={100}
-            height={40}
-            fill="red"
-            cornerRadius={8}
-            shadowColor="black"
-            shadowBlur={4}
-            shadowOffset={{ x: 2, y: 2 }}
-            shadowOpacity={0.3}
-          />
-          <Text
-            text={"回合结束"}
-            fontSize={16}
-            fill="white"
-            width={100}
-            height={40}
-            align="center"
-            verticalAlign="middle"
-          />
-        </Group>
-      )}
-      {stagesType === "getNewDice" && (
+      <Group x={0} y={-40}>
+        <Rect
+          width={plBoardImageWidth}
+          height={40}
+          fill="#00000059"
+          cornerRadius={8}
+          shadowColor="black"
+          shadowBlur={4}
+          shadowOffset={{ x: 2, y: 2 }}
+          shadowOpacity={0.3}
+        />
+        <Text x={10} text={`用户名：${matchData.name}`} fontSize={16} fill="white" height={40} verticalAlign="middle" />
+        <Text
+          x={plBoardImageWidth - 70}
+          text={`分数：${boardPlayerInfo.point}`}
+          fontSize={16}
+          fill="white"
+          height={40}
+          verticalAlign="middle"
+        />
+      </Group>
+      <Group x={-100} y={0}>
+        <Rect
+          width={100}
+          height={plBoardImageHeight}
+          fill="#00000059"
+          cornerRadius={8}
+          shadowColor="black"
+          shadowBlur={4}
+          shadowOffset={{ x: 2, y: 2 }}
+          shadowOpacity={0.3}
+        />
+        <Text
+          x={10}
+          text={`精灵球：${boardPlayerInfo.tokenColor.red + boardPlayerInfo.tokenColor.blue + boardPlayerInfo.tokenColor.black + boardPlayerInfo.tokenColor.pink + boardPlayerInfo.tokenColor.yellow + boardPlayerInfo.tokenColor.purple}`}
+          fontSize={16}
+          fill="white"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={22}
+          text={`红：${boardPlayerInfo.tokenColor.red}`}
+          fontSize={16}
+          fill="#ff4545ff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={44}
+          text={`蓝：${boardPlayerInfo.tokenColor.blue}`}
+          fontSize={16}
+          fill="#4592ff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={66}
+          text={`黑：${boardPlayerInfo.tokenColor.black}`}
+          fontSize={16}
+          fill="#454545ff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={88}
+          text={`粉：${boardPlayerInfo.tokenColor.pink}`}
+          fontSize={16}
+          fill="#ff84adff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={110}
+          text={`黄：${boardPlayerInfo.tokenColor.yellow}`}
+          fontSize={16}
+          fill="#ffd645ff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={132}
+          text={`紫：${boardPlayerInfo.tokenColor.purple}`}
+          fontSize={16}
+          fill="#b682ffff"
+          height={40}
+          verticalAlign="middle"
+        />
+        {/*  */}
+        <Text
+          x={10}
+          y={180}
+          text={`宝可梦：${boardPlayerInfo.cardColor.red + boardPlayerInfo.cardColor.blue + boardPlayerInfo.cardColor.black + boardPlayerInfo.cardColor.pink + boardPlayerInfo.cardColor.yellow + boardPlayerInfo.cardColor.purple}`}
+          fontSize={16}
+          fill="#ffffffff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={202}
+          text={`红：${boardPlayerInfo.cardColor.red}`}
+          fontSize={16}
+          fill="#ff4545ff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={224}
+          text={`蓝：${boardPlayerInfo.cardColor.blue}`}
+          fontSize={16}
+          fill="#4592ff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={246}
+          text={`黑：${boardPlayerInfo.cardColor.black}`}
+          fontSize={16}
+          fill="#454545ff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={268}
+          text={`粉：${boardPlayerInfo.cardColor.pink}`}
+          fontSize={16}
+          fill="#ff84adff"
+          height={40}
+          verticalAlign="middle"
+        />
+        <Text
+          x={13}
+          y={290}
+          text={`黄：${boardPlayerInfo.cardColor.yellow}`}
+          fontSize={16}
+          fill="#ffd645ff"
+          height={40}
+          verticalAlign="middle"
+        />
+      </Group>
+      <Group x={0} y={plBoardImageHeight}>
+        <Rect
+          width={plBoardImageWidth}
+          height={100}
+          fill="#00000059"
+          cornerRadius={8}
+          shadowColor="black"
+          shadowBlur={4}
+          shadowOffset={{ x: 2, y: 2 }}
+          shadowOpacity={0.3}
+        />
+      </Group>
+      {/* \boardPlayerInfo.id === clientPlayerID && */}
+      <Group x={plBoardImageWidth} y={0}>
+        <Rect
+          width={100}
+          height={plBoardImageHeight}
+          fill="#00000059"
+          cornerRadius={8}
+          shadowColor="black"
+          shadowBlur={4}
+          shadowOffset={{ x: 2, y: 2 }}
+          shadowOpacity={0.3}
+        />
+        {boardPlayerInfo.id === clientPlayerID && nowPlayingPlayerID === clientPlayerID && (
+          <>
+            <Group
+              x={0}
+              y={plBoardImageHeight - 80}
+              onMouseOver={() => {
+                document.body.style.cursor = "pointer";
+              }}
+              onMouseOut={() => {
+                document.body.style.cursor = "default";
+              }}
+              onClick={() => {
+                gameData.moves.cleanProvisionalMove();
+              }}
+            >
+              <Rect
+                width={100}
+                height={40}
+                fill="white"
+                cornerRadius={8}
+                shadowColor="black"
+                shadowBlur={4}
+                shadowOffset={{ x: 2, y: 2 }}
+                shadowOpacity={0.3}
+              />
+              <Text
+                text={"清空"}
+                fontSize={16}
+                fill="black"
+                width={100}
+                height={40}
+                align="center"
+                verticalAlign="middle"
+              />
+            </Group>
+            <Group
+              x={0}
+              y={plBoardImageHeight - 40}
+              onMouseOver={() => {
+                document.body.style.cursor = "pointer";
+              }}
+              onMouseOut={() => {
+                document.body.style.cursor = "default";
+              }}
+            >
+              <Rect
+                width={100}
+                height={40}
+                fill="white"
+                cornerRadius={8}
+                shadowColor="black"
+                shadowBlur={4}
+                shadowOffset={{ x: 2, y: 2 }}
+                shadowOpacity={0.3}
+              />
+              <Text
+                text={"确认选择"}
+                fontSize={16}
+                fill="black"
+                width={100}
+                height={40}
+                align="center"
+                verticalAlign="middle"
+              />
+            </Group>
+          </>
+        )}
+      </Group>
+
+      {/* {stagesType === "getNewDice" && (
         <Group x={305} y={480}>
           <Rect
             width={100}

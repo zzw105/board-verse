@@ -4,7 +4,6 @@ import {
   SP_CardIdList,
   SP_CardIdType,
   SP_CardObj,
-  SP_ColorEnum,
   SP_GameType,
   SP_InitGameData,
   SP_TokenIdList,
@@ -24,6 +23,8 @@ const initPlayerInfo = (gameData: SP_GameType, ctx: Ctx) => {
     cardColor: mergeColors(),
     tokenColor: mergeColors(),
     point: 0,
+    provisionalTokens: [],
+    provisionalCards: [],
   }));
 };
 /** 初始化令牌卡牌 */
@@ -115,6 +116,31 @@ const getToken = (gameData: SP_GameType, playerId: number, tokenId: SP_TokenIdTy
     return colorOrder.indexOf(colorA) - colorOrder.indexOf(colorB);
   });
 };
+/** 清空玩家临时区 */
+const cleanProvisional = (gameData: SP_GameType, playerId: number) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  playerInfo.provisionalCards = [];
+  playerInfo.provisionalTokens = [];
+};
+/** 临时从牌组中获取令牌 */
+const provisionalGetToken = (gameData: SP_GameType, playerId: number, tokenId: SP_TokenIdType) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  playerInfo.provisionalCards = [];
+  playerInfo.provisionalTokens.push(tokenId);
+  playerInfo.provisionalTokens = [...new Set(playerInfo.provisionalTokens)];
+  // const tokenInfo = SP_TokenObj[tokenId];
+  // const index = gameData.boardInfo.token[tokenInfo.color].findIndex((token) => token === tokenId);
+  // if (index === -1) {
+  //   throw new Error("令牌不存在");
+  // }
+  // gameData.boardInfo.token[tokenInfo.color].splice(index, 1);
+  // gameData.playersInfo[playerId].provisionalTokens.push(tokenId);
+  // gameData.playersInfo[playerId].provisionalTokens.sort((a, b) => {
+  //   const colorA = a.split("_")[1];
+  //   const colorB = b.split("_")[1];
+  //   return colorOrder.indexOf(colorA) - colorOrder.indexOf(colorB);
+  // });
+};
 
 type setupDataType = {
   isDifferentPictures?: boolean;
@@ -133,6 +159,15 @@ export const splendorPokemonGame: Game<SP_GameType> = {
     return newGameData;
   },
   moves: {
+    endTurnMove: (data) => {
+      data.events.endTurn();
+    },
+    cleanProvisionalMove: (data) => {
+      cleanProvisional(data.G, Number(data.ctx.currentPlayer));
+    },
+    provisionalGetTokenMove: (data, tokenId) => {
+      provisionalGetToken(data.G, Number(data.ctx.currentPlayer), tokenId);
+    },
     getCardMove: (data, cardId) => {
       getCard(data.G, Number(data.ctx.currentPlayer), cardId);
     },
