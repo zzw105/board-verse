@@ -48,6 +48,12 @@ export const PokemonBall = React.memo(({ x, y, id, onClick }: Props) => {
       scaleY={imageScale}
       offsetX={imageWidth / 2}
       offsetY={imageHeight / 2}
+      onMouseOver={() => {
+        document.body.style.cursor = "pointer";
+      }}
+      onMouseOut={() => {
+        document.body.style.cursor = "default";
+      }}
       onClick={() => onClick?.()}
     >
       {/* ✅ 阴影层（替代 shadowBlur） */}

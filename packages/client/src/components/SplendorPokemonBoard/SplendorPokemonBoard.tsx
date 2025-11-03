@@ -1,20 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
-import {
-  SP_CardIdList,
-  type SP_CardIdType,
-  SP_CardObj,
-  SP_ColorEnum,
-  type SP_GameType,
-  SP_TokenIdList,
-  type SP_TokenIdType,
-  SP_TokenObj,
-} from "@game/shared";
+import { SP_CardIdList, SP_CardObj, SP_ColorEnum, type SP_GameType, SP_TokenIdList, SP_TokenObj } from "@game/shared";
 import { Button, InputNumber, Slider, message } from "antd";
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import type Konva from "konva";
 import { cloneDeep } from "lodash";
-import { Group, Layer, Rect, Stage, Text } from "react-konva";
+import { Layer, Rect, Stage } from "react-konva";
 import { useNavigate } from "react-router-dom";
 import useImage from "use-image";
 
@@ -29,6 +20,7 @@ import { PokemonBall } from "./components/PokemonBall";
 import { PokemonCard } from "./components/PokemonCard";
 import { Tooltip } from "./components/Tooltip";
 import { UserBoard } from "./components/UserBoard";
+import { type AllItemPositionType, setMainBoardTokenCardPos, setUserBoardTokenCardPos } from "./utils";
 
 export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
   const {
@@ -60,12 +52,8 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
   useEffect(() => {
     if (stagesType !== nowStagesType) {
       setStagesType(nowStagesType);
-      if (nowStagesType === "choiceCargos") {
-        message.warning("当前阶段为货物选择阶段，不能进行其他操作");
-      } else if (nowStagesType === "removeCargos") {
-        message.warning("当前阶段为货物移除阶段，不能进行其他操作");
-      } else if (nowStagesType === "getNewDice") {
-        message.warning("当前阶段为自选骰子阶段，不能进行其他操作");
+      if (nowStagesType === "discard") {
+        message.warning("当前阶段为弃精灵球阶段，请选择精灵球丢弃");
       }
     }
   }, [nowStagesType, stagesType, setStagesType]);
@@ -180,161 +168,36 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  type TokenItemPositionType = {
-    x: number;
-    y: number;
-    isShow: boolean;
-    pos: "main" | "user";
-  };
-
-  type CardsItemPositionType = TokenItemPositionType & {
-    isFaceUp: boolean;
-    isHorizontal: boolean;
-  };
-
-  type AllItemPositionType = {
-    cards: Record<SP_CardIdType, CardsItemPositionType>;
-    tokens: Record<SP_TokenIdType, TokenItemPositionType>;
-  };
   const initialTokensPosition: AllItemPositionType = {
     cards: SP_CardIdList.reduce(
       (acc, key) => {
-        acc[key] = { x: 0, y: 0, isFaceUp: true, isHorizontal: false, isShow: false, pos: "main" };
+        acc[key] = {
+          x: 0,
+          y: 0,
+          isFaceUp: true,
+          isHorizontal: false,
+          isShow: false,
+          pos: "main",
+          isProvisional: false,
+        };
         return acc;
       },
       {} as AllItemPositionType["cards"],
     ),
     tokens: SP_TokenIdList.reduce(
       (acc, key) => {
-        acc[key] = { x: 0, y: 0, isShow: false, pos: "main" };
+        acc[key] = { x: 0, y: 0, isShow: false, pos: "main", isProvisional: false };
         return acc;
       },
       {} as AllItemPositionType["tokens"],
     ),
   };
   const [allItemPosition, setAllItemPosition] = useState<AllItemPositionType>(initialTokensPosition);
-  const colorList: Record<SP_ColorEnum, number> = {
-    [SP_ColorEnum.Red]: 1,
-    [SP_ColorEnum.Blue]: 2,
-    [SP_ColorEnum.Black]: 3,
-    [SP_ColorEnum.Pink]: 4,
-    [SP_ColorEnum.Yellow]: 5,
-    [SP_ColorEnum.Purple]: 6,
-  };
+
   useEffect(() => {
-    const mainBoard = shapes.find((shape) => shape.id === `MainBoard`)!;
-    [
-      gameData.G.boardInfo.card.level_1_pile,
-      gameData.G.boardInfo.card.level_2_pile,
-      gameData.G.boardInfo.card.level_3_pile,
-    ].forEach((pile, level) => {
-      pile.forEach((card) => {
-        if (card) {
-          const cardPosInfo = allItemPosition.cards[card];
-          cardPosInfo.x = mainBoard.x + 20;
-          cardPosInfo.y = mainBoard.y + 16 + (2 - level) * 112;
-          cardPosInfo.isShow = true;
-          cardPosInfo.isFaceUp = false;
-          cardPosInfo.pos = "main";
-        }
-      });
-    });
-    [
-      gameData.G.boardInfo.card.level_1_show,
-      gameData.G.boardInfo.card.level_2_show,
-      gameData.G.boardInfo.card.level_3_show,
-    ].forEach((pile, level) => {
-      pile.forEach((card, num) => {
-        if (card) {
-          const cardPosInfo = allItemPosition.cards[card];
-          cardPosInfo.x = mainBoard.x + 20 + 113 + num * 88;
-          cardPosInfo.y = mainBoard.y + 16 + (2 - level) * 112;
-          cardPosInfo.isShow = true;
-          cardPosInfo.isFaceUp = true;
-          cardPosInfo.pos = "main";
-        }
-      });
-    });
-    [gameData.G.boardInfo.card.level_4_pile, gameData.G.boardInfo.card.level_5_pile].forEach((pile, level) => {
-      pile.forEach((card) => {
-        if (card) {
-          const cardPosInfo = allItemPosition.cards[card];
-          cardPosInfo.x = mainBoard.x + 507;
-          cardPosInfo.y = mainBoard.y + 63 + level * 130;
-          cardPosInfo.isShow = true;
-          cardPosInfo.isFaceUp = false;
-          cardPosInfo.pos = "main";
-        }
-      });
-    });
-    [gameData.G.boardInfo.card.level_4_show, gameData.G.boardInfo.card.level_5_show].forEach((pile, level) => {
-      pile.forEach((card) => {
-        if (card) {
-          const cardPosInfo = allItemPosition.cards[card];
-          cardPosInfo.x = mainBoard.x + 507;
-          cardPosInfo.y = mainBoard.y + 63 + level * 130;
-          cardPosInfo.isShow = true;
-          cardPosInfo.isFaceUp = true;
-          cardPosInfo.pos = "main";
-        }
-      });
-    });
+    setMainBoardTokenCardPos(gameData, allItemPosition, shapes);
     //
-    for (const key in gameData.G.boardInfo.token) {
-      const tokenColor = key as SP_ColorEnum;
-      if (!Object.hasOwn(gameData.G.boardInfo.token, tokenColor)) continue;
-      const tokenColorList = gameData.G.boardInfo.token[tokenColor];
-      tokenColorList.forEach((token) => {
-        const tokenPosInfo = allItemPosition.tokens[token];
-        tokenPosInfo.x = mainBoard.x + 36 + (colorList[tokenColor] - 1) * 88;
-        if (tokenColor === SP_ColorEnum.Purple) {
-          tokenPosInfo.x += 30;
-        }
-        tokenPosInfo.y = mainBoard.y + 16 + 340;
-        tokenPosInfo.isShow = true;
-      });
-    }
-
-    gameData.G.playersInfo.forEach((player, playId) => {
-      const playerBoard = shapes.find((shape) => shape.id === `UserBoard${playId}`);
-      if (!playerBoard) {
-        console.error(`UserBoard${playId} not found`);
-        return;
-      }
-      const pos: Record<SP_ColorEnum, number> = {
-        [SP_ColorEnum.Red]: 0,
-        [SP_ColorEnum.Blue]: 0,
-        [SP_ColorEnum.Purple]: 0,
-        [SP_ColorEnum.Black]: 0,
-        [SP_ColorEnum.Pink]: 0,
-        [SP_ColorEnum.Yellow]: 0,
-      };
-
-      player.cards.forEach((card) => {
-        const cardInfo = SP_CardObj[card];
-        const cardPosInfo = allItemPosition.cards[card];
-        cardPosInfo.x = playerBoard.x + 72 + colorList[cardInfo.color] * 80;
-        pos[cardInfo.color]++;
-        cardPosInfo.y = playerBoard.y + 45 + (pos[cardInfo.color] - 1) * 23.2;
-        cardPosInfo.isShow = true;
-        cardPosInfo.isFaceUp = true;
-        cardPosInfo.pos = "user";
-      });
-      player.tokens.forEach((token, index) => {
-        const tokenPosInfo = allItemPosition.tokens[token];
-        tokenPosInfo.x = playerBoard.x + 9 + (index % 2) * 62;
-        tokenPosInfo.y = playerBoard.y + 40 + Math.floor(index / 2) * 59;
-        tokenPosInfo.isShow = true;
-        tokenPosInfo.pos = "user";
-      });
-
-      player.provisionalTokens.forEach((token, index) => {
-        const tokenPosInfo = allItemPosition.tokens[token];
-        tokenPosInfo.x = playerBoard.x + 574;
-        tokenPosInfo.y = playerBoard.y + 20 + index * 80;
-      });
-    });
-
+    setUserBoardTokenCardPos(gameData, allItemPosition, shapes);
     //
     // const nowPlayingPlayerBoard = shapes.find((shape) => shape.id === `UserBoard${nowPlayingPlayerID}`)!;
     // provisionalTokenDistrict.forEach((token, index) => {
@@ -558,7 +421,7 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
                 ...gameData.G.boardInfo.card.level_4_show,
                 ...gameData.G.boardInfo.card.level_5_show,
                 ...(gameData.G.playersInfo[0].cards || []),
-                ...(gameData.G.playersInfo[1].cards || []),
+                ...(gameData.G.playersInfo[1]?.cards || []),
                 ...(gameData.G.playersInfo[2]?.cards || []),
                 ...(gameData.G.playersInfo[3]?.cards || []),
               ].map((cardId) => {
@@ -620,44 +483,70 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
                         message.error("当前不是你的回合，不可操作");
                         return;
                       }
-                      if (tokenPosInfo.pos === "user") {
-                        message.error("只能选择主版图的精灵球");
+                      if (!(tokenPosInfo.pos === "main" || tokenPosInfo.pos === clientPlayerID)) {
+                        message.error("不可选择其他玩家的精灵球");
                         return;
                       }
 
-                      const nowSelectColor: Record<SP_ColorEnum, number> = {
-                        [SP_ColorEnum.Red]: 0,
-                        [SP_ColorEnum.Blue]: 0,
-                        [SP_ColorEnum.Black]: 0,
-                        [SP_ColorEnum.Pink]: 0,
-                        [SP_ColorEnum.Purple]: 0,
-                        [SP_ColorEnum.Yellow]: 0,
-                      };
-                      nowPlayingPlayerInfo.provisionalTokens.forEach((token) => {
-                        nowSelectColor[SP_TokenObj[token].color]++;
-                      });
-                      const boardColor: Record<SP_ColorEnum, number> = {
-                        [SP_ColorEnum.Red]: gameData.G.boardInfo.token.red.length,
-                        [SP_ColorEnum.Blue]: gameData.G.boardInfo.token.blue.length,
-                        [SP_ColorEnum.Black]: gameData.G.boardInfo.token.black.length,
-                        [SP_ColorEnum.Pink]: gameData.G.boardInfo.token.pink.length,
-                        [SP_ColorEnum.Purple]: gameData.G.boardInfo.token.purple.length,
-                        [SP_ColorEnum.Yellow]: gameData.G.boardInfo.token.yellow.length,
-                      };
-                      if (nowSelectColor[tokenInfo.color] === 1 && boardColor[tokenInfo.color] < 4) {
-                        message.warning("当前宝石小于4个，不可同时选择2个");
-                        return;
-                      }
-                      if (Object.values(nowSelectColor).some((v) => v >= 2)) {
-                        message.warning("已有宝石同时选择2个");
-                        return;
-                      }
-                      if (Object.values(nowSelectColor).filter((v) => v === 1).length >= 3) {
-                        message.warning("已有3个宝石同时选择1个");
-                        return;
+                      if (stagesType === "discard") {
+                        if (tokenPosInfo.pos === clientPlayerID) {
+                          gameData.moves.removeTokenMove(tokenId);
+                        } else {
+                          message.error("不可选择其他玩家的精灵球");
+                          return;
+                        }
                       }
 
-                      gameData.moves.provisionalGetTokenMove(tokenId);
+                      if (tokenPosInfo.pos === "main") {
+                        if (tokenInfo.color === SP_ColorEnum.Purple) {
+                          message.error("大师球不可直接选择");
+                          return;
+                        }
+
+                        const nowSelectColor: Record<SP_ColorEnum, number> = {
+                          [SP_ColorEnum.Red]: 0,
+                          [SP_ColorEnum.Blue]: 0,
+                          [SP_ColorEnum.Black]: 0,
+                          [SP_ColorEnum.Pink]: 0,
+                          [SP_ColorEnum.Purple]: 0,
+                          [SP_ColorEnum.Yellow]: 0,
+                        };
+                        nowPlayingPlayerInfo.provisionalTokens.forEach((token) => {
+                          nowSelectColor[SP_TokenObj[token].color]++;
+                        });
+                        const boardColor: Record<SP_ColorEnum, number> = {
+                          [SP_ColorEnum.Red]: gameData.G.boardInfo.token.red.length,
+                          [SP_ColorEnum.Blue]: gameData.G.boardInfo.token.blue.length,
+                          [SP_ColorEnum.Black]: gameData.G.boardInfo.token.black.length,
+                          [SP_ColorEnum.Pink]: gameData.G.boardInfo.token.pink.length,
+                          [SP_ColorEnum.Purple]: gameData.G.boardInfo.token.purple.length,
+                          [SP_ColorEnum.Yellow]: gameData.G.boardInfo.token.yellow.length,
+                        };
+                        if (nowSelectColor[tokenInfo.color] === 1 && boardColor[tokenInfo.color] < 4) {
+                          message.warning("当前宝石小于4个，不可同时选择2个");
+                          return;
+                        }
+                        if (Object.values(nowSelectColor).some((v) => v >= 2)) {
+                          message.warning("已有宝石同时选择2个");
+                          return;
+                        }
+                        if (Object.values(nowSelectColor).filter((v) => v === 1).length >= 3) {
+                          message.warning("已有3个宝石同时选择1个");
+                          return;
+                        }
+                        if (
+                          nowSelectColor[tokenInfo.color] === 1 &&
+                          nowPlayingPlayerInfo.provisionalTokens.length >= 2
+                        ) {
+                          message.warning("当前已选择了异色精灵球，不可再选择同色精灵球");
+                          return;
+                        }
+                        gameData.moves.provisionalGetTokenMove(tokenId);
+                      }
+
+                      if (tokenPosInfo.isProvisional) {
+                        gameData.moves.provisionalRemoveTokenMove(tokenId);
+                      }
                     }}
                   />
                 );

@@ -20,8 +20,6 @@ interface Props {
 }
 export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragEnd }: Props) => {
   const { nowPlayingPlayerID, clientPlayerID, gameData } = useContext(SP_GameContext);
-  console.log({ clientPlayerID, id: boardPlayerInfo.id });
-
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
   const [plBoardImage] = useImage(plBoardImg);
@@ -235,6 +233,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
               }}
               onClick={() => {
                 gameData.moves.cleanProvisionalMove();
+                document.body.style.cursor = "default";
               }}
             >
               <Rect
@@ -264,6 +263,10 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                 document.body.style.cursor = "pointer";
               }}
               onMouseOut={() => {
+                document.body.style.cursor = "default";
+              }}
+              onClick={() => {
+                gameData.moves.prospectiveConfirmationSelectionMove();
                 document.body.style.cursor = "default";
               }}
             >

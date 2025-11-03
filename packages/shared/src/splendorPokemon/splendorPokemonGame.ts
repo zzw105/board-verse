@@ -13,6 +13,7 @@ import {
 import { cloneDeep } from "lodash";
 import { RandomAPI } from "boardgame.io/dist/types/src/plugins/random/random";
 import { takeMany } from "../theCastlesOfBurgundy/utils";
+import { EventsAPI } from "boardgame.io/dist/types/src/plugins/events/events";
 
 /** 初始化玩家信息 */
 const initPlayerInfo = (gameData: SP_GameType, ctx: Ctx) => {
@@ -102,18 +103,20 @@ const getCard = (gameData: SP_GameType, playerId: number, cardId: SP_CardIdType)
 };
 const colorOrder = ["red", "blue", "black", "pink", "yellow", "purple"];
 /** 从牌组中获取令牌 */
-const getToken = (gameData: SP_GameType, playerId: number, tokenId: SP_TokenIdType) => {
-  const tokenInfo = SP_TokenObj[tokenId];
-  const index = gameData.boardInfo.token[tokenInfo.color].findIndex((token) => token === tokenId);
-  if (index === -1) {
-    throw new Error("令牌不存在");
-  }
-  gameData.boardInfo.token[tokenInfo.color].splice(index, 1);
-  gameData.playersInfo[playerId].tokens.push(tokenId);
-  gameData.playersInfo[playerId].tokens.sort((a, b) => {
-    const colorA = a.split("_")[1];
-    const colorB = b.split("_")[1];
-    return colorOrder.indexOf(colorA) - colorOrder.indexOf(colorB);
+const getTokens = (gameData: SP_GameType, playerId: number, tokenIdList: SP_TokenIdType[]) => {
+  tokenIdList.forEach((tokenId) => {
+    const tokenInfo = SP_TokenObj[tokenId];
+    const index = gameData.boardInfo.token[tokenInfo.color].findIndex((token) => token === tokenId);
+    if (index === -1) {
+      throw new Error("令牌不存在");
+    }
+    gameData.boardInfo.token[tokenInfo.color].splice(index, 1);
+    gameData.playersInfo[playerId].tokens.push(tokenId);
+    gameData.playersInfo[playerId].tokens.sort((a, b) => {
+      const colorA = a.split("_")[1];
+      const colorB = b.split("_")[1];
+      return colorOrder.indexOf(colorA) - colorOrder.indexOf(colorB);
+    });
   });
 };
 /** 清空玩家临时区 */
@@ -122,24 +125,50 @@ const cleanProvisional = (gameData: SP_GameType, playerId: number) => {
   playerInfo.provisionalCards = [];
   playerInfo.provisionalTokens = [];
 };
-/** 临时从牌组中获取令牌 */
+/** 获取令牌到临时区 */
 const provisionalGetToken = (gameData: SP_GameType, playerId: number, tokenId: SP_TokenIdType) => {
   const playerInfo = gameData.playersInfo[playerId];
   playerInfo.provisionalCards = [];
   playerInfo.provisionalTokens.push(tokenId);
   playerInfo.provisionalTokens = [...new Set(playerInfo.provisionalTokens)];
-  // const tokenInfo = SP_TokenObj[tokenId];
-  // const index = gameData.boardInfo.token[tokenInfo.color].findIndex((token) => token === tokenId);
-  // if (index === -1) {
-  //   throw new Error("令牌不存在");
-  // }
-  // gameData.boardInfo.token[tokenInfo.color].splice(index, 1);
-  // gameData.playersInfo[playerId].provisionalTokens.push(tokenId);
-  // gameData.playersInfo[playerId].provisionalTokens.sort((a, b) => {
-  //   const colorA = a.split("_")[1];
-  //   const colorB = b.split("_")[1];
-  //   return colorOrder.indexOf(colorA) - colorOrder.indexOf(colorB);
-  // });
+};
+/** 从临时区牌组中移出令牌 */
+const provisionalRemoveToken = (gameData: SP_GameType, playerId: number, tokenId: SP_TokenIdType) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  const index = playerInfo.provisionalTokens.findIndex((token) => token === tokenId);
+  if (index === -1) {
+    throw new Error("令牌不存在");
+  }
+  playerInfo.provisionalTokens.splice(index, 1);
+};
+
+const removeToken = (gameData: SP_GameType, events: EventsAPI, playerId: number, tokenId: SP_TokenIdType) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  const tokenInfo = SP_TokenObj[tokenId];
+  const index = playerInfo.tokens.findIndex((token) => token === tokenId);
+  if (index === -1) {
+    throw new Error("令牌不存在");
+  }
+  playerInfo.tokens.splice(index, 1);
+  gameData.boardInfo.token[tokenInfo.color].push(tokenId);
+  if (playerInfo.tokens.length <= 10) {
+    endTurn(events);
+  }
+};
+
+/** 确认选择令牌 */
+const prospectiveConfirmationSelection = (gameData: SP_GameType, events: EventsAPI, playerId: number) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  getTokens(gameData, playerId, playerInfo.provisionalTokens);
+  playerInfo.provisionalTokens = [];
+  if (playerInfo.tokens.length > 10) {
+    events.setStage("discard");
+  } else {
+    endTurn(events);
+  }
+};
+const endTurn = (events: EventsAPI) => {
+  events.endTurn();
 };
 
 type setupDataType = {
@@ -159,23 +188,50 @@ export const splendorPokemonGame: Game<SP_GameType> = {
     return newGameData;
   },
   moves: {
-    endTurnMove: (data) => {
-      data.events.endTurn();
+    /** 结束回合 */
+    endTurnMove: ({ events }) => {
+      endTurn(events);
     },
+    /** 清空玩家临时区 */
     cleanProvisionalMove: (data) => {
       cleanProvisional(data.G, Number(data.ctx.currentPlayer));
     },
+    /** 从临时区牌组中获取令牌 */
     provisionalGetTokenMove: (data, tokenId) => {
       provisionalGetToken(data.G, Number(data.ctx.currentPlayer), tokenId);
     },
+    /** 从临时区牌组中移出令牌 */
+    provisionalRemoveTokenMove: (data, tokenId) => {
+      provisionalRemoveToken(data.G, Number(data.ctx.currentPlayer), tokenId);
+    },
+    /** 确认选择令牌 */
+    prospectiveConfirmationSelectionMove: (data) => {
+      prospectiveConfirmationSelection(data.G, data.events, Number(data.ctx.currentPlayer));
+    },
+
+    // test
     getCardMove: (data, cardId) => {
       getCard(data.G, Number(data.ctx.currentPlayer), cardId);
     },
     getTokenMove: (data, tokenId) => {
-      getToken(data.G, Number(data.ctx.currentPlayer), tokenId);
+      getTokens(data.G, Number(data.ctx.currentPlayer), tokenId);
     },
   },
-  turn: {},
+  turn: {
+    // order: TurnOrder.DEFAULT,
+    stages: {
+      // start: {
+      //   moves: { buyCard, selectToken },
+      // },
+      discard: {
+        moves: {
+          removeTokenMove: ({ G, playerID, events }, tokenId: SP_TokenIdType) => {
+            removeToken(G, events, Number(playerID), tokenId);
+          },
+        },
+      },
+    },
+  },
 
   // endIf: ({ G, ctx }) => {
   //   const index = Object.values(G.players).findIndex((p) => p.score >= 15);
