@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { SP_CardIdList, SP_CardObj, SP_ColorEnum, type SP_GameType, SP_TokenIdList, SP_TokenObj } from "@game/shared";
+import { SP_CardIdList, SP_ColorEnum, type SP_GameType, SP_TokenIdList, SP_TokenObj } from "@game/shared";
 import { Button, InputNumber, Slider, message } from "antd";
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 import type Konva from "konva";
@@ -424,12 +424,15 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
                 ...(gameData.G.playersInfo[1]?.cards || []),
                 ...(gameData.G.playersInfo[2]?.cards || []),
                 ...(gameData.G.playersInfo[3]?.cards || []),
+                ...(gameData.G.playersInfo[0].lockedCards || []),
+                ...(gameData.G.playersInfo[1]?.lockedCards || []),
+                ...(gameData.G.playersInfo[2]?.lockedCards || []),
+                ...(gameData.G.playersInfo[3]?.lockedCards || []),
               ].map((cardId) => {
                 if (!cardId) {
                   return null;
                 }
                 const cardPosInfo = allItemPosition.cards[cardId];
-                // console.log(cardInfo);
 
                 if (!cardPosInfo?.isShow) {
                   return null;
@@ -446,8 +449,15 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
                       if (clientPlayerID !== nowPlayingPlayerID) {
                         message.error("当前不是你的回合，不可操作");
                         return;
+                      }
+                      if (!(cardPosInfo.pos === "main" || cardPosInfo.pos === clientPlayerID)) {
+                        message.error("不可选择其他玩家的精灵球");
+                        return;
+                      }
+                      if (cardPosInfo.isProvisional) {
+                        gameData.moves.cleanProvisionalMove(cardId);
                       } else {
-                        gameData.moves.getCardMove(cardId);
+                        gameData.moves.provisionalGetCardMove(cardId);
                       }
                     }}
                   />
@@ -490,7 +500,7 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
 
                       if (stagesType === "discard") {
                         if (tokenPosInfo.pos === clientPlayerID) {
-                          gameData.moves.removeTokenMove(tokenId);
+                          gameData.moves.removeTokensMove([tokenId]);
                         } else {
                           message.error("不可选择其他玩家的精灵球");
                           return;

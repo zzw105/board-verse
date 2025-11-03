@@ -1,9 +1,12 @@
 import type { Ctx, Game } from "boardgame.io";
 import {
+  getSPTokenDelta,
   mergeColors,
   SP_CardIdList,
   SP_CardIdType,
   SP_CardObj,
+  SP_ColorEnum,
+  SP_ColorEnumList,
   SP_GameType,
   SP_InitGameData,
   SP_TokenIdList,
@@ -20,6 +23,7 @@ const initPlayerInfo = (gameData: SP_GameType, ctx: Ctx) => {
   gameData.playersInfo = Array.from({ length: ctx.numPlayers }, (_, i) => ({
     id: i,
     cards: [],
+    lockedCards: [],
     tokens: [],
     cardColor: mergeColors(),
     tokenColor: mergeColors(),
@@ -90,14 +94,48 @@ const initBoardInfo = (
 
 /** 从牌组中获取卡牌 */
 const getCard = (gameData: SP_GameType, playerId: number, cardId: SP_CardIdType) => {
-  const level = SP_CardObj[cardId].level;
+  const cardInfo = SP_CardObj[cardId];
   const playerInfo = gameData.playersInfo[playerId];
-  const cardPileList = gameData.boardInfo.card[`level_${level}_pile`];
-  const cardShowList = gameData.boardInfo.card[`level_${level}_show`];
+  const delta = getSPTokenDelta(playerInfo, cardInfo);
+  if (!delta) {
+    throw new Error("令牌不足");
+  }
+  SP_ColorEnumList.forEach((color) => {
+    const tokens = playerInfo.tokens.slice(0, delta[color]);
+    removeTokens(gameData, playerId, tokens);
+  });
+
+  const cardPileList = gameData.boardInfo.card[`level_${cardInfo.level}_pile`];
+  const cardShowList = gameData.boardInfo.card[`level_${cardInfo.level}_show`];
   cardShowList.forEach((card, index) => {
     if (card === cardId) {
       playerInfo.cards.push(card);
       cardShowList[index] = cardPileList.pop();
+    }
+  });
+  playerInfo.lockedCards.forEach((card, index) => {
+    if (card === cardId) {
+      playerInfo.cards.push(card);
+      playerInfo.lockedCards.splice(index, 1);
+    }
+  });
+};
+const lockCard = (gameData: SP_GameType, playerId: number, cardId: SP_CardIdType) => {
+  const cardInfo = SP_CardObj[cardId];
+  const playerInfo = gameData.playersInfo[playerId];
+  const cardPileList = gameData.boardInfo.card[`level_${cardInfo.level}_pile`];
+  const cardShowList = gameData.boardInfo.card[`level_${cardInfo.level}_show`];
+  cardShowList.forEach((card, index) => {
+    if (card === cardId) {
+      playerInfo.lockedCards.push(card);
+      cardShowList[index] = cardPileList.pop();
+    }
+  });
+
+  cardPileList.forEach((card, index) => {
+    if (card === cardId) {
+      playerInfo.lockedCards.push(card);
+      cardPileList.splice(index, 1);
     }
   });
 };
@@ -108,7 +146,7 @@ const getTokens = (gameData: SP_GameType, playerId: number, tokenIdList: SP_Toke
     const tokenInfo = SP_TokenObj[tokenId];
     const index = gameData.boardInfo.token[tokenInfo.color].findIndex((token) => token === tokenId);
     if (index === -1) {
-      throw new Error("令牌不存在");
+      throw new Error("getTokens令牌不存在");
     }
     gameData.boardInfo.token[tokenInfo.color].splice(index, 1);
     gameData.playersInfo[playerId].tokens.push(tokenId);
@@ -118,6 +156,7 @@ const getTokens = (gameData: SP_GameType, playerId: number, tokenIdList: SP_Toke
       return colorOrder.indexOf(colorA) - colorOrder.indexOf(colorB);
     });
   });
+  updatePlayerTokenCount(gameData, playerId);
 };
 /** 清空玩家临时区 */
 const cleanProvisional = (gameData: SP_GameType, playerId: number) => {
@@ -132,42 +171,105 @@ const provisionalGetToken = (gameData: SP_GameType, playerId: number, tokenId: S
   playerInfo.provisionalTokens.push(tokenId);
   playerInfo.provisionalTokens = [...new Set(playerInfo.provisionalTokens)];
 };
+/** 获取卡牌到临时区 */
+const provisionalGetCard = (gameData: SP_GameType, playerId: number, cardId: SP_CardIdType) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  playerInfo.provisionalCards = [];
+  playerInfo.provisionalTokens = [];
+  playerInfo.provisionalCards.push(cardId);
+  playerInfo.provisionalCards = [...new Set(playerInfo.provisionalCards)];
+};
 /** 从临时区牌组中移出令牌 */
 const provisionalRemoveToken = (gameData: SP_GameType, playerId: number, tokenId: SP_TokenIdType) => {
   const playerInfo = gameData.playersInfo[playerId];
   const index = playerInfo.provisionalTokens.findIndex((token) => token === tokenId);
   if (index === -1) {
-    throw new Error("令牌不存在");
+    throw new Error("provisionalRemoveToken令牌不存在");
   }
   playerInfo.provisionalTokens.splice(index, 1);
 };
 
-const removeToken = (gameData: SP_GameType, events: EventsAPI, playerId: number, tokenId: SP_TokenIdType) => {
+const removeTokens = (gameData: SP_GameType, playerId: number, tokenIds: SP_TokenIdType[]) => {
   const playerInfo = gameData.playersInfo[playerId];
-  const tokenInfo = SP_TokenObj[tokenId];
-  const index = playerInfo.tokens.findIndex((token) => token === tokenId);
-  if (index === -1) {
-    throw new Error("令牌不存在");
-  }
-  playerInfo.tokens.splice(index, 1);
-  gameData.boardInfo.token[tokenInfo.color].push(tokenId);
-  if (playerInfo.tokens.length <= 10) {
-    endTurn(events);
-  }
+  tokenIds.forEach((tokenId) => {
+    const tokenInfo = SP_TokenObj[tokenId];
+    const index = playerInfo.tokens.findIndex((token) => token === tokenId);
+    if (index === -1) {
+      throw new Error("removeTokens令牌不存在");
+    }
+    playerInfo.tokens.splice(index, 1);
+    gameData.boardInfo.token[tokenInfo.color].push(tokenId);
+  });
+  updatePlayerTokenCount(gameData, playerId);
 };
 
 /** 确认选择令牌 */
-const prospectiveConfirmationSelection = (gameData: SP_GameType, events: EventsAPI, playerId: number) => {
+const prospectiveConfirmationSelectionToken = (gameData: SP_GameType, events: EventsAPI, playerId: number) => {
   const playerInfo = gameData.playersInfo[playerId];
   getTokens(gameData, playerId, playerInfo.provisionalTokens);
   playerInfo.provisionalTokens = [];
   if (playerInfo.tokens.length > 10) {
     events.setStage("discard");
   } else {
-    endTurn(events);
+    endTurn(gameData, events);
   }
 };
-const endTurn = (events: EventsAPI) => {
+
+const prospectiveConfirmationSelectionCard = (gameData: SP_GameType, events: EventsAPI, playerId: number) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  getCard(gameData, playerId, playerInfo.provisionalCards[0]);
+  updatePlayerCardCount(gameData, playerId);
+  playerInfo.provisionalCards = [];
+  endTurn(gameData, events);
+};
+const prospectiveConfirmationLockCard = (gameData: SP_GameType, events: EventsAPI, playerId: number) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  lockCard(gameData, playerId, playerInfo.provisionalCards[0]);
+  playerInfo.provisionalCards = [];
+  const purpleToken = gameData.boardInfo.token[SP_ColorEnum.Purple][0];
+  if (purpleToken) {
+    getTokens(gameData, playerId, [purpleToken]);
+  }
+  updatePlayerCardCount(gameData, playerId);
+  endTurn(gameData, events);
+};
+
+/** 更新用户令牌数量 */
+const updatePlayerTokenCount = (gameData: SP_GameType, playerId: number) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  playerInfo.tokenColor = {
+    [SP_ColorEnum.Red]: 0,
+    [SP_ColorEnum.Blue]: 0,
+    [SP_ColorEnum.Purple]: 0,
+    [SP_ColorEnum.Black]: 0,
+    [SP_ColorEnum.Pink]: 0,
+    [SP_ColorEnum.Yellow]: 0,
+  };
+  playerInfo.tokens.forEach((token) => {
+    const tokenInfo = SP_TokenObj[token];
+    playerInfo.tokenColor[tokenInfo.color]++;
+  });
+}; /** 更新用户卡牌数量 */
+const updatePlayerCardCount = (gameData: SP_GameType, playerId: number) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  playerInfo.cardColor = {
+    [SP_ColorEnum.Red]: 0,
+    [SP_ColorEnum.Blue]: 0,
+    [SP_ColorEnum.Purple]: 0,
+    [SP_ColorEnum.Black]: 0,
+    [SP_ColorEnum.Pink]: 0,
+    [SP_ColorEnum.Yellow]: 0,
+  };
+  playerInfo.cards.forEach((card) => {
+    const cardInfo = SP_CardObj[card];
+    playerInfo.cardColor[cardInfo.color]++;
+  });
+};
+const endTurn = (gameData: SP_GameType, events: EventsAPI) => {
+  gameData.playersInfo.forEach((playerInfo) => {
+    playerInfo.provisionalCards = [];
+    playerInfo.provisionalTokens = [];
+  });
   events.endTurn();
 };
 
@@ -189,8 +291,8 @@ export const splendorPokemonGame: Game<SP_GameType> = {
   },
   moves: {
     /** 结束回合 */
-    endTurnMove: ({ events }) => {
-      endTurn(events);
+    endTurnMove: ({ G, events }) => {
+      endTurn(G, events);
     },
     /** 清空玩家临时区 */
     cleanProvisionalMove: (data) => {
@@ -204,18 +306,30 @@ export const splendorPokemonGame: Game<SP_GameType> = {
     provisionalRemoveTokenMove: (data, tokenId) => {
       provisionalRemoveToken(data.G, Number(data.ctx.currentPlayer), tokenId);
     },
+    /** 获取卡牌到临时区 */
+    provisionalGetCardMove: (data, cardId) => {
+      provisionalGetCard(data.G, Number(data.ctx.currentPlayer), cardId);
+    },
     /** 确认选择令牌 */
-    prospectiveConfirmationSelectionMove: (data) => {
-      prospectiveConfirmationSelection(data.G, data.events, Number(data.ctx.currentPlayer));
+    prospectiveConfirmationSelectionTokenMove: (data) => {
+      prospectiveConfirmationSelectionToken(data.G, data.events, Number(data.ctx.currentPlayer));
+    },
+    /** 确认选择卡牌 */
+    prospectiveConfirmationSelectionCardMove: (data) => {
+      prospectiveConfirmationSelectionCard(data.G, data.events, Number(data.ctx.currentPlayer));
+    },
+    /** 确认锁定卡牌 */
+    prospectiveConfirmationLockCardMove: (data) => {
+      prospectiveConfirmationLockCard(data.G, data.events, Number(data.ctx.currentPlayer));
     },
 
     // test
-    getCardMove: (data, cardId) => {
-      getCard(data.G, Number(data.ctx.currentPlayer), cardId);
-    },
-    getTokenMove: (data, tokenId) => {
-      getTokens(data.G, Number(data.ctx.currentPlayer), tokenId);
-    },
+    // getCardMove: (data, cardId) => {
+    //   getCard(data.G, Number(data.ctx.currentPlayer), cardId);
+    // },
+    // getTokenMove: (data, tokenId) => {
+    //   getTokens(data.G, Number(data.ctx.currentPlayer), tokenId);
+    // },
   },
   turn: {
     // order: TurnOrder.DEFAULT,
@@ -225,8 +339,12 @@ export const splendorPokemonGame: Game<SP_GameType> = {
       // },
       discard: {
         moves: {
-          removeTokenMove: ({ G, playerID, events }, tokenId: SP_TokenIdType) => {
-            removeToken(G, events, Number(playerID), tokenId);
+          removeTokensMove: ({ G, playerID, events }, tokenIds: SP_TokenIdType[]) => {
+            removeTokens(G, Number(playerID), tokenIds);
+            const playerInfo = G.playersInfo[Number(playerID)];
+            if (playerInfo.tokens.length <= 10) {
+              endTurn(G, events);
+            }
           },
         },
       },

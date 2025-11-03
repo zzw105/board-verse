@@ -43,6 +43,8 @@ export type SP_PlayerInfoType = {
   id: number;
   /** 玩家卡牌资源 */
   cards: SP_CardIdType[];
+  /** 玩家锁定卡牌资源 */
+  lockedCards: SP_CardIdType[];
   /** 玩家令牌 */
   tokens: SP_TokenIdType[];
   /** 玩家卡牌颜色资源 */
@@ -83,6 +85,14 @@ export enum SP_ColorEnum {
   /** 超级球-蓝色 */
   Blue = "blue",
 }
+export const SP_ColorEnumList = [
+  SP_ColorEnum.Red,
+  SP_ColorEnum.Blue,
+  SP_ColorEnum.Black,
+  SP_ColorEnum.Pink,
+  SP_ColorEnum.Yellow,
+  SP_ColorEnum.Purple,
+];
 /** 卡片信息 */
 export type SP_CardType = {
   /** 卡片ID */
@@ -2482,3 +2492,35 @@ export const SP_InitGameData: SP_GameType = {
 
 //   return canIndexList;
 // };
+
+export const getSPTokenDelta = (player: SP_PlayerInfoType, card: SP_CardType): Record<SP_ColorEnum, number> | null => {
+  const cost = card.cost;
+  const playerTokens = player.tokenColor;
+  const playerCardPoint = player.cardColor;
+  const delta: Record<SP_ColorEnum, number> = {
+    [SP_ColorEnum.Black]: 0,
+    [SP_ColorEnum.Blue]: 0,
+    [SP_ColorEnum.Pink]: 0,
+    [SP_ColorEnum.Red]: 0,
+    [SP_ColorEnum.Yellow]: 0,
+    [SP_ColorEnum.Purple]: 0,
+  };
+
+  SP_ColorEnumList.forEach((color) => {
+    const required = Math.max(cost[color] - playerCardPoint[color], 0);
+    const available = playerTokens[color] || 0;
+    if (available >= required) {
+      delta[color] += required;
+    } else {
+      delta[color] = available;
+      delta[SP_ColorEnum.Purple] += required - available;
+    }
+  });
+
+  if (SP_ColorEnumList.every((color) => delta[color] <= playerTokens[color])) {
+    return delta;
+  }
+
+  // 金子不足，购买失败
+  return null;
+};

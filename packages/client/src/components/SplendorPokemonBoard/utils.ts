@@ -179,6 +179,28 @@ export const setUserBoardTokenCardPos = (
       tokenPosInfo.isProvisional = false;
     });
 
+    player.lockedCards.forEach((card, index) => {
+      const cardPosInfo = allItemPosition.cards[card];
+      cardPosInfo.x = playerBoard.x + 20 + index * 110;
+      cardPosInfo.y = playerBoard.y + 343;
+      cardPosInfo.isShow = true;
+      cardPosInfo.pos = playId;
+      cardPosInfo.isProvisional = false;
+      cardPosInfo.isFaceUp = true;
+      cardPosInfo.isHorizontal = true;
+    });
+
+    player.provisionalCards.forEach((card) => {
+      const cardPosInfo = allItemPosition.cards[card];
+      cardPosInfo.x = playerBoard.x + 566;
+      cardPosInfo.y = playerBoard.y + 20;
+      cardPosInfo.isShow = true;
+      cardPosInfo.pos = playId;
+      cardPosInfo.isProvisional = true;
+      // cardPosInfo.isFaceUp = true;
+      cardPosInfo.isHorizontal = false;
+    });
+
     player.provisionalTokens.forEach((token, index) => {
       const tokenPosInfo = allItemPosition.tokens[token];
       tokenPosInfo.x = playerBoard.x + 574;

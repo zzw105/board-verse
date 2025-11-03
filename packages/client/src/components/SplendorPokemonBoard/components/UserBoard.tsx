@@ -1,6 +1,7 @@
 import { useContext, useRef } from "react";
 
 import { type SP_PlayerInfoType } from "@game/shared";
+import { message } from "antd";
 import type { FilteredMetadata } from "boardgame.io";
 import Konva from "konva";
 import { Group, Image, Rect, Text } from "react-konva";
@@ -256,40 +257,118 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                 verticalAlign="middle"
               />
             </Group>
-            <Group
-              x={0}
-              y={plBoardImageHeight - 40}
-              onMouseOver={() => {
-                document.body.style.cursor = "pointer";
-              }}
-              onMouseOut={() => {
-                document.body.style.cursor = "default";
-              }}
-              onClick={() => {
-                gameData.moves.prospectiveConfirmationSelectionMove();
-                document.body.style.cursor = "default";
-              }}
-            >
-              <Rect
-                width={100}
-                height={40}
-                fill="white"
-                cornerRadius={8}
-                shadowColor="black"
-                shadowBlur={4}
-                shadowOffset={{ x: 2, y: 2 }}
-                shadowOpacity={0.3}
-              />
-              <Text
-                text={"确认选择"}
-                fontSize={16}
-                fill="black"
-                width={100}
-                height={40}
-                align="center"
-                verticalAlign="middle"
-              />
-            </Group>
+            {boardPlayerInfo.provisionalTokens.length > 0 && (
+              <Group
+                x={0}
+                y={plBoardImageHeight - 40}
+                onMouseOver={() => {
+                  document.body.style.cursor = "pointer";
+                }}
+                onMouseOut={() => {
+                  document.body.style.cursor = "default";
+                }}
+                onClick={() => {
+                  gameData.moves.prospectiveConfirmationSelectionTokenMove();
+                  document.body.style.cursor = "default";
+                }}
+              >
+                <Rect
+                  width={100}
+                  height={40}
+                  fill="white"
+                  cornerRadius={8}
+                  shadowColor="black"
+                  shadowBlur={4}
+                  shadowOffset={{ x: 2, y: 2 }}
+                  shadowOpacity={0.3}
+                />
+                <Text
+                  text={"确认选择"}
+                  fontSize={16}
+                  fill="black"
+                  width={100}
+                  height={40}
+                  align="center"
+                  verticalAlign="middle"
+                />
+              </Group>
+            )}
+            {boardPlayerInfo.provisionalCards.length > 0 && (
+              <>
+                <Group
+                  x={0}
+                  y={plBoardImageHeight - 40}
+                  onMouseOver={() => {
+                    document.body.style.cursor = "pointer";
+                  }}
+                  onMouseOut={() => {
+                    document.body.style.cursor = "default";
+                  }}
+                  onClick={() => {
+                    gameData.moves.prospectiveConfirmationSelectionCardMove();
+                    document.body.style.cursor = "default";
+                  }}
+                >
+                  <Rect
+                    width={50}
+                    height={40}
+                    fill="white"
+                    cornerRadius={8}
+                    shadowColor="black"
+                    shadowBlur={4}
+                    shadowOffset={{ x: 2, y: 2 }}
+                    shadowOpacity={0.3}
+                  />
+                  <Text
+                    text={"购买"}
+                    fontSize={16}
+                    fill="black"
+                    width={50}
+                    height={40}
+                    align="center"
+                    verticalAlign="middle"
+                  />
+                </Group>
+                <Group
+                  x={50}
+                  y={plBoardImageHeight - 40}
+                  onMouseOver={() => {
+                    document.body.style.cursor = "pointer";
+                  }}
+                  onMouseOut={() => {
+                    document.body.style.cursor = "default";
+                  }}
+                  onClick={() => {
+                    if (boardPlayerInfo.lockedCards.includes(boardPlayerInfo.provisionalCards[0])) {
+                      message.error("该卡牌已锁定无法重新锁定");
+                    } else {
+                      gameData.moves.prospectiveConfirmationLockCardMove();
+                    }
+                    document.body.style.cursor = "default";
+                  }}
+                >
+                  <Rect
+                    width={50}
+                    height={40}
+                    fill="white"
+                    cornerRadius={8}
+                    shadowColor="black"
+                    shadowBlur={4}
+                    shadowOffset={{ x: 2, y: 2 }}
+                    shadowOpacity={0.3}
+                  />
+                  <Text
+                    text={"锁定"}
+                    fontSize={16}
+                    fill="black"
+                    width={50}
+                    height={40}
+                    align="center"
+                    verticalAlign="middle"
+                  />
+                </Group>
+              </>
+            )}
           </>
         )}
       </Group>
