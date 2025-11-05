@@ -18,6 +18,7 @@ import styles from "./SplendorPokemonBoard.module.less";
 import { MainBoard } from "./components/MainBoard";
 import { PokemonBall } from "./components/PokemonBall";
 import { PokemonCard } from "./components/PokemonCard";
+import { TextBox } from "./components/TextBox";
 import { Tooltip } from "./components/Tooltip";
 import { UserBoard } from "./components/UserBoard";
 import { type AllItemPositionType, setMainBoardTokenCardPos, setUserBoardTokenCardPos } from "./utils";
@@ -329,65 +330,13 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
               {shapes.map((shape) => {
                 if (shape.id === "MainBoard") {
                   return (
-                    <>
-                      <MainBoard
-                        key={shape.id}
-                        draggable
-                        x={shape.x}
-                        y={shape.y}
-                        onDragEnd={(e) => handleShapesDragEnd(e, shape.id)}
-                      />
-                      {/* 
-                      tokenColorList.forEach((token) => {
-                        const tokenPosInfo = allItemPosition.tokens[token];
-                        tokenPosInfo.x = mainBoard.x + 36 + (colorList[tokenColor] - 1) * 88;
-                        if (tokenColor === SP_ColorEnum.Purple) {
-                          tokenPosInfo.x += 30;
-                        }
-                        tokenPosInfo.y = mainBoard.y + 16 + 340;
-                        tokenPosInfo.isShow = true;
-                      });
-                      */}
-                      {/* {
-                        colorList.map((tokenColor) => {
-                          const tokenPosInfo = allItemPosition.tokens[tokenColor];
-                          tokenPosInfo.x = mainBoard.x + 36 + (colorList[tokenColor] - 1) * 88;
-                          if (tokenColor === SP_ColorEnum.Purple) {
-                            tokenPosInfo.x += 30;
-                          }
-                          tokenPosInfo.y = mainBoard.y + 16 + 340;
-                          tokenPosInfo.isShow = true;
-                        })
-                      }
-                      <Group x={shape.x} y={shape.y}>
-                        <Rect
-                          width={plBoardImageWidth}
-                          height={40}
-                          fill="#00000059"
-                          cornerRadius={8}
-                          shadowColor="black"
-                          shadowBlur={4}
-                          shadowOffset={{ x: 2, y: 2 }}
-                          shadowOpacity={0.3}
-                        />
-                        <Text
-                          x={10}
-                          text={`用户名：${matchData.name}`}
-                          fontSize={16}
-                          fill="white"
-                          height={40}
-                          verticalAlign="middle"
-                        />
-                        <Text
-                          x={plBoardImageWidth - 70}
-                          text={`分数：${boardPlayerInfo.point}`}
-                          fontSize={16}
-                          fill="white"
-                          height={40}
-                          verticalAlign="middle"
-                        />
-                      </Group> */}
-                    </>
+                    <MainBoard
+                      key={shape.id}
+                      draggable
+                      x={shape.x}
+                      y={shape.y}
+                      onDragEnd={(e) => handleShapesDragEnd(e, shape.id)}
+                    />
                   );
                 }
               })}
@@ -560,6 +509,57 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
                     }}
                   />
                 );
+              })}
+            </Layer>
+            <Layer>
+              {[
+                gameData.G.boardInfo.card.level_3_pile.length,
+                gameData.G.boardInfo.card.level_2_pile.length,
+                gameData.G.boardInfo.card.level_1_pile.length,
+              ].map((v, i) => {
+                const shape = shapes.find((s) => s.id === `MainBoard`)!;
+                return (
+                  <TextBox
+                    key={i}
+                    x={shape.x + 20}
+                    y={shape.y + 16 + i * 112}
+                    width={30}
+                    height={30}
+                    text={v.toString()}
+                  />
+                );
+              })}
+              {[
+                gameData.G.boardInfo.card.level_4_pile.length + 1,
+                gameData.G.boardInfo.card.level_5_pile.length + 1,
+              ].map((v, i) => {
+                const shape = shapes.find((s) => s.id === `MainBoard`)!;
+                return (
+                  <TextBox
+                    key={i}
+                    x={shape.x + 577}
+                    y={shape.y + 33 + i * 130}
+                    width={30}
+                    height={30}
+                    text={v.toString()}
+                  />
+                );
+              })}
+              {[
+                gameData.G.boardInfo.token.red.length,
+                gameData.G.boardInfo.token.blue.length,
+                gameData.G.boardInfo.token.black.length,
+                gameData.G.boardInfo.token.pink.length,
+                gameData.G.boardInfo.token.yellow.length,
+                gameData.G.boardInfo.token.purple.length,
+              ].map((v, i) => {
+                const shape = shapes.find((s) => s.id === `MainBoard`)!;
+                let x = shape.x + 16 + i * 88;
+                if (i === 5) {
+                  x += 30;
+                }
+                const y = shape.y + 340;
+                return <TextBox key={i} x={x} y={y} width={30} height={30} text={v.toString()} />;
               })}
             </Layer>
           </Stage>
