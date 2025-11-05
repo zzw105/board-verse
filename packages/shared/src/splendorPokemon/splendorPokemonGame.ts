@@ -101,7 +101,13 @@ const getCard = (gameData: SP_GameType, playerId: number, cardId: SP_CardIdType)
     throw new Error("令牌不足");
   }
   SP_ColorEnumList.forEach((color) => {
-    const tokens = playerInfo.tokens.slice(0, delta[color]);
+    const colorNum = delta[color];
+    const tokens = playerInfo.tokens
+      .filter((token) => {
+        const tokenInfo = SP_TokenObj[token];
+        return tokenInfo.color === color;
+      })
+      .slice(0, colorNum);
     removeTokens(gameData, playerId, tokens);
   });
 
@@ -231,7 +237,11 @@ const prospectiveConfirmationLockCard = (gameData: SP_GameType, events: EventsAP
     getTokens(gameData, playerId, [purpleToken]);
   }
   updatePlayerCardCount(gameData, playerId);
-  endTurn(gameData, events);
+  if (playerInfo.tokens.length > 10) {
+    events.setStage("discard");
+  } else {
+    endTurn(gameData, events);
+  }
 };
 
 /** 更新用户令牌数量 */

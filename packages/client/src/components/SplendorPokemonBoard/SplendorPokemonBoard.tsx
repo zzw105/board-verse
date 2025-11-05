@@ -214,86 +214,93 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
 
   return (
     <div className={styles.board}>
-      <div className={`${styles.top} ${styles.nowUserName}`}>
-        当前玩家：{gameData.matchData?.[nowPlayingPlayerID].name || "未知玩家"}
-      </div>
-      {clientPlayerID === nowPlayingPlayerID && (
-        <div className={`${styles.top} ${styles.end}`}>
-          <Button onClick={() => gameData.moves.endTurnMove()}>结束回合</Button>
+      {process.env.NODE_ENV === "development" && (
+        <div className={styles.devBox}>
+          <div className={`${styles.top} ${styles.nowUserName}`}>
+            当前玩家：{gameData.matchData?.[nowPlayingPlayerID].name || "未知玩家"}
+          </div>
+          {clientPlayerID === nowPlayingPlayerID && (
+            <div className={`${styles.top} ${styles.end}`}>
+              <Button color="danger" variant="solid" onClick={() => gameData.moves.endTurnMove()}>
+                结束回合
+              </Button>
+            </div>
+          )}
+          <div className={styles.title}>
+            {name}
+            <Button
+              size="large"
+              onClick={() => {
+                gameData.moves.gameReset();
+              }}
+            >
+              重置游戏
+            </Button>
+            <Button
+              size="large"
+              onClick={() => {
+                setStagePositionLocal({ x: 0, y: 0 });
+                setStageScaleLocal(1);
+                setShapesLocal(cloneDeep(initShapes));
+              }}
+            >
+              重置画布
+            </Button>
+            <Button
+              size="large"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              返回
+            </Button>
+            <div>
+              当前玩家
+              {gameData.matchData?.find((item) => item.id === +gameData.ctx.currentPlayer)?.name}
+            </div>
+            <Slider min={0} max={3} onChange={handleSliderChange} value={stageScale} step={0.01} />
+            <InputNumber
+              min={0}
+              max={3}
+              style={{ margin: "0 16px" }}
+              step={0.01}
+              value={stageScale}
+              onChange={handleSliderChange}
+            />
+            <div>
+              调试1
+              <InputNumber step={0.01} value={debugNum1} onChange={(e) => setDebugNum1(e ?? 0)} />
+            </div>
+            <div>
+              调试2
+              <InputNumber step={0.01} value={debugNum2} onChange={(e) => setDebugNum2(e ?? 0)} />
+            </div>
+            <div>
+              调试3
+              <InputNumber step={0.01} value={debugNum3} onChange={(e) => setDebugNum3(e ?? 0)} />
+            </div>
+            <div>
+              调试4
+              <InputNumber step={0.01} value={debugNum4} onChange={(e) => setDebugNum4(e ?? 0)} />
+            </div>
+            <div>
+              调试5
+              <InputNumber step={0.01} value={debugNum5} onChange={(e) => setDebugNum5(e ?? 0)} />
+            </div>
+            <div>
+              <Button
+                size="large"
+                onClick={() => {
+                  gameData.moves.testSetStage("getNewDice");
+                }}
+              >
+                test
+              </Button>
+            </div>
+          </div>
         </div>
       )}
-      <div className={styles.title}>
-        {name}
-        <Button
-          size="large"
-          onClick={() => {
-            gameData.moves.gameReset();
-          }}
-        >
-          重置游戏
-        </Button>
-        <Button
-          size="large"
-          onClick={() => {
-            setStagePositionLocal({ x: 0, y: 0 });
-            setStageScaleLocal(1);
-            setShapesLocal(cloneDeep(initShapes));
-          }}
-        >
-          重置画布
-        </Button>
-        <Button
-          size="large"
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          返回
-        </Button>
-        <div>
-          当前玩家
-          {gameData.matchData?.find((item) => item.id === +gameData.ctx.currentPlayer)?.name}
-        </div>
-        <Slider min={0} max={3} onChange={handleSliderChange} value={stageScale} step={0.01} />
-        <InputNumber
-          min={0}
-          max={3}
-          style={{ margin: "0 16px" }}
-          step={0.01}
-          value={stageScale}
-          onChange={handleSliderChange}
-        />
-        <div>
-          调试1
-          <InputNumber step={0.01} value={debugNum1} onChange={(e) => setDebugNum1(e ?? 0)} />
-        </div>
-        <div>
-          调试2
-          <InputNumber step={0.01} value={debugNum2} onChange={(e) => setDebugNum2(e ?? 0)} />
-        </div>
-        <div>
-          调试3
-          <InputNumber step={0.01} value={debugNum3} onChange={(e) => setDebugNum3(e ?? 0)} />
-        </div>
-        <div>
-          调试4
-          <InputNumber step={0.01} value={debugNum4} onChange={(e) => setDebugNum4(e ?? 0)} />
-        </div>
-        <div>
-          调试5
-          <InputNumber step={0.01} value={debugNum5} onChange={(e) => setDebugNum5(e ?? 0)} />
-        </div>
-        <div>
-          <Button
-            size="large"
-            onClick={() => {
-              gameData.moves.testSetStage("getNewDice");
-            }}
-          >
-            test
-          </Button>
-        </div>
-      </div>
+
       <SP_GameContext.Provider
         value={{
           gameData,
@@ -301,6 +308,7 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
           clientPlayerInfo,
           nowPlayingPlayerID,
           nowPlayingPlayerInfo,
+          allItemPosition,
         }}
       >
         <div ref={konvaRef} className={styles["konva"]}>

@@ -8,5 +8,5 @@ export const SplendorPokemonClient = Client({
   game: splendorPokemonGame,
   board: SplendorPokemonBoard,
   multiplayer: SocketIO({ server: import.meta.env.VITE_API_URL }),
-  numPlayers: 4,
+  numPlayers: 1,
 });

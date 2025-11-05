@@ -3,6 +3,8 @@ import { createContext } from "react";
 import type { SP_GameType, SP_PlayerInfoType } from "@game/shared";
 import type { BoardProps } from "boardgame.io/dist/types/packages/react";
 
+import type { AllItemPositionType } from "../components/SplendorPokemonBoard/utils";
+
 export type SP_GameContextType = {
   gameData: BoardProps<SP_GameType>;
   /** 客户端玩家ID */
@@ -13,6 +15,8 @@ export type SP_GameContextType = {
   nowPlayingPlayerID: number;
   /** 当前正在操作的玩家信息 */
   nowPlayingPlayerInfo: SP_PlayerInfoType;
+  /** 所有物品位置 */
+  allItemPosition: AllItemPositionType;
 };
 
 export type SP_UserContextType = {

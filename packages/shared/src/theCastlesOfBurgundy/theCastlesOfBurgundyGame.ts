@@ -110,7 +110,6 @@ const settingUpPlayerCargos = (gameData: TheCastlesOfBurgundyGameType, playID: n
       gameData.playersInfo[playID].cargos.push([cargo]);
     }
   });
-  // ZZW_TODO: 检查玩家是否有需要丢弃货物
 };
 
 const getBuilding = (

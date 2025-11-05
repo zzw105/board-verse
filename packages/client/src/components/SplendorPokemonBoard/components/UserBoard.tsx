@@ -20,7 +20,7 @@ interface Props {
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
 }
 export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragEnd }: Props) => {
-  const { nowPlayingPlayerID, clientPlayerID, gameData } = useContext(SP_GameContext);
+  const { nowPlayingPlayerID, clientPlayerID, gameData, allItemPosition } = useContext(SP_GameContext);
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
   const [plBoardImage] = useImage(plBoardImg);
@@ -223,44 +223,10 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
         />
         {boardPlayerInfo.id === clientPlayerID && nowPlayingPlayerID === clientPlayerID && (
           <>
-            <Group
-              x={0}
-              y={plBoardImageHeight - 80}
-              onMouseOver={() => {
-                document.body.style.cursor = "pointer";
-              }}
-              onMouseOut={() => {
-                document.body.style.cursor = "default";
-              }}
-              onClick={() => {
-                gameData.moves.cleanProvisionalMove();
-                document.body.style.cursor = "default";
-              }}
-            >
-              <Rect
-                width={100}
-                height={40}
-                fill="white"
-                cornerRadius={8}
-                shadowColor="black"
-                shadowBlur={4}
-                shadowOffset={{ x: 2, y: 2 }}
-                shadowOpacity={0.3}
-              />
-              <Text
-                text={"清空"}
-                fontSize={16}
-                fill="black"
-                width={100}
-                height={40}
-                align="center"
-                verticalAlign="middle"
-              />
-            </Group>
             {boardPlayerInfo.provisionalTokens.length > 0 && (
               <Group
                 x={0}
-                y={plBoardImageHeight - 40}
+                y={plBoardImageHeight - 81}
                 onMouseOver={() => {
                   document.body.style.cursor = "pointer";
                 }}
@@ -275,7 +241,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                 <Rect
                   width={100}
                   height={40}
-                  fill="white"
+                  fill="#1677ff"
                   cornerRadius={8}
                   shadowColor="black"
                   shadowBlur={4}
@@ -285,7 +251,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                 <Text
                   text={"确认选择"}
                   fontSize={16}
-                  fill="black"
+                  fill="white"
                   width={100}
                   height={40}
                   align="center"
@@ -295,43 +261,85 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
             )}
             {boardPlayerInfo.provisionalCards.length > 0 && (
               <>
+                {allItemPosition.cards[boardPlayerInfo.provisionalCards[0]].isFaceUp && (
+                  <>
+                    <Group
+                      x={0}
+                      y={plBoardImageHeight - 163}
+                      onMouseOver={() => {
+                        document.body.style.cursor = "pointer";
+                      }}
+                      onMouseOut={() => {
+                        document.body.style.cursor = "default";
+                      }}
+                      onClick={() => {
+                        gameData.moves.prospectiveConfirmationSelectionCardMove();
+                        document.body.style.cursor = "default";
+                      }}
+                    >
+                      <Rect
+                        width={100}
+                        height={40}
+                        fill="#1677ff"
+                        cornerRadius={8}
+                        shadowColor="black"
+                        shadowBlur={4}
+                        shadowOffset={{ x: 2, y: 2 }}
+                        shadowOpacity={0.3}
+                      />
+                      <Text
+                        text={"购买"}
+                        fontSize={16}
+                        fill="white"
+                        width={100}
+                        height={40}
+                        align="center"
+                        verticalAlign="middle"
+                      />
+                    </Group>
+                    <Group
+                      x={0}
+                      y={plBoardImageHeight - 122}
+                      onMouseOver={() => {
+                        document.body.style.cursor = "pointer";
+                      }}
+                      onMouseOut={() => {
+                        document.body.style.cursor = "default";
+                      }}
+                      onClick={() => {
+                        if (boardPlayerInfo.lockedCards.includes(boardPlayerInfo.provisionalCards[0])) {
+                          message.error("该卡牌已锁定无法重新锁定");
+                        } else {
+                          gameData.moves.prospectiveConfirmationLockCardMove();
+                        }
+                        document.body.style.cursor = "default";
+                      }}
+                    >
+                      <Rect
+                        width={100}
+                        height={40}
+                        fill="white"
+                        cornerRadius={8}
+                        shadowColor="black"
+                        shadowBlur={4}
+                        shadowOffset={{ x: 2, y: 2 }}
+                        shadowOpacity={0.3}
+                      />
+                      <Text
+                        text={"进化"}
+                        fontSize={16}
+                        fill="black"
+                        width={100}
+                        height={40}
+                        align="center"
+                        verticalAlign="middle"
+                      />
+                    </Group>
+                  </>
+                )}
                 <Group
                   x={0}
-                  y={plBoardImageHeight - 40}
-                  onMouseOver={() => {
-                    document.body.style.cursor = "pointer";
-                  }}
-                  onMouseOut={() => {
-                    document.body.style.cursor = "default";
-                  }}
-                  onClick={() => {
-                    gameData.moves.prospectiveConfirmationSelectionCardMove();
-                    document.body.style.cursor = "default";
-                  }}
-                >
-                  <Rect
-                    width={50}
-                    height={40}
-                    fill="white"
-                    cornerRadius={8}
-                    shadowColor="black"
-                    shadowBlur={4}
-                    shadowOffset={{ x: 2, y: 2 }}
-                    shadowOpacity={0.3}
-                  />
-                  <Text
-                    text={"购买"}
-                    fontSize={16}
-                    fill="black"
-                    width={50}
-                    height={40}
-                    align="center"
-                    verticalAlign="middle"
-                  />
-                </Group>
-                <Group
-                  x={50}
-                  y={plBoardImageHeight - 40}
+                  y={plBoardImageHeight - 81}
                   onMouseOver={() => {
                     document.body.style.cursor = "pointer";
                   }}
@@ -348,7 +356,7 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                   }}
                 >
                   <Rect
-                    width={50}
+                    width={100}
                     height={40}
                     fill="white"
                     cornerRadius={8}
@@ -361,13 +369,49 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                     text={"锁定"}
                     fontSize={16}
                     fill="black"
-                    width={50}
+                    width={100}
                     height={40}
                     align="center"
                     verticalAlign="middle"
                   />
                 </Group>
               </>
+            )}
+            {(boardPlayerInfo.provisionalTokens.length > 0 || boardPlayerInfo.provisionalCards.length > 0) && (
+              <Group
+                x={0}
+                y={plBoardImageHeight - 40}
+                onMouseOver={() => {
+                  document.body.style.cursor = "pointer";
+                }}
+                onMouseOut={() => {
+                  document.body.style.cursor = "default";
+                }}
+                onClick={() => {
+                  gameData.moves.cleanProvisionalMove();
+                  document.body.style.cursor = "default";
+                }}
+              >
+                <Rect
+                  width={100}
+                  height={40}
+                  fill="white"
+                  cornerRadius={8}
+                  shadowColor="black"
+                  shadowBlur={4}
+                  shadowOffset={{ x: 2, y: 2 }}
+                  shadowOpacity={0.3}
+                />
+                <Text
+                  text={"清空"}
+                  fontSize={16}
+                  fill="black"
+                  width={100}
+                  height={40}
+                  align="center"
+                  verticalAlign="middle"
+                />
+              </Group>
             )}
           </>
         )}
