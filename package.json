@@ -6,11 +6,15 @@
   "workspaces": [
     "packages/*"
   ],
-  "scripts": {},
+  "scripts": {
+    "client:dev": "pnpm --filter client run dev",
+    "server:start": "pnpm --filter server run start"
+  },
   "devDependencies": {
     "@types/node": "^25.0.0",
     "eslint": "^9.39.1",
     "prettier": "^3.7.4",
     "typescript": "^5.9.3"
-  }
+  },
+  "dependencies": {}
 }

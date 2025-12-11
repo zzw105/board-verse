@@ -1,55 +1,59 @@
+// src/GameScene.ts
 import Phaser from "phaser";
+import { Client } from "colyseus.js";
 import type { Ref } from "vue";
 
-interface GameSceneProps {
+interface Props {
   count: Ref<number>;
   pos: { x: number; y: number };
 }
 
 export default class GameScene extends Phaser.Scene {
-  private circle!: Phaser.GameObjects.Graphics;
   private container!: Phaser.GameObjects.Container;
+  private circle!: Phaser.GameObjects.Graphics;
+  private room: any;
+  private props: Props;
 
-  private props: GameSceneProps;
-
-  constructor(props: GameSceneProps) {
+  constructor(props: Props) {
     super("GameScene");
     this.props = props;
   }
 
-  create() {
-    // 初始位置
-    const startX = 200;
-    const startY = 150;
+  async create() {
+    // 连接 Colyseus
+    const client = new Client("ws://localhost:2567");
+    this.room = await client.joinOrCreate("my_room");
+    console.log(this.room);
 
-    // 创建容器（容器有自己的 x/y）
+    // 初始位置
+    const startX = this.room.state.x;
+    const startY = this.room.state.y;
+
     this.container = this.add.container(startX, startY);
 
-    // 创建小球
     this.circle = this.add.graphics();
     this.circle.fillStyle(0xff4444, 1);
-    this.circle.fillCircle(0, 0, 20); // 原点在中心
+    this.circle.fillCircle(0, 0, 20);
 
-    // 添加到容器
     this.container.add(this.circle);
 
-    // 点击事件
     this.container.setSize(40, 40);
     this.container.setInteractive(new Phaser.Geom.Circle(20, 20, 20), Phaser.Geom.Circle.Contains);
 
-    this.container.on("pointerdown", () => {
-      this.props.count.value++;
-    });
+    // 点击
+    this.container.on("pointerdown", () => this.room.send("click"));
 
-    // 开启拖拽
+    // 拖拽
     this.input.setDraggable(this.container);
+    this.input.on("drag", (_p: any, _obj: any, x: number, y: number) => this.room.send("drag", { x, y }));
 
-    this.input.on("drag", (_pointer: any, obj: Phaser.GameObjects.Container, dragX: number, dragY: number) => {
-      obj.x = dragX;
-      obj.y = dragY;
-
-      this.props.pos.x = Math.round(dragX);
-      this.props.pos.y = Math.round(dragY);
+    // 状态同步
+    this.room.onStateChange((state: any) => {
+      this.container.x = state.x;
+      this.container.y = state.y;
+      this.props.pos.x = state.x;
+      this.props.pos.y = state.y;
+      this.props.count.value = state.count;
     });
   }
 }
