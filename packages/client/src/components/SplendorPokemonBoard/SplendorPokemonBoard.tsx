@@ -212,12 +212,23 @@ export function SplendorPokemonBoard(gameData: BoardProps<SP_GameType>) {
 
   const [backMainImage] = useImage(backMainImg);
 
+  const getNowStages = () => {
+    if (nowStagesType === "discard") {
+      return "弃球阶段";
+    } else if (nowStagesType === "evolution") {
+      return "进化阶段";
+    } else {
+      return "购买阶段";
+    }
+  };
+
   return (
     <div className={styles.board}>
       {process.env.NODE_ENV === "development" && (
         <div className={styles.devBox}>
           <div className={`${styles.top} ${styles.nowUserName}`}>
-            当前玩家：{gameData.matchData?.[nowPlayingPlayerID].name || "未知玩家"}
+            <div>当前玩家：{gameData.matchData?.[nowPlayingPlayerID].name || "未知玩家"}</div>
+            <div>阶段：{getNowStages()}</div>
           </div>
           {clientPlayerID === nowPlayingPlayerID && (
             <div className={`${styles.top} ${styles.end}`}>

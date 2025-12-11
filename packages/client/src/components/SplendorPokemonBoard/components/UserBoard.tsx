@@ -1,6 +1,6 @@
 import { useContext, useRef } from "react";
 
-import { type SP_PlayerInfoType } from "@game/shared";
+import { SP_CardObj, SP_ColorEnumList, type SP_PlayerInfoType, takeMany } from "@game/shared";
 import { message } from "antd";
 import type { FilteredMetadata } from "boardgame.io";
 import Konva from "konva";
@@ -20,7 +20,8 @@ interface Props {
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
 }
 export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragEnd }: Props) => {
-  const { nowPlayingPlayerID, clientPlayerID, gameData, allItemPosition } = useContext(SP_GameContext);
+  const { nowPlayingPlayerID, clientPlayerID, clientPlayerInfo, gameData, allItemPosition } =
+    useContext(SP_GameContext);
   // 锁定
   const groupRef = useRef<Konva.Group>(null);
   const [plBoardImage] = useImage(plBoardImg);
@@ -307,12 +308,23 @@ export const UserBoard = ({ x, y, draggable, boardPlayerInfo, matchData, onDragE
                         document.body.style.cursor = "default";
                       }}
                       onClick={() => {
-                        if (boardPlayerInfo.lockedCards.includes(boardPlayerInfo.provisionalCards[0])) {
-                          message.error("该卡牌已锁定无法重新锁定");
-                        } else {
-                          gameData.moves.prospectiveConfirmationLockCardMove();
+                        const cardId = clientPlayerInfo.provisionalCards[0];
+                        for (const playCardId of clientPlayerInfo.cards) {
+                          const playCardInfo = SP_CardObj[playCardId];
+                          if (playCardInfo.evolvesTo.includes(cardId)) {
+                            const canEvolution = SP_ColorEnumList.some(
+                              (color) => clientPlayerInfo.cardColor[color] >= playCardInfo.cost[color],
+                            );
+                            if (canEvolution) {
+                              gameData.moves.prospectiveConfirmationEvolutionCardMove();
+                              document.body.style.cursor = "default";
+
+                              return;
+                            }
+                          }
                         }
                         document.body.style.cursor = "default";
+                        message.error("无法进化");
                       }}
                     >
                       <Rect

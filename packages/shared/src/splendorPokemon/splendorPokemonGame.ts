@@ -30,6 +30,7 @@ const initPlayerInfo = (gameData: SP_GameType, ctx: Ctx) => {
     point: 0,
     provisionalTokens: [],
     provisionalCards: [],
+    evolvedCards: [],
   }));
 };
 /** 初始化令牌卡牌 */
@@ -217,7 +218,7 @@ const prospectiveConfirmationSelectionToken = (gameData: SP_GameType, events: Ev
   if (playerInfo.tokens.length > 10) {
     events.setStage("discard");
   } else {
-    endTurn(gameData, events);
+    evolutionStage(gameData, events);
   }
 };
 
@@ -226,7 +227,7 @@ const prospectiveConfirmationSelectionCard = (gameData: SP_GameType, events: Eve
   getCard(gameData, playerId, playerInfo.provisionalCards[0]);
   updatePlayerCardCount(gameData, playerId);
   playerInfo.provisionalCards = [];
-  endTurn(gameData, events);
+  evolutionStage(gameData, events);
 };
 const prospectiveConfirmationLockCard = (gameData: SP_GameType, events: EventsAPI, playerId: number) => {
   const playerInfo = gameData.playersInfo[playerId];
@@ -240,7 +241,30 @@ const prospectiveConfirmationLockCard = (gameData: SP_GameType, events: EventsAP
   if (playerInfo.tokens.length > 10) {
     events.setStage("discard");
   } else {
-    endTurn(gameData, events);
+    evolutionStage(gameData, events);
+  }
+};
+
+/** 确认进化卡牌 */
+const prospectiveConfirmationEvolutionCard = (gameData: SP_GameType, events: EventsAPI, playerId: number) => {
+  const playerInfo = gameData.playersInfo[playerId];
+  const cardId = playerInfo.provisionalCards[0];
+  const cardInfo = SP_CardObj[cardId];
+  for (const playCardId of playerInfo.cards) {
+    const playCardInfo = SP_CardObj[playCardId];
+    if (playCardInfo.evolvesTo.includes(cardId)) {
+      const canEvolution = SP_ColorEnumList.some((color) => playerInfo.cardColor[color] >= playCardInfo.cost[color]);
+      if (canEvolution) {
+        takeMany(playerInfo.cards, 1, (c) => c === playCardId);
+        takeMany(gameData.boardInfo.card.level_1_show, 1, (c) => c === cardId);
+        takeMany(gameData.boardInfo.card.level_2_show, 1, (c) => c === cardId);
+        takeMany(gameData.boardInfo.card.level_3_show, 1, (c) => c === cardId);
+        playerInfo.cards.push(cardId);
+        playerInfo.evolvedCards.push(playCardId);
+        endTurn(gameData, events);
+        return;
+      }
+    }
   }
 };
 
@@ -274,6 +298,13 @@ const updatePlayerCardCount = (gameData: SP_GameType, playerId: number) => {
     const cardInfo = SP_CardObj[card];
     playerInfo.cardColor[cardInfo.color]++;
   });
+};
+const evolutionStage = (gameData: SP_GameType, events: EventsAPI) => {
+  gameData.playersInfo.forEach((playerInfo) => {
+    playerInfo.provisionalCards = [];
+    playerInfo.provisionalTokens = [];
+  });
+  events.setStage("evolution");
 };
 const endTurn = (gameData: SP_GameType, events: EventsAPI) => {
   gameData.playersInfo.forEach((playerInfo) => {
@@ -355,6 +386,22 @@ export const splendorPokemonGame: Game<SP_GameType> = {
             if (playerInfo.tokens.length <= 10) {
               endTurn(G, events);
             }
+          },
+        },
+      },
+      evolution: {
+        moves: {
+          /** 确认进化卡牌 */
+          prospectiveConfirmationEvolutionCardMove: (data, cardId) => {
+            prospectiveConfirmationEvolutionCard(data.G, data.events, Number(data.ctx.currentPlayer));
+          },
+          /** 获取卡牌到临时区 */
+          provisionalGetCardMove: (data, cardId) => {
+            provisionalGetCard(data.G, Number(data.ctx.currentPlayer), cardId);
+          },
+          /** 结束回合 */
+          endTurnMove: ({ G, events }) => {
+            endTurn(G, events);
           },
         },
       },

@@ -57,6 +57,8 @@ export type SP_PlayerInfoType = {
   provisionalTokens: SP_TokenIdType[];
   /** 玩家临时选择卡牌 */
   provisionalCards: SP_CardIdType[];
+  /** 玩家进化过的卡牌 */
+  evolvedCards: SP_CardIdType[];
 };
 /** 合并颜色资源 */
 export const mergeColors = (item?: Partial<Record<SP_ColorEnum, number>>) => {
