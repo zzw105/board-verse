@@ -1,8 +1,15 @@
-import map1 from "../../assets/map.png";
+import map1_RegionA from "../../assets/Vector 1 (1).png";
+import map_a from "../../assets/map_a.png";
 
 export interface RegionT {
   name: string;
-  points: number[];
+  url: string;
+  pos: PointT;
+}
+
+export interface PointT {
+  x: number;
+  y: number;
 }
 
 export interface MapItemT {
@@ -14,13 +21,18 @@ export interface MapItemT {
 // 所有地图统一管理
 export const maps: MapItemT[] = [
   {
-    key: "map1",
-    url: map1,
+    key: "map_a",
+    url: map_a,
 
     regions: [
-      { name: "RegionA", points: [0, 0, 100, 100] },
-      { name: "RegionB", points: [100, 100, 200, 200] },
+      {
+        name: "map_a_0",
+        url: map1_RegionA,
+        pos: {
+          x: 63,
+          y: 139,
+        },
+      },
     ],
   },
-  // 可以继续添加更多地图
 ];

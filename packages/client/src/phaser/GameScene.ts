@@ -24,11 +24,13 @@ export default class GameScene extends Phaser.Scene {
 
   constructor(props: Props) {
     super("GameScene");
-    // this.props = props;
+    console.log({ props });
   }
 
   preload() {
-    this.allMap = maps.map((map) => new MapManager(this, this.cameras.main, map));
+    this.allMap = maps.map((map) => {
+      return new MapManager(this, map);
+    });
     this.allMap.forEach((map) => map.preload());
   }
 

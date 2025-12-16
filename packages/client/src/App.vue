@@ -15,20 +15,30 @@ const gameContainer = ref<HTMLDivElement | null>(null);
 const count = ref(0);
 const pos = reactive({ x: 0, y: 0 });
 
+let game: Phaser.Game | null = null;
+
 onMounted(() => {
-  new Phaser.Game({
-    type: Phaser.AUTO,
+  game = new Phaser.Game({
+    type: Phaser.WEBGL,
     parent: gameContainer.value!,
-    backgroundColor: "#202020",
+    backgroundColor: "#fff",
     scale: {
-      mode: Phaser.Scale.RESIZE, // 自动跟随容器大小
+      mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,
       width: gameContainer.value!.clientWidth,
       height: gameContainer.value!.clientHeight,
     },
-    scene: new GameScene({ count, pos }), // 传入 Vue ref
+    scene: new GameScene({ count, pos }),
   });
 });
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    if (game) {
+      game.destroy(true, false); // 销毁 Phaser 实例和场景
+      game = null; // 避免旧引用
+    }
+  });
+}
 </script>
 
 <style>

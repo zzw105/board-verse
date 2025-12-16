@@ -5,22 +5,52 @@ import type { MapItemT } from "./maps";
 export default class MapManager {
   private scene: Phaser.Scene;
   private mapImage!: Phaser.GameObjects.Image;
-  private cam: Phaser.Cameras.Scene2D.Camera;
   private mapInfo!: MapItemT;
+  private regions: Phaser.GameObjects.Image[] = [];
 
-  constructor(scene: Phaser.Scene, cam: Phaser.Cameras.Scene2D.Camera, mapInfo: MapItemT) {
+  constructor(scene: Phaser.Scene, mapInfo: MapItemT) {
     this.scene = scene;
-    this.cam = cam;
     this.mapInfo = mapInfo;
   }
 
   preload() {
     // 加载地图
     this.scene.load.image(this.mapInfo.key, this.mapInfo.url);
+    this.mapInfo.regions.forEach((item) => {
+      this.scene.load.image(item.name, item.url);
+    });
   }
 
   create() {
     // 添加地图
     this.mapImage = this.scene.add.image(0, 0, this.mapInfo.key).setOrigin(0, 0);
+    this.regions = this.mapInfo.regions.map((item) => {
+      const region = this.scene.add.image(item.pos.x, item.pos.y, item.name).setOrigin(0, 0);
+      region.setInteractive({
+        pixelPerfect: true, // 启用像素级检测
+        useHandCursor: true, // 鼠标悬停显示手型（可选）
+      });
+
+      region.alpha = 0.05;
+      region.on(
+        Phaser.Input.Events.POINTER_OVER,
+        () => {
+          console.log("pointer move");
+          region.alpha = 0.05;
+          // glow.color = 0xff0000;
+        },
+        this,
+      );
+      region.on(
+        Phaser.Input.Events.POINTER_OUT,
+        () => {
+          console.log("pointer out");
+          region.alpha = 0.01;
+          // glow.color = 0x000000;
+        },
+        this,
+      );
+      return region;
+    });
   }
 }
