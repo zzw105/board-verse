@@ -1,20 +1,31 @@
 import { spiritIslandImg } from "../../utils/imgs";
 
+/** 地图区域信息T */
 export interface RegionT {
-  name: string;
+  /** 区域key */
+  key: string;
+  /** 区域网络url地址 */
   url: string;
+  /** 区域在地图中的位置，用于画布定位 */
   pos: PointT;
 }
 
+/** 定位信息T */
 export interface PointT {
+  /** 定位点x坐标 */
   x: number;
+  /** 定位点y坐标 */
   y: number;
 }
 
+/** 地图信息T */
 export interface MapItemT {
-  key: string; // Phaser 加载时的 key
-  url: string; // 地图图片地址
-  regions: RegionT[]; // 区域信息
+  /** 地图key */
+  key: string;
+  /** 地图网络url地址 */
+  url: string;
+  /** 地图区域信息 */
+  regions: RegionT[];
 }
 
 // 所有地图统一管理
@@ -22,10 +33,9 @@ export const maps: MapItemT[] = [
   {
     key: "map_1_a",
     url: spiritIslandImg.map.map_1_a,
-
     regions: [
       {
-        name: "map_1_a_0",
+        key: "map_1_a_0",
         url: spiritIslandImg.map.map_1_a_0,
         pos: {
           x: 64.38,
@@ -33,7 +43,7 @@ export const maps: MapItemT[] = [
         },
       },
       {
-        name: "map_1_a_1",
+        key: "map_1_a_1",
         url: spiritIslandImg.map.map_1_a_1,
         pos: {
           x: 462,
@@ -41,7 +51,7 @@ export const maps: MapItemT[] = [
         },
       },
       {
-        name: "map_1_a_2",
+        key: "map_1_a_2",
         url: spiritIslandImg.map.map_1_a_2,
         pos: {
           x: 224,
@@ -49,7 +59,7 @@ export const maps: MapItemT[] = [
         },
       },
       {
-        name: "map_1_a_3",
+        key: "map_1_a_3",
         url: spiritIslandImg.map.map_1_a_3,
         pos: {
           x: 60,
@@ -57,7 +67,7 @@ export const maps: MapItemT[] = [
         },
       },
       {
-        name: "map_1_a_4",
+        key: "map_1_a_4",
         url: spiritIslandImg.map.map_1_a_4,
         pos: {
           x: 432.5,
@@ -65,7 +75,7 @@ export const maps: MapItemT[] = [
         },
       },
       {
-        name: "map_1_a_5",
+        key: "map_1_a_5",
         url: spiritIslandImg.map.map_1_a_5,
         pos: {
           x: 651.5,
@@ -73,7 +83,7 @@ export const maps: MapItemT[] = [
         },
       },
       {
-        name: "map_1_a_6",
+        key: "map_1_a_6",
         url: spiritIslandImg.map.map_1_a_6,
         pos: {
           x: 713.26,
@@ -81,7 +91,7 @@ export const maps: MapItemT[] = [
         },
       },
       {
-        name: "map_1_a_7",
+        key: "map_1_a_7",
         url: spiritIslandImg.map.map_1_a_7,
         pos: {
           x: 858.73,
@@ -89,7 +99,7 @@ export const maps: MapItemT[] = [
         },
       },
       {
-        name: "map_1_a_8",
+        key: "map_1_a_8",
         url: spiritIslandImg.map.map_1_a_8,
         pos: {
           x: 973.5,
