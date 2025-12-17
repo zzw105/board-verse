@@ -1,5 +1,4 @@
-import map1_RegionA from "../../assets/Vector 1 (1).png";
-import map_a from "../../assets/map_a.png";
+import { spiritIslandImg } from "../../utils/imgs";
 
 export interface RegionT {
   name: string;
@@ -22,12 +21,12 @@ export interface MapItemT {
 export const maps: MapItemT[] = [
   {
     key: "map_a",
-    url: map_a,
+    url: spiritIslandImg.map.map_1_a,
 
     regions: [
       {
         name: "map_a_0",
-        url: map1_RegionA,
+        url: spiritIslandImg.map.map_1_a,
         pos: {
           x: 63,
           y: 139,
