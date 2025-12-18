@@ -7,14 +7,22 @@
     "packages/*"
   ],
   "scripts": {
-    "client:dev": "pnpm --filter client run dev",
-    "server:start": "pnpm --filter server run start"
+    "client:dev": "pnpm --filter @board-verse/client run dev",
+    "server:start": "pnpm --filter @board-verse/server run start",
+    "common:watch": "pnpm --filter @board-verse/common run watch"
   },
   "devDependencies": {
     "@types/node": "^25.0.0",
     "eslint": "^9.39.1",
     "prettier": "^3.7.4",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "prettier-plugin-css-order": "^2.1.2",
+    "typescript-eslint": "^8.39.1",
+    "vite": "^7.2.4",
+    "vue-tsc": "^3.1.4"
   },
   "dependencies": {}
 }

@@ -1,0 +1,15 @@
+{
+  "name": "@board-verse/common",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist",
+    "watch": "tsc -b --watch"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^25.0.0"
+  }
+}
