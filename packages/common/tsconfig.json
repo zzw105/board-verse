@@ -1,15 +1,7 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "declaration": true, // 生成类型声明文件
-    "declarationMap": true, // 支持调试映射
-    "outDir": "dist", // 编译输出目录
-    "rootDir": "src", // 源码目录
-    "strict": true,
-    "esModuleInterop": true,
-    "moduleResolution": "Node",
-    "skipLibCheck": true
+    "outDir": "dist"
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }

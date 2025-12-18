@@ -1,6 +1,8 @@
 {
   "name": "@board-verse/common",
   "version": "1.0.0",
+  "private": true,
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -8,8 +10,8 @@
     "clean": "rm -rf dist",
     "watch": "tsc -b --watch"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^25.0.0"
+    "@types/node": "^25.0.0",
+    "eslint-plugin-node": "^11.1.0"
   }
 }

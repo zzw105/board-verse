@@ -14,6 +14,7 @@ export default class MapManager {
   }
 
   preload() {
+    const a = 1;
     // 加载地图
     this.scene.load.image(this.mapInfo.key, this.mapInfo.url);
     this.mapInfo.regions.forEach((item) => {

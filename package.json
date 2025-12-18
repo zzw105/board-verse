@@ -2,6 +2,7 @@
   "name": "board-verse",
   "private": true,
   "version": "1.0.0",
+  "type": "module",
   "description": "Monorepo for Splendor Game (client + server + shared)",
   "workspaces": [
     "packages/*"

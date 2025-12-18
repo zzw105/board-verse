@@ -5,11 +5,14 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 
+import { a } from "@board-verse/common";
 import Phaser from "phaser";
 
 import GameScene from "./phaser/GameScene";
 
 const gameContainer = ref<HTMLDivElement | null>(null);
+
+console.log(a);
 
 // Vue 响应式状态
 const count = ref(0);

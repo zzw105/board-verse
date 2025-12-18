@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "noEmit": true,
+    "paths": {
+      "@shared/*": ["packages/shared/src/*"]
+    },
+    "types": ["vite/client", "node"]
+  },
+  "include": ["packages/**/*", "types/**/*.d.ts"]
+}

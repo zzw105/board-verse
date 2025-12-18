@@ -1,21 +1,3 @@
-import js from "@eslint/js";
-import tseslint from "typescript-eslint";
+import rootConfig from "../../eslint.config.js";
 
-export default [
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ["**/*.ts", "**/*.tsx"],
-    languageOptions: {
-      parser: tseslint.parser,
-    },
-    rules: {
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["warn"],
-    },
-    parserOptions: {
-      project: ["./tsconfig.json"],
-      tsconfigRootDir: __dirname,
-    },
-  },
-];
+export default rootConfig;
