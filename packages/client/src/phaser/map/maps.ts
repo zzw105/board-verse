@@ -1,4 +1,4 @@
-import { spiritIslandImg } from "../../utils/imgs";
+import { spiritIslandMapImg } from "@board-verse/common";
 
 /** 地图区域信息T */
 export interface RegionT {
@@ -32,11 +32,11 @@ export interface MapItemT {
 export const maps: MapItemT[] = [
   {
     key: "map_1_a",
-    url: spiritIslandImg.map.map_1_a,
+    url: spiritIslandMapImg.map_1_a,
     regions: [
       {
         key: "map_1_a_0",
-        url: spiritIslandImg.map.map_1_a_0,
+        url: spiritIslandMapImg.map_1_a_0,
         pos: {
           x: 64.38,
           y: 139,
@@ -44,7 +44,7 @@ export const maps: MapItemT[] = [
       },
       {
         key: "map_1_a_1",
-        url: spiritIslandImg.map.map_1_a_1,
+        url: spiritIslandMapImg.map_1_a_1,
         pos: {
           x: 462,
           y: 102.9,
@@ -52,7 +52,7 @@ export const maps: MapItemT[] = [
       },
       {
         key: "map_1_a_2",
-        url: spiritIslandImg.map.map_1_a_2,
+        url: spiritIslandMapImg.map_1_a_2,
         pos: {
           x: 224,
           y: 258.52,
@@ -60,7 +60,7 @@ export const maps: MapItemT[] = [
       },
       {
         key: "map_1_a_3",
-        url: spiritIslandImg.map.map_1_a_3,
+        url: spiritIslandMapImg.map_1_a_3,
         pos: {
           x: 60,
           y: 732.5,
@@ -68,7 +68,7 @@ export const maps: MapItemT[] = [
       },
       {
         key: "map_1_a_4",
-        url: spiritIslandImg.map.map_1_a_4,
+        url: spiritIslandMapImg.map_1_a_4,
         pos: {
           x: 432.5,
           y: 519.5,
@@ -76,7 +76,7 @@ export const maps: MapItemT[] = [
       },
       {
         key: "map_1_a_5",
-        url: spiritIslandImg.map.map_1_a_5,
+        url: spiritIslandMapImg.map_1_a_5,
         pos: {
           x: 651.5,
           y: 334.97,
@@ -84,7 +84,7 @@ export const maps: MapItemT[] = [
       },
       {
         key: "map_1_a_6",
-        url: spiritIslandImg.map.map_1_a_6,
+        url: spiritIslandMapImg.map_1_a_6,
         pos: {
           x: 713.26,
           y: 122.43,
@@ -92,7 +92,7 @@ export const maps: MapItemT[] = [
       },
       {
         key: "map_1_a_7",
-        url: spiritIslandImg.map.map_1_a_7,
+        url: spiritIslandMapImg.map_1_a_7,
         pos: {
           x: 858.73,
           y: 394,
@@ -100,7 +100,7 @@ export const maps: MapItemT[] = [
       },
       {
         key: "map_1_a_8",
-        url: spiritIslandImg.map.map_1_a_8,
+        url: spiritIslandMapImg.map_1_a_8,
         pos: {
           x: 973.5,
           y: 58,

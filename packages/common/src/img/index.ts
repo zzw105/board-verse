@@ -1,0 +1,1 @@
+export { spiritIslandMapImg } from "./map";

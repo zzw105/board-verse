@@ -1,7 +1,21 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*.ts"],
+  "resolveJsonModule": true
 }
