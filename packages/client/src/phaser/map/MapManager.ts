@@ -1,6 +1,5 @@
+import { MapItemT } from "@board-verse/common";
 import Phaser from "phaser";
-
-import type { MapItemT } from "./maps";
 
 export default class MapManager {
   private scene: Phaser.Scene;
@@ -14,7 +13,6 @@ export default class MapManager {
   }
 
   preload() {
-    const a = 1;
     // 加载地图
     this.scene.load.image(this.mapInfo.key, this.mapInfo.url);
     this.mapInfo.regions.forEach((item) => {

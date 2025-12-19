@@ -12,8 +12,12 @@ module.exports = {
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
 
+  importOrderParserPlugins: ["typescript", "decorators-legacy"],
+
   // CSS 排序规则
   cssOrder: "alphabetical",
+
+  parser: "typescript",
 
   printWidth: 120,
   tabWidth: 2,

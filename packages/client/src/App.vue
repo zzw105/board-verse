@@ -5,33 +5,31 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 
-import { a } from "@board-verse/common";
+import { SpiritIslandRoomStatT } from "@board-verse/common";
+import { Client } from "colyseus.js";
 import Phaser from "phaser";
 
 import GameScene from "./phaser/GameScene";
 
 const gameContainer = ref<HTMLDivElement | null>(null);
 
-console.log(a);
-
-// Vue 响应式状态
-const count = ref(0);
-const pos = reactive({ x: 0, y: 0 });
-
 let game: Phaser.Game | null = null;
 
 onMounted(() => {
-  game = new Phaser.Game({
-    type: Phaser.WEBGL,
-    parent: gameContainer.value!,
-    backgroundColor: "#fff",
-    scale: {
-      mode: Phaser.Scale.RESIZE,
-      autoCenter: Phaser.Scale.CENTER_BOTH,
-      width: gameContainer.value!.clientWidth,
-      height: gameContainer.value!.clientHeight,
-    },
-    scene: new GameScene({ count, pos }),
+  const client = new Client("ws://localhost:2567");
+  client.joinOrCreate<SpiritIslandRoomStatT>("spirit_island_room").then((room) => {
+    game = new Phaser.Game({
+      type: Phaser.WEBGL,
+      parent: gameContainer.value!,
+      backgroundColor: "#fff",
+      scale: {
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: gameContainer.value!.clientWidth,
+        height: gameContainer.value!.clientHeight,
+      },
+      scene: new GameScene({ room }),
+    });
   });
 });
 if (import.meta.hot) {

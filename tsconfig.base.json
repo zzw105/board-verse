@@ -7,9 +7,6 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
 
-    "baseUrl": ".",
-    "paths": {
-      "@common/*": ["packages/common/src/*"]
-    }
+    "baseUrl": "."
   }
 }

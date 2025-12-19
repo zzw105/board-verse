@@ -1,30 +1,22 @@
 import type { Ref } from "vue";
 
-// import { Client, Room } from "colyseus.js";
+import { SpiritIslandRoomStatT, maps } from "@board-verse/common";
+import { Client, Room } from "colyseus.js";
 import Phaser from "phaser";
 
 import MapManager from "./map/MapManager";
-import { maps } from "./map/maps";
 
 interface Props {
-  count: Ref<number>;
-  pos: { x: number; y: number };
+  room: Room<SpiritIslandRoomStatT>;
 }
 
 export default class GameScene extends Phaser.Scene {
-  // private container!: Phaser.GameObjects.Container;
-  // private circle!: Phaser.GameObjects.Graphics;
-  // private room!: Room<{
-  //   x: number;
-  //   y: number;
-  //   count: number;
-  // }>;
-  // private props: Props;
+  private room!: Room<SpiritIslandRoomStatT>;
   private allMap!: MapManager[];
 
   constructor(props: Props) {
     super("GameScene");
-    console.log({ props });
+    this.room = props.room;
   }
 
   preload() {
@@ -36,9 +28,10 @@ export default class GameScene extends Phaser.Scene {
 
   async create() {
     // 连接 Colyseus
-    // const client = new Client("ws://localhost:2567");
-    // this.room = await client.joinOrCreate("my_room");
-    // console.log(this.room);
+
+    this.room.onMessage("*", (type, message) => {
+      console.log(type, message);
+    });
 
     // 摄像机拖动
     const cam = this.cameras.main;

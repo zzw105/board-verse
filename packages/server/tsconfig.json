@@ -3,13 +3,16 @@
 
   "compilerOptions": {
     "composite": true,
-
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
     "rootDir": "src",
     "outDir": "dist",
-
+    "useDefineForClassFields": false,
     "types": ["node"],
 
     "sourceMap": true,
