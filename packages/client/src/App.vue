@@ -28,7 +28,7 @@ onMounted(() => {
         width: gameContainer.value!.clientWidth,
         height: gameContainer.value!.clientHeight,
       },
-      scene: new GameScene({ room }),
+      scene: new GameScene({ room, playNum: 1 }),
     });
   });
 });

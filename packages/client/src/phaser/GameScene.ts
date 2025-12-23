@@ -1,13 +1,12 @@
-import type { Ref } from "vue";
-
-import { SpiritIslandRoomStatT, maps } from "@board-verse/common";
-import { Client, Room } from "colyseus.js";
+import { SpiritIslandRoomStatT, mapsAllConfig } from "@board-verse/common";
+import { Room } from "colyseus.js";
 import Phaser from "phaser";
 
 import MapManager from "./map/MapManager";
 
 interface Props {
   room: Room<SpiritIslandRoomStatT>;
+  playNum: number;
 }
 
 export default class GameScene extends Phaser.Scene {
@@ -20,7 +19,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    this.allMap = maps.map((map) => {
+    this.allMap = mapsAllConfig.map((map) => {
       return new MapManager(this, map);
     });
     this.allMap.forEach((map) => map.preload());
@@ -28,7 +27,6 @@ export default class GameScene extends Phaser.Scene {
 
   async create() {
     // 连接 Colyseus
-
     this.room.onMessage("*", (type, message) => {
       console.log(type, message);
     });
