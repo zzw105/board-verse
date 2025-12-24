@@ -29,9 +29,13 @@ export function createRegionState(config: RegionItemConfigT): RegionItemStateT {
 }
 
 export function createMapState(mapConfig: MapItemConfigT): MapItemStateT {
+  const regions = Object.fromEntries(
+    Object.entries(mapConfig.regions).map(([key, cfg]) => [key, createRegionState(cfg)]),
+  ) as MapItemStateT["regions"];
+
   return {
     key: mapConfig.key,
     owner: "",
-    regions: Object.values(mapConfig.regions).map((item) => createRegionState(item)),
+    regions,
   };
 }
