@@ -7,9 +7,11 @@ export type Range<N extends number, Result extends number[] = []> = Result["leng
 // 生成 1~N
 export type Range1ToN<N extends number> = Exclude<Range<N>, 0>;
 
-// export const getRegionInfo = (regionKey: RegionT["key"]) => {
-//   return Number(regionKey.split("_")[2]);
-// };
+export const getRegionInfo = (mapState: MapItemStateT, regionKey: string) => {
+  const region = mapState.regions[regionKey as keyof MapItemStateT["regions"]];
+  if (region) return region;
+  else return null;
+};
 
 export function createRegionState(config: RegionItemConfigT): RegionItemStateT {
   return {

@@ -16,12 +16,15 @@ export default class GameScene extends Phaser.Scene {
   constructor(props: Props) {
     super("GameScene");
     this.room = props.room;
+    this.allMap = [...mapsAllConfig]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, props.playNum)
+      .map((map) => {
+        return new MapManager(this, map);
+      });
   }
 
   preload() {
-    this.allMap = mapsAllConfig.map((map) => {
-      return new MapManager(this, map);
-    });
     this.allMap.forEach((map) => map.preload());
   }
 
