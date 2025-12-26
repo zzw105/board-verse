@@ -1,4 +1,6 @@
 export const spiritIslandMapImg = {
+  background:
+    "https://gcore.jsdelivr.net/gh/zzw105/board-verse@master/packages/client/src/assets/spiritIsland/bg/bg_2.jpg",
   map_1_a:
     "https://gcore.jsdelivr.net/gh/zzw105/board-verse@master/packages/client/src/assets/spiritIsland/map/map_1_a.png",
   map_1_a_0:
