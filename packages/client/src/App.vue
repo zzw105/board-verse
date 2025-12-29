@@ -5,18 +5,28 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, reactive, ref } from "vue";
 
+import { SpiritIslandRoomSchemaT } from "@board-verse/common";
+import { Client } from "colyseus.js";
+
 import { SceneManager } from "./three/SceneManager";
 
 const gameContainer = ref<HTMLDivElement | null>(null);
 let sceneManager: SceneManager | null = null;
 
 onMounted(() => {
-  if (gameContainer.value) {
-    sceneManager = new SceneManager(gameContainer.value);
-    sceneManager.start();
+  const client = new Client("ws://localhost:2567");
+  client.joinOrCreate<SpiritIslandRoomSchemaT>("spirit_island_room").then((room) => {
+    setTimeout(() => {
+      console.log("Joined room:", JSON.stringify(room.state.map.get("init")));
+    }, 1000);
 
-    window.addEventListener("resize", sceneManager.resize);
-  }
+    if (gameContainer.value) {
+      sceneManager = new SceneManager(gameContainer.value);
+      sceneManager.start();
+
+      window.addEventListener("resize", sceneManager.resize);
+    }
+  });
 });
 
 onBeforeUnmount(() => {

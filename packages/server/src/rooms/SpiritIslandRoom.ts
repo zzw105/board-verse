@@ -1,22 +1,20 @@
 import { Client, Room } from "@colyseus/core";
 
-import { Player, SpiritIslandRoomState } from "./schema/SpiritIslandRoomState";
+import { PlayerSchema, SpiritIslandRoomSchema, mapSchema } from "./schema/SpiritIslandRoomState";
 
-export class SpiritIslandRoom extends Room<SpiritIslandRoomState> {
+export class SpiritIslandRoom extends Room<SpiritIslandRoomSchema> {
   maxClients = 4;
-  state = new SpiritIslandRoomState();
+  state = new SpiritIslandRoomSchema();
 
   onCreate(options: any) {
-    const player = new Player();
+    const player = new PlayerSchema();
     player.name = "abc";
 
     this.state.players.set("abc", player);
-    this.onMessage("m", (client, data) => {
-      this.state.players.forEach((player) => {
-        player.x = data.x;
-        player.y = data.y;
-      });
-    });
+
+    const tile = new mapSchema();
+    tile.name = "init";
+    this.state.map.set("init", tile);
   }
 
   onJoin(client: Client, options: any) {

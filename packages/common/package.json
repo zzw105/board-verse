@@ -13,5 +13,8 @@
   "devDependencies": {
     "@types/node": "^25.0.0",
     "eslint-plugin-node": "^11.1.0"
+  },
+  "dependencies": {
+    "glob": "^13.0.0"
   }
 }

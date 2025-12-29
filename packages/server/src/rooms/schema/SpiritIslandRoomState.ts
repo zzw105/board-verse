@@ -1,21 +1,23 @@
 import { ArraySchema, MapSchema, Schema, type } from "@colyseus/schema";
 
-export class Inventory extends Schema {
-  @type("string") name = "";
-  @type("number") quantity = 0;
-}
+// export class Inventory extends Schema {
+//   @type("string") name = "";
+//   @type("number") quantity = 0;
+// }
 
-export class Player extends Schema {
+export class PlayerSchema extends Schema {
   @type("string") name = "";
   @type("number") x = 0;
   @type("number") y = 0;
 
-  @type([Inventory]) inventory = new ArraySchema<Inventory>();
+  // @type([Inventory]) inventory = new ArraySchema<Inventory>();
 }
 
-export class mapT extends Schema {}
+export class mapSchema extends Schema {
+  @type("string") name = "";
+}
 
-export class SpiritIslandRoomState extends Schema {
-  @type({ map: Player }) players = new MapSchema<Player>();
-  @type({ map: mapT }) map = new MapSchema<mapT>();
+export class SpiritIslandRoomSchema extends Schema {
+  @type({ map: PlayerSchema }) players = new MapSchema<PlayerSchema>();
+  @type({ map: mapSchema }) map = new MapSchema<mapSchema>();
 }

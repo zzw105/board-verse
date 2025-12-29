@@ -1,5 +1,3 @@
-import { MapItemConfigT, MapItemStateT, RegionItemConfigT, RegionItemStateT } from "..";
-
 export type Range<N extends number, Result extends number[] = []> = Result["length"] extends N
   ? Result[number] | N
   : Range<N, [...Result, Result["length"]]>;
@@ -7,37 +5,37 @@ export type Range<N extends number, Result extends number[] = []> = Result["leng
 // 生成 1~N
 export type Range1ToN<N extends number> = Exclude<Range<N>, 0>;
 
-export const getRegionInfo = (mapState: MapItemStateT, regionKey: string) => {
-  const region = mapState.regions[regionKey as keyof MapItemStateT["regions"]];
-  if (region) return region;
-  else return null;
-};
+// export const getRegionInfo = (mapState: MapItemStateT, regionKey: string) => {
+//   const region = mapState.regions[regionKey as keyof MapItemStateT["regions"]];
+//   if (region) return region;
+//   else return null;
+// };
 
-export function createRegionState(config: RegionItemConfigT): RegionItemStateT {
-  return {
-    key: config.key,
-    regionNumber: config.regionNumber,
-    regionType: config.regionType,
+// export function createRegionState(config: RegionItemConfigT): RegionItemStateT {
+//   return {
+//     key: config.key,
+//     regionNumber: config.regionNumber,
+//     regionType: config.regionType,
 
-    explorerCount: config.initialState.explorerCount,
-    villageCount: config.initialState.villageCount,
-    townCount: config.initialState.townCount,
-    daangCount: config.initialState.daangCount,
-    polluteCount: config.initialState.polluteCount,
-    adjacentRegionKeys: [...config.initialState.adjacentRegionKeys],
+//     explorerCount: config.initialState.explorerCount,
+//     villageCount: config.initialState.villageCount,
+//     townCount: config.initialState.townCount,
+//     daangCount: config.initialState.daangCount,
+//     polluteCount: config.initialState.polluteCount,
+//     adjacentRegionKeys: [...config.initialState.adjacentRegionKeys],
 
-    spiritCount: {},
-  };
-}
+//     spiritCount: {},
+//   };
+// }
 
-export function createMapState(mapConfig: MapItemConfigT): MapItemStateT {
-  const regions = Object.fromEntries(
-    Object.entries(mapConfig.regions).map(([key, cfg]) => [key, createRegionState(cfg)]),
-  ) as MapItemStateT["regions"];
+// export function createMapState(mapConfig: MapItemConfigT): MapItemStateT {
+//   const regions = Object.fromEntries(
+//     Object.entries(mapConfig.regions).map(([key, cfg]) => [key, createRegionState(cfg)]),
+//   ) as MapItemStateT["regions"];
 
-  return {
-    key: mapConfig.key,
-    owner: "",
-    regions,
-  };
-}
+//   return {
+//     key: mapConfig.key,
+//     owner: "",
+//     regions,
+//   };
+// }
