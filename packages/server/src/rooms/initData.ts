@@ -1,6 +1,5 @@
-import { mapSchema } from "../schema/SpiritIslandRoomState";
+import { MapS, regionSchema } from "../schema/SpiritIslandRoomState";
 
-const initData = new mapSchema();
-initData.name = "initialized from initData";
+const initData = new MapS();
 
 export { initData };
