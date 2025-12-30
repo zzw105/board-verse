@@ -1,4 +1,4 @@
-import { Range1ToN } from "@board-verse/common";
+import { Range, Range1ToN } from "@board-verse/common";
 import { ArraySchema, MapSchema, Schema, type } from "@colyseus/schema";
 
 // export class Inventory extends Schema {
@@ -13,14 +13,27 @@ export class PlayerSchema extends Schema {
 
   // @type([Inventory]) inventory = new ArraySchema<Inventory>();
 }
-export type RegionItemTypeE = "wetland" | "mountain" | "sand" | "forest" | "desert";
-export class regionSchema extends Schema {
+export type RegionKeyT = `map_${Range1ToN<1>}_${"a"}_${Range<8>}`;
+/** 区域类型枚举 */
+export enum RegionItemTypeE {
+  /** 海洋 */
+  ocean = "ocean",
+  /** 林地 */
+  forest = "forest",
+  /** 沙地 */
+  sand = "sand",
+  /** 山地 */
+  mountain = "mountain",
+  /** 湿地 */
+  wetland = "wetland",
+}
+export class RegionS extends Schema {
   /** 区域key */
-  @type("string") key = "";
+  @type("string") key!: RegionKeyT;
   /** 区域编号 */
   @type("number") regionNumber = 0;
   /** 区域类型 */
-  @type("string") regionType = "";
+  @type(RegionItemTypeE) regionType!: RegionItemTypeE;
 }
 
 /** 地图S */
@@ -32,7 +45,7 @@ export class MapS extends Schema {
   /** 地图的拥有者 */
   @type("string") owner = "";
   /** 地图区域信息 */
-  @type({ map: regionSchema }) regions = new MapSchema<regionSchema>();
+  @type({ map: RegionS }) regions = new MapSchema<RegionS, RegionKeyT>();
 }
 
 export type MapKeyT = `map_${Range1ToN<1>}_${"a"}`;
