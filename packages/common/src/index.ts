@@ -1,3 +1,3 @@
 export * from "./spiritIsland";
 export * from "./utils";
-export * from "./generated";
+export * from "./schema/SpiritIslandRoomState";

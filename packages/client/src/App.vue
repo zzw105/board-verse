@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, reactive, ref } from "vue";
 
-import { SpiritIslandRoomSchemaT } from "@board-verse/common";
+import { SpiritIslandRoomSchema } from "@board-verse/common";
 import { Client } from "colyseus.js";
 
 import { SceneManager } from "./three/SceneManager";
@@ -15,9 +15,9 @@ let sceneManager: SceneManager | null = null;
 
 onMounted(() => {
   const client = new Client("ws://localhost:2567");
-  client.joinOrCreate<SpiritIslandRoomSchemaT>("spirit_island_room").then((room) => {
+  client.joinOrCreate<SpiritIslandRoomSchema>("spirit_island_room").then((room) => {
     setTimeout(() => {
-      console.log("Joined room:", JSON.stringify(room.state.map.get("init")));
+      console.log("Joined room:", room.state.toJSON().map.init1);
     }, 1000);
 
     if (gameContainer.value) {
